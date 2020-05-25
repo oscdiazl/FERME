@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% load crispy_forms_tags %}
+
+{% block contenido%}
+<div class="container mt-5 pt-5">
+
+        
+
+    <div class="row mt-5 pt-5">
+        <div class="col-lg-6 text-center justify-content-center align-self-center">
+            <img src="{%  static 'core/img/empleado.png' %}" alt="">
+            <h2 class=" h-100 py-4">Modificar Empleado</h2>
+        </div>
+        <div class="col-lg-6">
+            <form class="form-group" action="" method="POST">
+                {% csrf_token %}
+                    {{form | crispy}}
+    
+                
+                <input class="btn btn-success" type="submit" value="Guardar Cambios">
+                <a class="btn btn-danger" href="{% url 'listado_empleados' %}">Descartar Cambios</a>
+            </form>
+
+            {% if mensaje %}
+            
+            <div class="alert alert-success" role="alert">
+                
+                {{mensaje}}
+            </div>
+            {% endif%}
+        </div>
+    </div>
+
+
+</div>
+{%endblock%}

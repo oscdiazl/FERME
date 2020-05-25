@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferreteria Ferme</title>
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+    crossorigin="anonymous">
+
+    {% load static %}
+    <link rel="stylesheet" href="{%  static 'core/css/index.css' %}">
+
+    <link rel="stylesheet" href="{%  static 'core/css/glide.core.min.css' %}">
+    <link rel="stylesheet" href="{%  static 'core/css/glide.theme.min.css' %}">
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+
+    {%block css%}
+    {%endblock%}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="/"><img src="{%  static 'core/img/ferme2.jpg' %}" class="img-responsive logo-img" alt="Logo del sitio web"></a>
+          <p class="element"></p>
+          {% if user.is_authenticated %}
+          <a class="titulo-nav" href="{% url 'logout' %}">Cerrar sesión</a> 
+          {% else %}
+          <a class="titulo-nav" href="{% url 'login' %}">Iniciar sesión</a>
+          {% endif %}
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'productos' %}">Productos</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'sobre_nosotros'%}">Sobre Nosotros</a>
+              </li>
+
+              {% if perms.core.delete_empleado %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'listado_empleados' %}">Listado Empleados</a>
+              </li>
+              {% endif %}
+
+              {% if perms.core.delete_proveedor %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'listado_proveedor' %}">Listado Proveedor</a>
+                </li>
+              {% endif %}
+
+              {% if perms.core.delete_ordencompra %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'listado_orden_compra' %}">Listado Ordenes</a>
+              </li>
+              {% endif %}
+
+              {% if perms.core.delete_producto %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'listado_productos' %}">Listado Productos</a>
+              </li>
+              {% endif %}
+
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'listado_factura' %}">Factura</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="#contact"><i class="fas fa-shopping-cart "></i></a>
+              </li>
+
+              {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'edit_profile'%}">Bienvenido: {{user.username }}</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'change_password' %}"> Cambiar Contrasena </a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'registro_usuario' %}"> Registrarse </a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      {% block contenido %}
+
+      {%endblock%}
+
+        <footer class="container-fluid bg-light mt-5">
+          <div class="row text-center footer-list py-5">
+            <div class="col-lg-3">
+              <ul>
+                <li><h6>Servicios</h6></li>
+                <li>Como Comprar</li>
+                <li>Despacho</li>
+                <li>Cuenta</li>
+              </ul>
+            </div>
+
+            <div class="col-lg-3">
+              <ul>
+                <li><h6>Centro de Ayuda</h6></li>
+                <li>Ayuda</li>
+                <li>Terminos y Condiciones</li>
+                <li>Preguntas Frecuentes</li>
+              </ul>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="row">
+                <div class="col-lg-6">
+                  <h2>Contactanos</h2>
+                  <h3>700 988 064</h3>
+                </div>
+
+                <div class="col-lg-6">
+                  <h4>Siguenos en Nuestras Redes</h4>
+                  <div class="row">
+                    <div class="col-lg-3">
+                      <i class="fab fa-facebook"></i>
+                    </div>
+
+                    <div class="col-lg-3">
+                      <i class="fab fa-twitter"></i>
+                    </div>
+
+                    <div class="col-lg-3">
+                      <i class="fab fa-instagram"></i>
+                    </div>
+
+                    <div class="col-lg-3">
+                      <i class="fab fa-pinterest"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+
+        <script src="node_modules/@glidejs/glide/dist/glide.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
+
+      {%block js%}
+              <script>
+        const config1 = {
+          autoplay:2000,
+          type:'carousel', 
+          perView: 1
+        }
+        new Glide('.glide', config1).mount()
+
+        const config2 = {
+          autoplay:1500,
+          type:'carousel', 
+          perView: 4
+        }
+        new Glide('.glide2', config2).mount()
+
+        var options = {
+          strings: ["", ""],
+          typeSpeed: 30,
+		      typeSpeed: 30,
+		      startDelay: 1000,
+		      backSpeed: 20,
+		      backDelay: 500,
+		      loop: true,
+          };
+
+        var typed = new Typed('.element', options);
+        
+      </script>
+      {%endblock%}
+
+      
+    
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
+

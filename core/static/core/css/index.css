@@ -1,0 +1,96 @@
+html,body{
+    background-color: #fff;
+    height:100%;
+    font-family: 'PT Sans', sans-serif;
+}
+
+.logo-img{
+    width:90px;
+    height:100px;
+}
+
+.titulo-nav{
+    position: absolute;
+    top:95px;
+    color:grey;
+}
+
+.carrusel{
+    margin-top:200px;
+}
+
+.carrusel-home{
+    margin-top:130px;
+}
+
+
+.container-car{
+    height:100vh;
+    width:100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    padding:15px;
+}
+
+h1{
+    margin:10px 0px;
+    font-family: 'PT Sans', sans-serif;
+}
+
+.boton-carrito:before
+{
+	content:'';
+	position: absolute;
+	top:0;
+	left:0;
+	width:0px;
+	height:100%;
+	background:#cec527;
+    transition:0.5s ease-in-out;
+    z-index:-1;
+}
+
+.boton-carrito{
+	position: relative;
+	text-decoration: none;
+	font-size: 18px;
+	padding:10px 10px;
+    color:#333;
+    transition:0.5s ease-in-out;
+    z-index: 1;
+}
+
+a:link{
+    text-decoration: none;
+}
+
+.boton-carrito:hover:before
+{
+	width:85px;
+}
+
+.texto-marcas{
+    font-size: 16px;
+}
+
+
+.footer-list > div > ul > li{
+    list-style: none;
+    font-size: 15px;
+}
+
+.footer-list > div > ul > li > h6{
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#titulo-listado{
+    margin-top: 300px;
+}
+
+
+.paginate_button page-item active{
+    background-color:cyan;
+}

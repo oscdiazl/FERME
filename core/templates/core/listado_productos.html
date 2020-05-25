@@ -1,0 +1,148 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% load crispy_forms_tags %}
+
+{%block css%}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" >
+{%endblock%}
+
+
+{% block contenido%}
+<div class="container mt-5 pt-5">
+
+    <div class="row pt-5 mt-5">
+
+        <div class="col-lg-6 text-center justify-content-center align-self-center">
+            <img src="" alt="" class="Responsive image image-producto-form">
+            <h2 class=" h-100 py-4">Agregar Producto</h2>
+        </div>
+
+        <div class="col-lg-6">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form | crispy}}
+
+                <label for="cboProveedor"> Proveedor </label>
+
+                <select class="form-control" name="cboProveedor" id="cboProveedor">
+                    {% for p in proveedores%}
+                    <option 
+                    value="{{p.id_proveedor}}">{{p.nombre_proveedor}} </option>
+                    {%endfor%}
+                </select>
+
+                  <input class=" mt-3 btn btn-info"type="reset" value="Limpiar Datos">
+                  <input class="mt-3 btn btn-success" type="submit" value="Guardar Producto">
+
+
+            </form>
+
+            {% if mensaje %}
+            
+            <div class="alert alert-success my-3" role="alert">
+                
+                {{mensaje}}
+            </div>
+            {% endif%}
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <hr>
+    <h5 class="my-2 py-2">Listado Productos</h5>
+    <hr>
+</div>
+
+<div>
+    <div class="container mb-5 pb-5">
+    <table id="tabla_productos" class="table table-hover">
+        <thead>
+          <tr class="bg-info">
+            <th scope="col">SKU Producto</th>
+            <th scope="col">Fecha Vencimiento</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Precio Compra</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+            {%for p in productos%}
+            <tr>
+                <td>{{p.id_producto}}</td>
+                <td>{{p.fecha_vencimiento}}</td>
+                <td>{{p.nombre}}</td>
+                <td>{{p.stock}}</td>
+                <td>{{p.precio}}</td>
+                <td>{{p.valor_producto_compra}}</td>
+                <td>
+                    <a href="{% url 'modificar_producto' p.id_producto%}"><i class="fas fa-edit text-dark"></i></a>
+                    <span class="mx-3"><a href="#" onclick=""><i class="fas fa-trash-alt text-dark"></i></a></span>
+                </td>
+                </td>
+            </tr>
+        {%endfor%}
+        </tbody>
+      </table>
+    </div>
+</div>
+{%endblock%}
+
+{% block js%}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="{% static 'core/js/confirmacion.js' %}"></script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>  
+
+
+<script>
+$(document).ready(function(){
+
+    jQuery('#id_fecha_vencimiento').datetimepicker({
+          format: 'd/m/yy',
+          timepicker:false
+    });
+
+    $('#tabla_productos').DataTable({
+    "pageLength": 5,
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left mx-3'></span>",
+          "sLast": "<span class='fa fa-angle-double-right mx-3'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
+  });
+});
+</script>
+
+{%endblock%}

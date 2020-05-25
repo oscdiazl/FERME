@@ -1,0 +1,104 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% block contenido%}
+
+<div class="container mt-5 pt-5">
+    <h3 class="my-5 py-5 text-center">Sobre Nosotros</h3>
+
+    <div class="row">
+        <div class="col-lg-6 imagen-about">
+            <div class="glide">
+                <div class="glide__track" data-glide-el="track">
+                  <ul class="glide__slides">
+                    <li class="glide__slide"><img src="{%  static 'core/img/fermeabout.jpg' %}" alt=""></li>
+                    <li class="glide__slide"><img src="{%  static 'core/img/fermeabout2.jpg' %}" alt=""></li>
+                    <li class="glide__slide"><img src="{%  static 'core/img/fermeabout3.jpg' %}" alt=""></li>
+                    <li class="glide__slide"><img src="{%  static 'core/img/fermeabout4.jpg' %}" alt=""></li>
+                  </ul>
+                </div>
+              </div>
+        </div>
+
+        <div class="col-lg-6">
+            <h3> <u>Historia</u> </h3>
+            <small>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure suscipit earum laborum esse in nulla aspernatur recusandae optio? Autem expedita, amet dolor beatae obcaecati deserunt voluptatum? Dolore aspernatur corrupti ipsam?</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni labore animi vero quidem, quis repellat id dolor harum. Accusantium minus dolore aliquid vitae, rem qui ducimus illum laboriosam repellat numquam.</p>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quam quia, quidem nihil ratione inventore libero cum quas aliquam corrupti ipsa quae doloribus maiores doloremque facilis fuga officia. Iure, aut nihil?</p>
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sint incidunt laborum saepe repellat, ex alias voluptatibus ratione provident corrupti cum iusto sunt aliquam? Voluptatibus veniam minima saepe quam quisquam ullam.</p>
+            </small>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5 py-5">
+    <div class="row">
+        <div class="col-lg-6 align-self-center">
+            <h3><u>Ubicacion</u> </h3>
+
+            <small>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Temporibus facere nesciunt neque delectus obcaecati, ut perferendis recusandae, accusantium quasi sapiente repellendus et aspernatur porro modi, dolorem eum. Mollitia, assumenda ad?
+            </small>
+        </div>
+
+        <div class="col-lg-6">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7903.689918884731!2d-70.58087211417224!3d-33.602910582373376!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662d703d2509e8d%3A0x32f71d30ef59a2fd!2sAv.%20Concha%20Y%20Toro%201149%2C%20Puente%20Alto%2C%20Regi%C3%B3n%20Metropolitana!5e0!3m2!1sen!2scl!4v1588909542930!5m2!1sen!2scl" width="500" height="400" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .glide__slides {
+        transform: translate3d(0,0,0)!important;
+        width: 100vw!important;
+        height: 350px;
+    }
+    .glide__slide {
+    opacity: 0;
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity .4s ease;
+    height: 350px;
+    }
+
+    .glide__slide.glide__slide--active {
+    opacity: 1;
+    z-index: 1;
+    }
+
+    .imagen-about img{
+        width:500px;
+        height:350px;
+    }
+</style>
+
+{%endblock%}
+
+{%block js%}
+<script>
+  const config1 = {
+    autoplay:2500,
+    type:'carousel', 
+    perView: 1
+  }
+  new Glide('.glide', config1).mount()
+
+  var options = {
+    strings: ["Ferreteria FERME", "Agradece su Preferencia"],
+    typeSpeed: 30,
+        typeSpeed: 30,
+        startDelay: 1000,
+        backSpeed: 20,
+        backDelay: 500,
+        loop: true,
+    };
+
+  var typed = new Typed('.element', options);
+  
+</script>
+{%endblock%}

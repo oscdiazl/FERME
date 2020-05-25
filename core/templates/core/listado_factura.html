@@ -1,0 +1,366 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% load crispy_forms_tags %}
+
+
+{%block css%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" >
+{%endblock%}
+
+{% block contenido%}
+    <div class="container">
+        <div class="row mt-5 pt-5">
+            <div class="col-lg-6 mt-5">
+                <h3 class="mt-5 mb-5">Agregar Factura</h3>
+                <form method="POST">
+
+                    <label for="cboEmpleado">Responsable</label>
+                    <select class="form-control" name="cboEmpleado" id="cboEmpleado">
+                      {% for e in empleados%}
+                      <option 
+                      {% if e.rut_empleado == orden.EMPLEADO_RUT_EMPLEADO%}
+                      {{'selected'}}
+                      {%endif%}
+                      value="{{e.rut_empleado}}"  id="cboEmpleado">{{e.nombres}}</option>
+                      {%endfor%}
+                    </select>
+
+                    
+                    <div>
+                        <hr>
+                        <h5>Clientes</h5>
+                        <hr>
+
+                        <div class="form-group">
+                            <label for="id_rut_cliente text-left">Rut Cliente</label>
+                            <input required type="text" class="form-control" name="id_rut_cliente" id="id_rut_cliente">
+                        </div>
+
+
+                        <table id="listado_clientes" class="table table-hover" style="width:100%">
+
+                            <thead>
+                                <tr>
+                                    <th>Rut Cliente</th>
+                                    <th>Nombre</th>
+                                    <th>Rut Empresa</th>
+                                    <th>Giro</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for c in clientes%}
+
+                                <tr>
+                                    <td>{{c.rut_cliente}}</td>
+                                    <td>{{c.nombres}}</td>
+                                    <td>{{c.rut_empresa}}</td>
+                                    <td>{{c.giro}}</td>
+                                    <td>
+                                        <a onclick="selectCliente({{c.rut_cliente}},'{{c.giro}}')"><i class="fas fa-plus-circle"></i></a>
+                                    </td>
+                                </tr>
+
+                                {%endfor%}
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <div class="mt-5">
+                        {% csrf_token %}
+                        {{form | crispy}}
+
+                    </div>
+            </div>
+
+            <div class="col-lg-6 mt-5 pt-5">
+                <div class="pt-4">
+                    <hr class="mt-5">
+                    <h5>Productos</h5>
+                    <hr>
+                </div>
+                <table id="listado_productos" class="table table-hover" style="width:100%">
+                    <thead class="">
+                        <tr>
+                            <th>SKU</th>
+                            <th>Nombre</th>
+                            <th>Proveedor</th>
+                            <th>Valor Venta</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for p in productos%}
+                        <tr>
+                            <td>{{p.ID_PRODUCTO}}</td>
+                            <td>{{p.NOMBRE}}</td>
+                            <td>{{p.NOMBRE_PROVEEDOR}}</td>
+                            <td>{{p.PRECIO}}</td>
+                            <td>
+                                
+                                <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}')"><i class="fas fa-plus-circle"></i></a>
+                                
+                            </td>
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Nombre</th>
+                            <th>Proveedor</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+
+                <div class="form-group">
+                    <label for="id_producto">SKU Producto</label>
+                    <input required type="text" readonly class="form-control" name="id_producto" id="id_producto">
+                </div>
+    
+                <div class="form-group">
+                    <label for="nombre_producto text-left">Nombre Producto</label>
+                    <input required type="text" readonly class="form-control" name="nombre_producto" id="nombre_producto">                    
+                </div>
+    
+                <div class="form-group">
+                    <label for="id_cantidad text-left">Cantidad</label>
+                    <input required type="text" class="form-control" name="id_cantidad" id="id_cantidad">
+                </div>
+    
+                <div class="form-group">
+                    <label for="id_precio_detalle text-left">Precio</label>
+                    <input required type="text" class="form-control" name="id_precio_detalle" id="id_precio_detalle">
+                </div>
+    
+                <div class="form-group">
+                    <label for="id_precio text-left">Total</label>
+                    <input required type="text" class="form-control" name="id_precio" id="id_precio">
+                </div>
+            </div>
+
+            <input type="submit" class="btn btn-success" name="btnGuardar" value="Guardar Factura"/>
+        </div>
+
+        </form>
+
+        
+        {% if mensaje %}
+            
+        <div class="alert alert-success" role="alert">
+            
+            {{mensaje}}
+        </div>
+        {% endif%}
+    </div>
+
+    <div class="container mt-3">
+        <hr>
+        <h5 class="my-3">Listado de Facturas</h5>
+        <hr>
+    </div>
+
+    <div>
+        <div class="container">
+            <table id="listado_facturas" class="table table-hover" style="width:100%">
+                <thead class="bg-warning">
+                    <tr>
+                        <th>Factura Numero</th>
+                        <th>Giro</th>
+                        <th>Sub Total</th>
+                        <th>IVA</th>
+                        <th>Total</th>
+                        <th>Estado Venta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for f in facturas%}
+                    <tr>
+                        <td>{{f.id_factura}}</td>
+                        <td>{{f.giro}}</td>
+                        <td>{{f.sub_total}}</td>
+                        <td>{{f.iva}}</td>
+                        <td>{{f.total}}</td>
+                        <td>{{f.estado_venta_id_estado_venta}}</td>
+                        <td>
+                            <a href="{% url 'modificar_factura' f.id_factura %}"><i class="fas fa-edit text-dark"></i></a>
+                        </td>
+                    </tr>
+                {%endfor%}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Factura Numero</th>
+                        <th>Giro</th>
+                        <th>Sub Total</th>
+                        <th>IVA</th>
+                        <th>Total</th>
+                        <th>Estado Venta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{%endblock%}
+
+{%block js%}
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>  
+<script>
+    $(document).ready(function(){
+
+        $("#id_neto").val(0);
+        $("#id_sub_total").val(0);
+        $("#id_total").val(0);
+        $("#id_iva").val(0);
+
+        $('#id_neto').attr('readonly', true);
+        $('#id_total').attr('readonly', true);
+        $('#id_precio').attr('readonly', true);
+        $('#id_iva').attr('readonly', true);
+        $('#id_sub_total').attr('readonly', true);
+        $('#id_precio_detalle').attr('readonly', true);
+
+        $('#id_rut_cliente').attr('readonly', true);
+        $('#id_giro').attr('readonly', true);
+
+
+
+    $('#listado_productos').DataTable({
+    "pageLength": 2,
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left mx-3'></span>",
+          "sLast": "<span class='fa fa-angle-double-right mx-3'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
+  });
+
+
+  $('#listado_clientes').DataTable({
+    "pageLength": 2,
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left mx-3'></span>",
+          "sLast": "<span class='fa fa-angle-double-right mx-3'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
+  });
+
+
+  $('#listado_facturas').DataTable({
+    "pageLength": 5,
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left mx-3'></span>",
+          "sLast": "<span class='fa fa-angle-double-right mx-3'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
+  });
+    }); 
+
+
+    function selectProducto(id, nombre, valor){
+            console.log(id, nombre, valor);
+
+            $("#id_producto").val(id);
+            $("#nombre_producto").val(nombre);
+
+            $("#id_precio_detalle").val(valor);
+    }
+
+
+    $("#id_cantidad, #id_precio_detalle").change(function(){
+
+        let cantidad, precio, total; 
+        
+        cantidad = $("#id_cantidad").val(); 
+        cantidad = cantidad === "" ? 0 : +cantidad;
+        cantidad = cantidad<0 ? 0 : cantidad;
+
+        precio = $("#id_precio_detalle").val()
+        precio = precio === "" ? 0 : +precio;
+        precio = precio<0 ? 0 : precio;
+
+        total = precio * cantidad; 
+
+        $("#id_precio").val(total);
+        $("#id_total").val(total);
+
+        console.log(total);
+    })
+
+
+    function selectCliente(rut, giro){
+        $("#id_rut_cliente").val(rut)
+        $("#id_giro").val(giro)
+    }
+
+</script>
+{%endblock%}

@@ -1,0 +1,86 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% block contenido%}
+
+<div class="container-fluid carrusel-home">
+    <div class="glide">
+      <div class="glide__track" data-glide-el="track">
+        <ul class="glide__slides">
+          <li class="glide__slide"><img src="{%  static 'core/img/fer4.jpeg' %}" alt=""></li>
+          <li class="glide__slide"><img src="{%  static 'core/img/fer-06.jpeg' %}" alt=""></li>
+          <li class="glide__slide"><img src="{%  static 'core/img/fer3.jpeg' %}" alt=""></li>
+        </ul>
+      </div>
+
+      <div class="glide">
+      
+        <div class="glide__bullets" data-glide-el="controls[nav]">
+          <button class="glide__bullet" data-glide-dir="=0"></button>
+          <button class="glide__bullet" data-glide-dir="=1"></button>
+          <button class="glide__bullet" data-glide-dir="=2"></button>
+        </div>
+        
+
+      </div>
+    </div>
+    </div>
+
+    <div class="container-fluid py-5">
+
+      <h3 class="py-5">Productos Mas Vendidos</h3>
+
+      <div class="row p-3"> 
+        <div class="col-lg-3 p-1">
+          <img src="{%  static 'core/img/producto1.jpeg' %}" alt="..." class="img-responsive w-100">
+          <p>Sierra circular 7¼'' 1200W + maleta HS7600K Makita</p>
+
+          <p>Precio: 69.990</p>
+          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
+        </div>
+
+        <div class="col-lg-3 p-1">
+          <img src="{%  static 'core/img/producto2.jpeg' %}" alt="..." class="img-responsive w-100">
+          <p>Taladro inalámbrico 12V 10mm CD121K100 + 100 accesorios Black+Decker</p>
+
+          <p>Precio: 37.990</p>
+          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
+        </div>
+
+        <div class="col-lg-3  p-1">
+          <img src="{%  static 'core/img/producto3.jpeg' %}" alt="..." class="img-responsive w-100">
+          <p>Gancho mini clear 6 unidades Command Black Decker</p>
+          
+
+          <p>Precio: 3.990</p>
+          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
+        </div>
+
+        <div class="col-lg-3 p-1">
+          <img src="{%  static 'core/img/producto4.jpeg' %}" alt="..." class="img-responsive w-100">
+          <p>Adhesivo PVC 240 cc humedad con aplicador Vinilit</p>
+
+          <p>Precio: 2.990</p>
+          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
+        </div>
+
+      </div>
+
+      
+    </div>
+
+    <div class="container-fluid py-4">
+      <h3 class="pt-5">Marcas</h3>
+      <p class="text-center py-5 container texto-marcas">En Ferme somos una empresa familiar dedicada a la ayuda de nuestros clientes en sus necesidades respecto a la construccion de viviendas, es por esto que nos asociamos con las mejores marcas del mercado.</p>
+      <div class="glide2 my-5">
+        <div class="glide__track" data-glide-el="track">
+          <ul class="glide__slides">
+            <li class="glide__slide"><img src="{%  static 'core/img/marca1.jpeg' %}" alt=""></li>
+            <li class="glide__slide"><img src="{%  static 'core/img/marca2.jpeg' %}" alt=""></li>
+            <li class="glide__slide"><img src="{%  static 'core/img/marca3.jpeg' %}" alt=""></li>
+          </ul>
+        </div>
+    </div>
+    </div>
+{%endblock%}

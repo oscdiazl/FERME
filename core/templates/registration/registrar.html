@@ -1,0 +1,217 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% load crispy_forms_tags %}
+
+{% block contenido%}
+
+<style>
+</style>
+
+<div class="container mt-5 pt-5">
+
+        
+
+    <div class="row mt-5 pt-5">
+
+        <div class="mt-3">
+            <h3>Registrar Cliente</h3>
+        </div>
+
+        <div class="col-lg-12 pt-5 mt-5">
+
+            <form class="form-group" action="" method="POST">
+                {% csrf_token %}
+
+                <hr>
+                <h5>Datos Usuario</h5>
+                <hr>
+    
+                <div class=" form-user">
+                    {{form | crispy}}
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <hr>
+                            <h5>Datos Cliente</h5>
+                        <hr>
+
+                        <div class="form-group">
+                            <label for="txtRutCliente">Rut Cliente</label>
+                            <input type="text" class="form-control" name="txtRutCliente" id="txtRutCliente" placeholder="Rut Cliente">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtNombres">Nombre Cliente</label>
+                            <input type="text" class="form-control" name="txtNombres" id="txtNombres" placeholder="Nombre Cliente">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtaPaterno">Apellido Paterno</label>
+                            <input type="text" class="form-control" name="txtaPaterno" id="txtaPaterno" placeholder="Apellido Paterno">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtaMaterno">Apellido Materno</label>
+                            <input type="text" class="form-control" name="txtaMaterno" id="txtaMaterno" placeholder="Apellido Materno">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtTelefono">Telefono</label>
+                            <input type="number" class="form-control" name="txtTelefono" id="txtTelefono" placeholder="Telefono">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtTelefono2">Telefono Opcional</label>
+                            <input type="number" class="form-control" name="txtTelefono2" id="txtTelefono2" placeholder="Telefono Opcional">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtCorreo">Correo</label>
+                            <input type="email" class="form-control" name="txtCorreo" id="txtCorreo" placeholder="Correo">
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-4">
+
+                        <hr>
+                            <h5>Datos Empresa</h5>
+                        <hr>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="esEmpresa">
+                            <label class="form-check-label" for="esEmpresa">
+                              Es Empresa
+                            </label>
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="txtRutEmpresa">Rut Empresa</label>
+                            <input type="text" class="form-control" name="txtRutEmpresa" id="txtRutEmpresa" placeholder="Rut Empresa">
+                        </div>
+
+                        <div class="form-group mt-3">
+                            <label for="txtRazonSocial">Razon Social</label>
+                            <input type="text" class="form-control" name="txtRazonSocial" id="txtRazonSocial" placeholder="Razon Social">
+                        </div>
+
+                        
+                        <div class="form-group my-3">
+                            <label for="txtGiro">Giro</label>
+                            <input type="text" class="form-control" name="txtGiro" id="txtGiro" placeholder="Giro">
+                        </div>
+
+
+                        
+                    </div>
+
+                    <div class="col-lg-4">
+                        <hr>
+                            <h5>Datos Direccion</h5>
+                        <hr>
+                        {{formDir | crispy}}
+                    </div>
+                </div>
+
+
+
+    
+                <input class="btn btn-info"type="reset" value="Limpiar Datos">
+                <input class="btn btn-success" type="submit" value="Registrar Cliente">
+            </form>
+
+            {% if mensaje %}
+            
+            <div class="alert alert-success" role="alert">
+                
+                {{mensaje}}
+            </div>
+            {% endif%}
+        </div>
+    </div>
+
+
+</div>
+
+
+{%endblock%}
+
+
+
+{% block js%}
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>  
+
+
+
+<script>
+
+  // Call the dataTables jQuery plugin
+  $(document).ready(function() {
+
+    $('#txtRutEmpresa').attr('readonly', true);
+    $('#txtRazonSocial').attr('readonly', true);
+    $('#txtGiro').attr('readonly', true);
+
+    $('#txtNombres').attr('readonly', true);
+    $('#txtaPaterno').attr('readonly', true);
+    $('#txtaMaterno').attr('readonly', true);
+    $('#txtCorreo').attr('readonly', true);
+
+
+    $("#id_first_name").keyup(function(){
+        nombre = ($("#id_first_name").val())
+        $('#txtNombres').val(nombre);
+    });
+
+    $("#id_last_name").keyup(function(){
+        nombre = ($("#id_last_name").val())
+
+        primer_apellido = nombre.split(" ")[0]
+        segundo_apellido = nombre.split(" ")[1]
+        
+        $('#txtaPaterno').val(primer_apellido);
+        $("#txtaMaterno").val(segundo_apellido);
+    });
+
+    $("#id_email").keyup(function(){
+        nombre = ($("#id_email").val())
+        $('#txtCorreo').val(nombre);
+    });
+
+    
+
+
+
+
+    $('#esEmpresa').click(function() {
+        if ($(this).is(':checked')) {
+            $('#txtRutEmpresa').attr('readonly', false);
+            $('#txtRazonSocial').attr('readonly', false);
+            $('#txtGiro').attr('readonly', false);
+    } else {
+
+
+            $('#txtRutEmpresa').attr('readonly', true);
+            $('#txtRazonSocial').attr('readonly', true);
+            $('#txtGiro').attr('readonly', true);
+
+            $('#txtRutEmpresa').val('');
+            $('#txtRazonSocial').val('');
+            $('#txtGiro').val('');
+    }
+});
+
+    
+  });
+      //      jQuery.datetimepicker.setLocale('es');
+
+
+    </script>
+{%endblock%}

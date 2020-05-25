@@ -1,0 +1,356 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% load crispy_forms_tags %}
+{%block css%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />  
+{%endblock%}
+
+{% block contenido%}
+
+
+<div class="container">
+    <div class="py-5 my-5">
+        <h2 class="mt-5 pt-5">Detalle Orden De Compra</h2>
+    </div>
+
+    <div class="row"> 
+        <div class="col-lg-5">
+            <form action="" method="POST">
+
+                {% csrf_token %}
+                <label for="cboProveedor">Proveedor</label>
+                <select class="form-control" name="cboProveedor" id="cboProveedor">
+                    {% for p in proveedores%}
+                    <option 
+                    {% if p.id_proveedor == orden.PROVEEDOR_ID_PROVEEDOR%}
+                    {{'selected'}}
+                    {%endif%}
+            
+                    value="{{p.id_proveedor}}">{{p.nombre_proveedor}} </option>
+                    {%endfor%}
+                  </select>
+
+
+                  <div class="form-group">
+                    <label for="txtId">Orden Numero</label>
+                    <input type="text" class="form-control" readonly name="txtId" id="txtId" value="{{orden.ID_ORDEN_COMPRA}}">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="txtFechaSolicitud">Fecha Solicitud</label>
+                    <input type="text" class="form-control" name="txtFechaSolicitud" id="txtFechaSolicitud" value="{{orden.FECHA_SOLICITUD}}">
+                  </div>
+
+                  <label for="cboEmpleado">Responsable</label>
+                  <select class="form-control" name="cboEmpleado" id="cboEmpleado">
+                    {% for e in empleados%}
+                    <option 
+                    {% if e.rut_empleado == orden.EMPLEADO_RUT_EMPLEADO%}
+                    {{'selected'}}
+                    {%endif%}
+                    value="{{e.rut_empleado}}"  id="cboEmpleado">{{e.nombres}}</option>
+                    {%endfor%}
+                    </select>
+
+                    <label for="cboEstado">Estado Orden</label>
+                    <select required class="form-control" name="cboEstado" id="cboEstado">
+                        {% for eo in estadosOrden%}
+                        <option 
+                        {% if eo.id_estado == orden.ESTADO_ORDEN_ID_ESTADO%}
+                        {{'selected'}}
+                        {%endif%}
+                        value="{{eo.id_estado}}" id="cboEstado">{{eo.descripcion}}</option>
+                    {%endfor%}
+                      </select>
+
+                    
+                      <div class="form-group">
+                        <label for="txtNeto">Neto</label>
+                        <input type="text" class="form-control" readonly name="txtNeto" id="txtNeto" value="{{orden.NETO}}">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="txtIva">Iva</label>
+                        <input type="text" class="form-control" readonly name="txtIva" id="txtIva" value="{{orden.IVA}}">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="txtTotal">Total</label>
+                        <input type="text" class="form-control" readonly name="txtTotal" id="txtTotal" value="{{orden.TOTAL}}">
+                      </div>
+
+                    </div>
+
+
+
+
+                    <div class="col-lg-6">
+                            <table id="example" class="table table-hover" style="width:100%">
+                                <thead class="">
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Nombre</th>
+                                        <th>Proveedor</th>
+                                        <th>Valor Compra</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for p in productos%}
+                                    <tr>
+                                        <td>{{p.ID_PRODUCTO}}</td>
+                                        <td>{{p.NOMBRE}}</td>
+                                        <td>{{p.NOMBRE_PROVEEDOR}}</td>
+                                        <td>{{p.VALOR_PRODUCTO_COMPRA}}</td>
+                                        <td>
+                                            <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.VALOR_PRODUCTO_COMPRA}}')"><i class="fas fa-plus-circle"></i></a>
+                                            
+                                        </td>
+                                    </tr>
+                                {%endfor%}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Nombre</th>
+                                        <th>Proveedor</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        
+
+                        <div class="form-group">
+                            <label for="id_producto">SKU Producto</label>
+                            <input required type="text" readonly class="form-control" name="id_producto" id="id_producto">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombre_producto text-left">Nombre Producto</label>
+                            <input required type="text" readonly class="form-control" name="nombre_producto" id="nombre_producto">                    
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_cantidad text-left">Cantidad</label>
+                            <input required type="text" class="form-control" name="id_cantidad" id="id_cantidad">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_precio_detalle text-left">Precio</label>
+                            <input required type="text" class="form-control" name="id_precio_detalle" id="id_precio_detalle">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_precio text-left">Total</label>
+                            <input required type="text" class="form-control" name="id_precio" id="id_precio">
+                        </div>
+
+                        <input type="submit" class="btn btn-success" name="btnGuardar" value="Actualizar Orden"/>
+
+
+                        
+                    </div>
+
+
+
+
+
+            </form>
+    </div>
+
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <hr>
+            <h5>Listado Productos Asociados a la Orden De Compra</h5>
+            <hr>
+            <table id="example1" class="table table-hover" style="width:100%">
+                <thead class="">
+                    <tr>
+                        <th>id_orden</th>
+                        <th>SKU Producto</th>
+                        <th>Cantidad</th>
+                        <th>Valor Producto</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if productos_orden %}
+                    {%for poc in productos_orden%}
+                    <tr>
+                        <td>{{poc.ID_ORDEN}}</td>
+                        <td>{{poc.SKU_PRODUCTO}}</td>
+                        <td>{{poc.CANTIDAD}}</td>
+                        <td>{{poc.VALOR_PRODUCTO_COMPRA}}</td>
+                        <td>{{poc.TOTAL}}</td>
+
+                        <td>
+                            <span><a href="{% url 'eliminar_producto_oc' poc.ID_ORDEN poc.SKU_PRODUCTO poc.CANTIDAD poc.TOTAL %}" ><i class="fas fa-trash-alt text-dark"></i></a></span>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                    {%endif%}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>id_orden</th>
+                        <th>SKU Producto</th>
+                        <th>Cantidad</th>
+                        <th>Valor Producto</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block js%}
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>  
+
+
+
+<script>
+
+  // Call the dataTables jQuery plugin
+  $(document).ready(function() {
+      //      jQuery.datetimepicker.setLocale('es');
+
+      jQuery('#txtFechaSolicitud').datetimepicker({
+          format: 'd-M-y',
+          timepicker:false
+        });
+
+        $('#id_cantidad').attr('readonly', true);
+        $('#id_precio').attr('readonly', true);
+        $('#id_precio_detalle').attr('readonly', true);
+        
+
+  $('#example').DataTable({
+    "pageLength": 2,
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left mx-3'></span>",
+          "sLast": "<span class='fa fa-angle-double-right mx-3'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
+  });
+
+
+  $('#example1').DataTable({
+    "pageLength": 5,
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left mx-3'></span>",
+          "sLast": "<span class='fa fa-angle-double-right mx-3'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
+  });
+
+  $('#id_cantidad, #id_precio_detalle').change(function(){
+      calcularDetalle();
+  });
+
+  $('#cboProveedor').change(function(){
+      console.log($(this).find('option:selected').text());
+      $("#example").DataTable().search($(this).find('option:selected').text()).draw();
+  });
+
+
+});
+
+
+function selectProducto(id, descripcion, precioCompra){
+
+    console.log(id, descripcion, precioCompra);
+
+    $("#id_cantidad").val(0);
+    $("#id_precio_detalle").val(0);
+    $("#id_precio").val(0);
+    $('#id_precio_detalle').attr('readonly', false);
+    $("#id_producto").val(id);
+    $("#nombre_producto").val(descripcion);
+    $('#id_precio_detalle').val(precioCompra)
+
+    $('#id_cantidad').attr('readonly', false);
+    $('#id_precio').attr('readonly', true);
+    $("#id_cantidad").focus();
+    $("#id_cantidad").select();
+
+
+}
+
+
+function calcularDetalle(){
+    let cantidad, precio, total
+
+    cantidad = $("#id_cantidad").val();
+    cantidad = cantidad === "" ? 0 : +cantidad;
+    cantidad = cantidad<0 ? 0 : cantidad;
+
+    precio = $("#id_precio_detalle").val();
+    precio = precio === "" ? 0 : +precio;
+    precio = precio<0 ? 0 : precio;
+
+    total = cantidad * precio;
+    $("#id_precio").val(total);
+
+    totalActual =  parseInt($("#txtTotal").val())  + total; 
+    $("#txtTotal").val(totalActual);
+
+
+}
+    </script>
+{%endblock%}
