@@ -66,9 +66,17 @@
               </li>
               {% endif %}
 
+              {% if perms.core.delete_factura%}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'listado_factura' %}">Factura</a>
               </li>
+              {% endif%}
+
+              {% if perms.core.delete_boleta%}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'listado_boleta' %}">Boleta</a>
+              </li>
+              {% endif%}
 
               <li class="nav-item">
                 <a class="nav-link" href="#contact"><i class="fas fa-shopping-cart "></i></a>

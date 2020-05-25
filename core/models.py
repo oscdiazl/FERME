@@ -25,6 +25,56 @@ class Boleta(models.Model):
     total = models.BigIntegerField()
     estado_venta_id_estado_venta = models.ForeignKey('EstadoVenta', models.DO_NOTHING, db_column='estado_venta_id_estado_venta')
 
+
+    @classmethod
+    def traerUltimoIdBoleta(self):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute('select max(id_boleta) id_max from boleta')
+        columns = [column[0] for column in cur.description]
+        ultimoId = []
+        for row in cur.fetchall():
+            ultimoId.append(dict(zip(columns, row)))
+        cur.close()
+        conn.close()
+        return ultimoId[0]
+
+    @classmethod
+    def agregarDetalleBoleta(self, id_boleta, id_producto, cantidad):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("insertar_detalle_boleta",[id_boleta,id_producto,cantidad])
+        conn.commit()
+        cur.close()
+        conn.close()
+
+
+    @classmethod
+    def agregarVentaBoleta(self, rut_empleado, id_boleta, fecha_venta):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("insertar_venta_boleta",[rut_empleado, id_boleta, fecha_venta])
+        conn.commit()
+        cur.close()
+        conn.close()
+    
+    @classmethod
+    def traerProductosBoleta(self, id_boleta):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("select a.boleta_id_boleta, b.id_producto, b.nombre, a.cantidad, b.precio, (a.cantidad * b.precio) as total from detalle_boleta a join producto b on a.producto_id_producto = b.id_producto where a.boleta_id_boleta =" + id_boleta)
+        columns = [column[0] for column in cur.description]
+        productosBoleta = []
+        for row in cur.fetchall():
+            productosBoleta.append(dict(zip(columns, row)))
+        cur.close()
+        conn.close()
+        return productosBoleta
+
     class Meta:
         managed = False
         db_table = 'boleta'
@@ -720,6 +770,29 @@ class Venta(models.Model):
         cur.close()
         conn.close()
         return obj
+
+    @classmethod
+    def traerVentaBoleta(self, id):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("select * from venta where boleta_id_boleta =" + id)
+        res=cur.fetchone()
+        column = [row[0] for row in cur.description]
+        obj = {column[0] :res[0], column[1]:res[1], column[2]:res[2],column[3]:res[3], column[4]:res[4], column[5]:res[5],column[6]:res[6]}
+        cur.close()
+        conn.close()
+        return obj
+
+    @classmethod
+    def agregarDetalleVenta(self, id_venta, id_producto):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("insertar_detalle_venta",[id_venta,id_producto])
+        conn.commit()
+        cur.close()
+        conn.close()
 
     class Meta:
         managed = False

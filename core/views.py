@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm, UserChangeForm
-from .models import Proveedor, Empleado, OrdenCompra, Producto, DetalleOc, EstadoOrden, Producto, Cliente, Direccion, EstadoCli, UsuarioCliente, Factura, Venta
-from .forms import ProveedorForm, EmpleadoForm,OrdenDeCompraForm, ProductoForm, CustomUserForm, DireccionForm, ClienteForm,UserEditForm, FacturaForm
+from .models import Proveedor, Empleado, OrdenCompra, Producto, DetalleOc, EstadoOrden, Producto, Cliente, Direccion, EstadoCli, UsuarioCliente, Factura, Venta, Boleta, Venta
+from .forms import ProveedorForm, EmpleadoForm,OrdenDeCompraForm, ProductoForm, CustomUserForm, DireccionForm, ClienteForm,UserEditForm, FacturaForm, BoletaForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, authenticate
 import bcrypt
@@ -181,7 +181,6 @@ def modificar_empleado(request, id):
             formulario.save()
             data ["mensaje"] = "Modificado Correctamente"
             data['form']  = formulario
-            return redirect('listado_empleados')
             
 
 
@@ -478,3 +477,74 @@ def eliminar_producto_oc(request, id, sku, cantidad, total):
         print(e)
 
     return redirect('modificar_orden', id)
+
+
+def listado_boleta(request):
+
+    productos = Producto.productos_proveedor()
+    boletas = Boleta.objects.all()
+
+    empleados = Empleado.objects.all()
+    data = {
+        'form' : BoletaForm(),
+        'productos' : productos,
+        'boletas' : boletas, 
+        'empleados' : empleados
+    }
+
+    if request.method == 'POST':
+        formulario = BoletaForm(request.POST)
+        if formulario.is_valid():
+            formulario.save()
+
+            ultima_boleta = Boleta.traerUltimoIdBoleta()
+            print(ultima_boleta['ID_MAX'])
+            id_producto = request.POST.get('id_producto')
+            cantidad = request.POST.get('id_cantidad')
+            fecha_venta = date.today()
+            rut_empleado = request.POST.get('cboEmpleado')
+            ultima_venta = Venta.traerUltimoIdVenta()
+
+            Boleta.agregarDetalleBoleta(ultima_boleta['ID_MAX'],id_producto,cantidad)
+            Boleta.agregarVentaBoleta(rut_empleado,ultima_boleta['ID_MAX'],fecha_venta)
+            
+            Venta.agregarDetalleVenta(ultima_venta['ID_MAX'],id_producto)
+
+            data['mensaje'] = "Guardado Correctamente"
+        else:
+            data['mensaje'] = "No se pudo guardar"
+
+
+    return render(request, 'core/listado_boleta.html', data)
+
+
+
+def modificar_boleta(request, id):
+
+    boleta = Boleta.objects.get(id_boleta=id)
+    productos = Producto.productos_proveedor()
+    productosBoleta = Boleta.traerProductosBoleta(id)
+    venta = Venta.traerVentaBoleta(id)
+
+    empleados = Empleado.objects.all()
+
+    data = {
+        'form': BoletaForm(instance=boleta),
+        'productos' : productos,
+        'productos_boleta' : productosBoleta,
+        'empleados': empleados, 
+        'venta' : venta
+    }
+
+    if request.method == 'POST':
+        formulario = BoletaForm(data=request.POST, instance=boleta)
+        if formulario.is_valid():
+            formulario.save()
+            data ["mensaje"] = "Modificado Correctamente"
+            data['form']  = formulario
+        else:
+            data ["mensaje"] = "No se pudo modificar"
+
+
+    return render(request, 'core/modificar_boleta.html', data)
+

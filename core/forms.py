@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Proveedor, Empleado, OrdenCompra, Producto, Direccion, Cliente, Factura
+from .models import Proveedor, Empleado, OrdenCompra, Producto, Direccion, Cliente, Factura, Boleta
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -52,3 +52,8 @@ class FacturaForm(forms.ModelForm):
         fields = [
             'sub_total', 'iva', 'giro', 'total', 'estado_venta_id_estado_venta'
         ]
+
+class BoletaForm(forms.ModelForm):
+    class Meta:
+        model = Boleta
+        fields = ['total', 'estado_venta_id_estado_venta']
