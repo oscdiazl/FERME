@@ -503,11 +503,12 @@ def listado_boleta(request):
             cantidad = request.POST.get('id_cantidad')
             fecha_venta = date.today()
             rut_empleado = request.POST.get('cboEmpleado')
-            ultima_venta = Venta.traerUltimoIdVenta()
 
             Boleta.agregarDetalleBoleta(ultima_boleta['ID_MAX'],id_producto,cantidad)
             Boleta.agregarVentaBoleta(rut_empleado,ultima_boleta['ID_MAX'],fecha_venta)
-            
+        
+            ultima_venta = Venta.traerUltimoIdVenta()
+
             Venta.agregarDetalleVenta(ultima_venta['ID_MAX'],id_producto)
 
             data['mensaje'] = "Guardado Correctamente"
@@ -547,4 +548,15 @@ def modificar_boleta(request, id):
 
 
     return render(request, 'core/modificar_boleta.html', data)
+
+
+def eliminar_producto_boleta(request, id, sku, cantidad, total):
+    id_venta = Boleta.idVentaBoleta(id)
+    try:
+        print(id, sku, cantidad, id_venta)
+        Boleta.eliminarProductoBoleta(id, sku, cantidad, id_venta['ID_VENTA'], total)
+        print("se elimino")
+    except:
+        print("Hubo un error")
+    return redirect('modificar_boleta', id)
 

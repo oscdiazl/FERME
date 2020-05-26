@@ -44,25 +44,25 @@
 
               {% if perms.core.delete_empleado %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'listado_empleados' %}">Listado Empleados</a>
+                <a class="nav-link" href="{% url 'listado_empleados' %}">Empleados</a>
               </li>
               {% endif %}
 
               {% if perms.core.delete_proveedor %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'listado_proveedor' %}">Listado Proveedor</a>
+                  <a class="nav-link" href="{% url 'listado_proveedor' %}">Proveedor</a>
                 </li>
               {% endif %}
 
               {% if perms.core.delete_ordencompra %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'listado_orden_compra' %}">Listado Ordenes</a>
+                <a class="nav-link" href="{% url 'listado_orden_compra' %}"> Ordenes</a>
               </li>
               {% endif %}
 
               {% if perms.core.delete_producto %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'listado_productos' %}">Listado Productos</a>
+                <a class="nav-link" href="{% url 'listado_productos' %}">Producto</a>
               </li>
               {% endif %}
 

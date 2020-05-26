@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, productos, listado_proveedor, listado_empleados, listado_orden_compra, sobre_nosotros, modificar_empleado, eliminar_empleado, modificar_proveedor, eliminar_proveedor, modificar_orden, listado_producto, registro_usuario, modificar_producto, change_password, edit_profile, listado_factura, modificar_factura, eliminar_producto_factura, eliminar_producto_oc, listado_boleta, modificar_boleta
+from .views import home, productos, listado_proveedor, listado_empleados, listado_orden_compra, sobre_nosotros, modificar_empleado, eliminar_empleado, modificar_proveedor, eliminar_proveedor, modificar_orden, listado_producto, registro_usuario, modificar_producto, change_password, edit_profile, listado_factura, modificar_factura, eliminar_producto_factura, eliminar_producto_oc, listado_boleta, modificar_boleta, eliminar_producto_boleta
 
 urlpatterns = [
     path('', home, name="home"),
@@ -29,6 +29,7 @@ urlpatterns = [
     path('eliminar_proveedor/<id>/', eliminar_proveedor, name="eliminar_proveedor"),
     path('eliminar_producto_factura/<id>/<sku>/<cantidad>/<total>/', eliminar_producto_factura, name="eliminar_producto_factura"),
     path('eliminar_producto_oc/<id>/<sku>/<cantidad>/<total>/', eliminar_producto_oc, name="eliminar_producto_oc"),
+    path('eliminar_producto_boleta/<id>/<sku>/<cantidad>/<total>/', eliminar_producto_boleta, name="eliminar_producto_boleta"),
     path('registro/', registro_usuario, name='registro_usuario'),
 
 ]

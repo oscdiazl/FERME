@@ -107,6 +107,63 @@
 {% endif%}
 
 
+
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <hr>
+            <h5>Listado Productos Asociados a la Boleta</h5>
+            <hr>
+            <table id="example1" class="table table-hover" style="width:100%">
+                <thead class="">
+                    <tr>
+                        <th>Numero Boleta</th>
+                        <th>SKU Producto</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if productos_boleta %}
+                    {%for prod in productos_boleta%}
+                    <tr>
+                        <td>{{prod.BOLETA_ID_BOLETA}}</td>
+                        <td>{{prod.ID_PRODUCTO}}</td>
+                        <td>{{prod.NOMBRE}}</td>
+                        <td>{{prod.CANTIDAD}}</td>
+                        <td>{{prod.PRECIO}}</td>
+                        <td>{{prod.TOTAL}}</td>
+                        
+                        <td>
+                            <span><a href="{% url 'eliminar_producto_boleta' prod.BOLETA_ID_BOLETA prod.ID_PRODUCTO prod.CANTIDAD prod.TOTAL %}"  ><i class="fas fa-trash-alt text-dark"></i></a></span>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                    {%endif%}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Numero Factura</th>
+                        <th>SKU Producto</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Total</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+
 {%endblock%}
 
 {%block js%}

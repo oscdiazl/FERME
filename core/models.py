@@ -66,7 +66,7 @@ class Boleta(models.Model):
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
         conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
         cur = conn.cursor()
-        cur.execute("select a.boleta_id_boleta, b.id_producto, b.nombre, a.cantidad, b.precio, (a.cantidad * b.precio) as total from detalle_boleta a join producto b on a.producto_id_producto = b.id_producto where a.boleta_id_boleta =" + id_boleta)
+        cur.execute("select a.boleta_id_boleta, b.id_producto, b.nombre, a.cantidad, b.precio, (a.cantidad * b.precio ) total   from detalle_boleta a join producto b on a.producto_id_producto = b.id_producto where a.boleta_id_boleta =" + id_boleta)
         columns = [column[0] for column in cur.description]
         productosBoleta = []
         for row in cur.fetchall():
@@ -74,6 +74,31 @@ class Boleta(models.Model):
         cur.close()
         conn.close()
         return productosBoleta
+
+    @classmethod
+    def idVentaBoleta(self, id_boleta):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute('select b.id_venta from boleta a join venta b on a.id_boleta = b.boleta_id_boleta where a.id_boleta =' + id_boleta)
+        columns = [column[0] for column in cur.description]
+        idVenta = []
+        for row in cur.fetchall():
+            idVenta.append(dict(zip(columns, row)))
+        cur.close()
+        conn.close()
+        return idVenta[0]
+
+
+    @classmethod
+    def eliminarProductoBoleta(self, id_boleta, id_producto, cantidad, id_venta, total):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("eliminar_producto_boleta",[id_boleta, id_producto, cantidad, id_venta, total])
+        conn.commit()
+        cur.close()
+        conn.close()
 
     class Meta:
         managed = False
