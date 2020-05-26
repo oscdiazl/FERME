@@ -569,6 +569,26 @@ class OrdenCompra(models.Model):
         cur.close()
         conn.close()
 
+    @classmethod
+    def aprobarOrdenCompra(self, id_orden_compra):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("aprobar_orden_compra",[id_orden_compra])
+        conn.commit()
+        cur.close()
+        conn.close()
+
+    @classmethod
+    def rechazarOrdenCompra(self, id_orden_compra):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("rechazar_orden_compra",[id_orden_compra])
+        conn.commit()
+        cur.close()
+        conn.close()
+
     class Meta:
         managed = False
         db_table = 'orden_compra'
@@ -635,6 +655,16 @@ class Producto(models.Model):
         conn.close()
         print(productosOrden)
         return productosOrden
+
+    @classmethod
+    def actualizarStockProductoRecepcion(self, sku_producto, cantidad):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("actualizar_stock_recepcion",[sku_producto,cantidad])
+        conn.commit()
+        cur.close()
+        conn.close()
 
     class Meta:
         managed = False

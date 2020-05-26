@@ -560,3 +560,61 @@ def eliminar_producto_boleta(request, id, sku, cantidad, total):
         print("Hubo un error")
     return redirect('modificar_boleta', id)
 
+
+def recepcion_orden_compra(request): 
+
+    ordenesDeCompra = OrdenCompra.traerOrdenes()
+    
+
+    data = {
+        'ordenesDeCompra' : ordenesDeCompra
+    }
+
+    return render(request, 'core/recepcion_orden.html', data)
+
+def modificar_recepcion_orden(request, id): 
+
+    orden = OrdenCompra.traerOrden(id)
+    proveedores = Proveedor.objects.all()
+    empleados = Empleado.objects.all()
+    estadosOrden = EstadoOrden.objects.all()
+
+    productosOrden = OrdenCompra.productosOrden(id)
+
+    data = {
+        'orden': orden,
+        'proveedores' : proveedores,
+        'empleados' : empleados,
+        'estadosOrden': estadosOrden,
+        'productos_orden':productosOrden
+    }
+
+    return render(request, 'core/modificar_recepcion_orden.html', data)
+
+
+def actualizar_stock_recepcion(request, id, sku, cantidad): 
+    print(id, sku, cantidad)
+    try:
+        Producto.actualizarStockProductoRecepcion(sku, cantidad)
+        print("Se actualizo el stock")
+    except Exception as e:
+        print(e)
+
+    return redirect('modificar_recepcion_orden', id)
+
+def aprobar_orden(request, id): 
+    try:
+        OrdenCompra.aprobarOrdenCompra(id)
+        print("Se aprobo la orden")
+    except Exception as e:
+        print(e)
+    return redirect('modificar_recepcion_orden', id)
+
+def rechazar_orden(request, id):
+    try:
+        OrdenCompra.rechazarOrdenCompra(id)
+        print("Se rechazo la orden")
+    except Exception as e:
+        print(e)
+        print("No se rechazo la orden")
+    return redirect('modificar_recepcion_orden', id)

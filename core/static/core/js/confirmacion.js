@@ -102,3 +102,8 @@ function confirmarEliminarProductoFactura(id_factua, id_producto, cantidad, tota
   })
 }
 
+
+
+function confirmarActualizarStock(id){
+  print(id)
+}

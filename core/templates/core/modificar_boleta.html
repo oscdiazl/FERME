@@ -10,9 +10,9 @@
 {% block contenido%}
 
     <div class="container">
-        <div class="row at-5 pt-5">
-            <div class="col-lg-6 mt-5">
-                <h2 class="mt-5">Boleta</h2>
+        <div class="row mt-5 pt-5">
+            <div class="col-lg-6 my-5">
+                <h2 class="my-5">Detalle Boleta</h2>
                 <form method="POST">
                 {% csrf_token %}
 
@@ -179,20 +179,16 @@
     $('#id_precio').attr('readonly',true);
     $('#id_precio_detalle').attr('readonly',true);
 
-
-
-
-
     $('#listado_productos').DataTable({
     "pageLength": 2,
     "language": {
       "sProcessing": "Procesando...",
-      "sLengthMenu": "Mostrar MENU registros",
+      "sLengthMenu": "Mostrar _MENU_ registros",
       "sZeroRecords": "No se encontraron resultados",
       "sEmptyTable": "Ningún dato disponible en esta tabla",
-      "sInfo": "Mostrando registros del START al END de un total de TOTAL registros",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
       "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-      "sInfoFiltered": "(filtrado de un total de MAX registros)",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
       "sInfoPostFix": "",
       "sSearch": "Buscar:",
       "sUrl": "",
@@ -215,12 +211,12 @@
     "pageLength": 5,
     "language": {
       "sProcessing": "Procesando...",
-      "sLengthMenu": "Mostrar MENU registros",
+      "sLengthMenu": "Mostrar _MENU_ registros",
       "sZeroRecords": "No se encontraron resultados",
       "sEmptyTable": "Ningún dato disponible en esta tabla",
-      "sInfo": "Mostrando registros del START al END de un total de TOTAL registros",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
       "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-      "sInfoFiltered": "(filtrado de un total de MAX registros)",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
       "sInfoPostFix": "",
       "sSearch": "Buscar:",
       "sUrl": "",
