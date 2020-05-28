@@ -350,8 +350,14 @@
 
         total = precio * cantidad; 
 
+        iva = total * 0.19; 
+
+        total_final = total + iva; 
+
         $("#id_precio").val(total);
-        $("#id_total").val(total);
+        $("#id_iva").val(iva);
+        $("#id_sub_total").val(total);
+        $("#id_total").val(total_final);
 
         console.log(total);
     })

@@ -46,9 +46,9 @@
                             <td>{{p.ID_PRODUCTO}}</td>
                             <td>{{p.NOMBRE}}</td>
                             <td>{{p.NOMBRE_PROVEEDOR}}</td>
-                            <td>{{p.VALOR_PRODUCTO_COMPRA}}</td>
+                            <td>{{p.PRECIO}}</td>
                             <td>
-                                <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.VALOR_PRODUCTO_COMPRA}}')"><i class="fas fa-plus-circle"></i></a>
+                                <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}')"><i class="fas fa-plus-circle"></i></a>
 
                             </td>
                         </tr>
@@ -98,13 +98,6 @@
         </div>
     </div>
 
-{% if mensaje %}
-            
-<div class="alert alert-success my-3" role="alert">
-
-    {{mensaje}}
-</div>
-{% endif%}
 
 
 
@@ -139,7 +132,7 @@
                         <td>{{prod.TOTAL}}</td>
                         
                         <td>
-                            <span><a href="{% url 'eliminar_producto_boleta' prod.BOLETA_ID_BOLETA prod.ID_PRODUCTO prod.CANTIDAD prod.TOTAL %}"  ><i class="fas fa-trash-alt text-dark"></i></a></span>
+                            <span><a href="#" onclick="confirmarEliminarProductoBoleta('{{prod.BOLETA_ID_BOLETA}}', '{{prod.ID_PRODUCTO}}', '{{prod.CANTIDAD}}', '{{prod.TOTAL}}')"  ><i class="fas fa-trash-alt text-dark"></i></a></span>
                         </td>
                     </tr>
                     {%endfor%}
@@ -172,7 +165,49 @@
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="{% static 'core/js/confirmacion.js'%}"></script>
 <script>
+
+    function confirmarEliminarProductoBoleta(idBoleta, idProducto, cantidad, total){
+        console.log(idBoleta, idProducto, cantidad, total)
+
+        
+        const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Estas Seguro?',
+        text: "No Puedes Revertir Esta Accion!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, Eliminar Producto de Boleta',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+        
+        window.location.href = "/eliminar_producto_boleta/"+idBoleta+"/"+idProducto+"/"+cantidad+"/"+total+"/";
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'El Producto No fue eliminado de boleta :)',
+            'error'
+          )
+        }
+      })
+    }
+
+
     $(document).ready(function(){
     $("#id_precio").val(0);
 
@@ -257,8 +292,10 @@
 
         total = precio * cantidad;
 
+        totalActual =  parseInt($("#id_total").val())  + total; 
+
         $("#id_precio").val(total);
-        $("#id_total").val(total);
+        $("#id_total").val(totalActual);
 
     })
 </script>

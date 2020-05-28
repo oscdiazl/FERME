@@ -100,6 +100,16 @@ class Boleta(models.Model):
         cur.close()
         conn.close()
 
+    @classmethod
+    def actualizarBoleta(self, id_boleta, total, estado):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("modificar_boleta",[id_boleta,total,estado])
+        conn.commit()
+        cur.close()
+        conn.close()
+
     class Meta:
         managed = False
         db_table = 'boleta'

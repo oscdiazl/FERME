@@ -185,7 +185,7 @@
                             <td>{{prod.TOTAL}}</td>
                             
                             <td>
-                                <span><a href="{% url 'eliminar_producto_factura' prod.FACTURA_ID_FACTURA prod.ID_PRODUCTO prod.CANTIDAD prod.TOTAL %}" ><i class="fas fa-trash-alt text-dark"></i></a></span>
+                                <span><a href="#"  onclick="confirmarEliminarProductoFactura('{{prod.FACTURA_ID_FACTURA }}' ,'{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}','{{prod.TOTAL}}')" ><i class="fas fa-trash-alt text-dark"></i></a></span>
                             </td>
                         </tr>
                         {%endfor%}
@@ -221,11 +221,46 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>  
 <script>
+
+    function confirmarEliminarProductoFactura(idFactura, idProducto, cantidad, total){
+        console.log(idFactura, idProducto, cantidad, total)
+
+        const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Estas Seguro?',
+        text: "No Puedes Revertir Esta Accion!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, Eliminar Producto de Factura',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+        
+        window.location.href = "/eliminar_producto_factura/"+idFactura+"/"+idProducto+"/"+cantidad+"/"+total+"/";
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'El Producto No fue eliminado de factura :)',
+            'error'
+          )
+        }
+      })
+    }
+
     $(document).ready(function(){
 
-        $("#id_neto").val(0);
-        $("#id_sub_total").val(0);
-        $("#id_iva").val(0);
+
 
         $('#id_neto').attr('readonly', true);
         $('#id_total').attr('readonly', true);
@@ -350,12 +385,18 @@
         precio = precio<0 ? 0 : precio;
 
         total = precio * cantidad; 
-        prev_total = $("#id_total").val()
+        prev_total = $("#id_sub_total").val()
 
-        new_total = parseInt(prev_total)  + total; 
+        totalActual = parseInt(prev_total)  + total;
+        $("#id_sub_total").val(totalActual); 
 
+        iva = totalActual * 0.19; 
+
+        total_final = totalActual + iva;  
+
+        $("#id_iva").val(iva);
         $("#id_precio").val(total);
-        $("#id_total").val(new_total);
+        $("#id_total").val(total_final);
 
         console.log(total);
     })

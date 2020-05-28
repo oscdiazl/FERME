@@ -447,7 +447,7 @@ def modificar_factura(request, id):
 
         estado_factura = request.POST.get('estado_venta_id_estado_venta')
 
-        Factura.actualizarFactura(id,subtotal, iva, giro, total, estado_factura  )
+        Factura.actualizarFactura(id,subtotal, iva, giro, total, estado_factura )
 
         factura = Factura.objects.get(id_factura=id)
         data['productos_factura'] = Factura.traerProductosFactura(id)
@@ -510,8 +510,9 @@ def listado_boleta(request):
             ultima_venta = Venta.traerUltimoIdVenta()
 
             Venta.agregarDetalleVenta(ultima_venta['ID_MAX'],id_producto)
-
             data['mensaje'] = "Guardado Correctamente"
+
+            return redirect('modificar_boleta', id=ultima_boleta['ID_MAX'])
         else:
             data['mensaje'] = "No se pudo guardar"
 
@@ -538,13 +539,29 @@ def modificar_boleta(request, id):
     }
 
     if request.method == 'POST':
-        formulario = BoletaForm(data=request.POST, instance=boleta)
-        if formulario.is_valid():
-            formulario.save()
-            data ["mensaje"] = "Modificado Correctamente"
-            data['form']  = formulario
-        else:
-            data ["mensaje"] = "No se pudo modificar"
+        id_producto = request.POST.get('id_producto')
+        cantidad = request.POST.get('id_cantidad')
+        fecha_venta = date.today()
+        rut_empleado = request.POST.get('cboEmpleado')
+
+        estado_boleta = request.POST.get('estado_venta_id_estado_venta')
+
+        total = request.POST.get('total')
+
+        id_venta = Boleta.idVentaBoleta(id)
+
+        Boleta.agregarDetalleBoleta(int(id),id_producto,cantidad)
+        Boleta.agregarVentaBoleta(rut_empleado,int(id),fecha_venta)
+        Venta.agregarDetalleVenta(int(id_venta['ID_VENTA']), id_producto)
+        Boleta.actualizarBoleta(id, total,estado_boleta)
+
+        print(total)
+
+        boleta = Boleta.objects.get(id_boleta=id)
+        data['productos_boleta'] = Boleta.traerProductosBoleta(id)
+        data['form'] = BoletaForm(instance=boleta)
+    else:
+        print("No se Modifico")
 
 
     return render(request, 'core/modificar_boleta.html', data)
