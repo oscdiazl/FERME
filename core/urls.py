@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, productos, listado_proveedor, listado_empleados, listado_orden_compra, sobre_nosotros, modificar_empleado, eliminar_empleado, modificar_proveedor, eliminar_proveedor, modificar_orden, listado_producto, registro_usuario, modificar_producto, change_password, edit_profile, listado_factura, modificar_factura, eliminar_producto_factura, eliminar_producto_oc, listado_boleta, modificar_boleta, eliminar_producto_boleta, recepcion_orden_compra,modificar_recepcion_orden,actualizar_stock_recepcion,aprobar_orden,rechazar_orden
+from .views import home, productos, listado_proveedor, listado_empleados, listado_orden_compra, sobre_nosotros, modificar_empleado, eliminar_empleado, modificar_proveedor, eliminar_proveedor, modificar_orden, listado_producto, registro_usuario, modificar_producto, change_password, edit_profile, listado_factura, modificar_factura, eliminar_producto_factura, eliminar_producto_oc, listado_boleta, modificar_boleta, eliminar_producto_boleta, recepcion_orden_compra,modificar_recepcion_orden,actualizar_stock_recepcion,aprobar_orden,rechazar_orden,consultar_proveedor,modificar_consultar_proveedor, eliminar_producto_orden_prov, recepcionar_orden_proveedor, rechazar_orden_proveedor
 
 urlpatterns = [
     path('', home, name="home"),
@@ -32,12 +32,20 @@ urlpatterns = [
     path('eliminar_proveedor/<id>/', eliminar_proveedor, name="eliminar_proveedor"),
     path('eliminar_producto_factura/<id>/<sku>/<cantidad>/<total>/', eliminar_producto_factura, name="eliminar_producto_factura"),
     path('eliminar_producto_oc/<id>/<sku>/<cantidad>/<total>/', eliminar_producto_oc, name="eliminar_producto_oc"),
+    path('eliminar_producto_orden_prov/<id>/<sku>/<cantidad>/<total>/', eliminar_producto_orden_prov, name="eliminar_producto_orden_prov"),
     path('eliminar_producto_boleta/<id>/<sku>/<cantidad>/<total>/', eliminar_producto_boleta, name="eliminar_producto_boleta"),
     path('registro/', registro_usuario, name='registro_usuario'),
 
 
     path('actualizar_stock_recepcion/<id>/<sku>/<cantidad>/', actualizar_stock_recepcion, name="actualizar_stock_recepcion"),
     path('aprobar_orden_recepcionada/<id>', aprobar_orden, name="aprobar_orden_recepcionada"),
-    path('rechazar_orden_recepcionada/<id>', rechazar_orden, name="rechazar_orden_recepcionada")
+    path('rechazar_orden_recepcionada/<id>', rechazar_orden, name="rechazar_orden_recepcionada"), 
+
+    path('recepcionar_orden_proveedor/<id>/', recepcionar_orden_proveedor, name="recepcionar_orden_proveedor"),
+    path('rechazar_orden_proveedor/<id>/', rechazar_orden_proveedor, name="rechazar_orden_proveedor"),  
+
+    path('consulta_proveedor/', consultar_proveedor, name="consultar_proveedor"), 
+    path('modificar_consultar_proveedor/<id>', modificar_consultar_proveedor, name="modificar_consultar_proveedor")
+
 
 ]

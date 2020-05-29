@@ -399,6 +399,8 @@ def listado_factura(request):
             ultima_venta = Venta.traerUltimoIdVenta()
 
             Venta.agregarDetalleVentaFactura(ultima_venta['ID_MAX'], id_producto)
+
+            Producto.descontarStockFactura(id_producto, cantidad)
             data['mensaje'] = "Guardado Correctamente"
 
             return redirect('modificar_factura', id=ultima_factura['ID_MAX'])
@@ -440,6 +442,8 @@ def modificar_factura(request, id):
         Factura.agregarDetalleFactura(int(id),id_producto, cantidad)
         Factura.agregarDetalleVenta(int(id_venta['ID_VENTA']), id_producto)
 
+        Producto.descontarStockFactura(id_producto, cantidad)
+
         subtotal = request.POST.get('sub_total')
         iva = request.POST.get('iva')
         giro = request.POST.get('giro')
@@ -451,6 +455,7 @@ def modificar_factura(request, id):
 
         factura = Factura.objects.get(id_factura=id)
         data['productos_factura'] = Factura.traerProductosFactura(id)
+        data['productos'] = Producto.productos_proveedor()
         data['form'] = FacturaForm(instance=factura)
 
     return render(request, 'core/modificar_factura.html', data)
@@ -461,6 +466,7 @@ def eliminar_producto_factura(request, id, sku, cantidad, total):
     try:
         print(id, sku, cantidad, id_venta)
         Factura.eliminarProductoFactura(id, sku, cantidad, id_venta['ID_VENTA'], total)
+        Producto.sumarStockFactura(sku, cantidad)
         print("se elimino")
     except:
         print("Hubo un error")
@@ -510,6 +516,8 @@ def listado_boleta(request):
             ultima_venta = Venta.traerUltimoIdVenta()
 
             Venta.agregarDetalleVenta(ultima_venta['ID_MAX'],id_producto)
+
+            Producto.descontarStockFactura(id_producto, cantidad)
             data['mensaje'] = "Guardado Correctamente"
 
             return redirect('modificar_boleta', id=ultima_boleta['ID_MAX'])
@@ -555,9 +563,12 @@ def modificar_boleta(request, id):
         Venta.agregarDetalleVenta(int(id_venta['ID_VENTA']), id_producto)
         Boleta.actualizarBoleta(id, total,estado_boleta)
 
+        Producto.descontarStockFactura(id_producto, cantidad)
+
         print(total)
 
         boleta = Boleta.objects.get(id_boleta=id)
+        data['productos'] = Producto.productos_proveedor()
         data['productos_boleta'] = Boleta.traerProductosBoleta(id)
         data['form'] = BoletaForm(instance=boleta)
     else:
@@ -572,6 +583,7 @@ def eliminar_producto_boleta(request, id, sku, cantidad, total):
     try:
         print(id, sku, cantidad, id_venta)
         Boleta.eliminarProductoBoleta(id, sku, cantidad, id_venta['ID_VENTA'], total)
+        Producto.sumarStockFactura(sku, cantidad)
         print("se elimino")
     except:
         print("Hubo un error")
@@ -635,3 +647,68 @@ def rechazar_orden(request, id):
         print(e)
         print("No se rechazo la orden")
     return redirect('modificar_recepcion_orden', id)
+
+
+def consultar_proveedor(request): 
+
+    data = {
+
+    }
+
+    if request.method == 'POST':
+        rut_proveedor = request.POST.get('rut_proveedor')
+
+        ordenes_proveedor = Proveedor.ordenesProveedor(rut_proveedor)
+        if len(ordenes_proveedor) > 0:
+            data['ordenes_prov'] = ordenes_proveedor
+        else:
+            data['error'] = "No Existe Proveedor"
+
+    return render(request, 'core/consulta_proveedor.html', data)
+
+def modificar_consultar_proveedor(request, id):
+    orden = OrdenCompra.traerOrden(id)
+    proveedores = Proveedor.objects.all()
+    empleados = Empleado.objects.all()
+    estadosOrden = EstadoOrden.objects.all()
+
+    productosOrden = OrdenCompra.productosOrden(id)
+
+    data = {
+        'orden': orden,
+        'proveedores' : proveedores,
+        'empleados' : empleados,
+        'estadosOrden': estadosOrden,
+        'productos_orden':productosOrden
+    }
+
+    return render(request, 'core/modificar_consulta_proveedor.html', data)
+
+def eliminar_producto_orden_prov(request, id, sku, cantidad, total):
+
+    print(id, sku, cantidad, total)
+
+    try:
+        OrdenCompra.eliminarProductoOrden(id, sku, cantidad, total)
+        print("Se Elimino")
+    except Exception as e:
+        print(e)
+
+    return redirect('modificar_consultar_proveedor', id)
+
+
+def recepcionar_orden_proveedor(request, id): 
+    try:
+        OrdenCompra.recepcionarOrdenProveedor(id)
+        print("Se Recepciono La orden")
+    except Exception as e:
+        print(e)
+    return redirect('modificar_consultar_proveedor', id)
+
+def rechazar_orden_proveedor(request,id):
+    try:
+        OrdenCompra.rechazarOrdenProveedor(id)
+        print("Se Recepciono La orden")
+    except Exception as e:
+        print(e)
+    return redirect('modificar_consultar_proveedor', id)

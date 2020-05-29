@@ -91,6 +91,7 @@
                                 <th>Nombre</th>
                                 <th>Proveedor</th>
                                 <th>Valor Venta</th>
+                                <th>Stock</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -101,9 +102,10 @@
                                 <td>{{p.NOMBRE}}</td>
                                 <td>{{p.NOMBRE_PROVEEDOR}}</td>
                                 <td>{{p.PRECIO}}</td>
+                                <td>{{p.STOCK}}</td>
                                 <td>
                                     
-                                    <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}')"><i class="fas fa-plus-circle"></i></a>
+                                    <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}', '{{p.STOCK}}')"><i class="fas fa-plus-circle"></i></a>
                                     
                                 </td>
                             </tr>
@@ -143,6 +145,11 @@
                 <div class="form-group">
                     <label for="id_precio text-left">Total</label>
                     <input required type="text" class="form-control" name="id_precio" id="id_precio">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_precio text-left">Stock</label>
+                    <input required type="text" class="form-control" name="id_stock" id="id_stock">
                 </div>
     
                     
@@ -362,24 +369,44 @@
     }); 
 
 
-    function selectProducto(id, nombre, valor){
+    function selectProducto(id, nombre, valor, stock){
             console.log(id, nombre, valor);
 
-            $("#id_producto").val(id);
-            $("#nombre_producto").val(nombre);
+            if(stock == 0){
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'No hay Stock de este Producto'
+                })
+            }else{
+                $("#id_producto").val(id);
+                $("#nombre_producto").val(nombre);
 
-            $("#id_precio_detalle").val(valor);
+               $("#id_precio_detalle").val(valor);
+
+               $("#id_stock").val(stock);
+            }
     }
 
 
     $("#id_cantidad, #id_precio_detalle").change(function(){
 
-        let cantidad, precio, total, prev_total, new_total; 
+        let cantidad, precio, total, prev_total, new_total, stock; 
         
         cantidad = $("#id_cantidad").val(); 
         cantidad = cantidad === "" ? 0 : +cantidad;
         cantidad = cantidad<0 ? 0 : cantidad;
 
+        stock = $("#id_stock").val();
+
+        if(cantidad > stock){
+            Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'La Cantidad Ingresada supera el stock disponible'
+            })
+        }else{
+            
         precio = $("#id_precio_detalle").val()
         precio = precio === "" ? 0 : +precio;
         precio = precio<0 ? 0 : precio;
@@ -399,6 +426,7 @@
         $("#id_total").val(total_final);
 
         console.log(total);
+        }
     })
 
 

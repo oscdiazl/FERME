@@ -1,0 +1,222 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% load crispy_forms_tags %}
+
+{%block css%}
+{%endblock%}
+
+{% block contenido%}
+ <div class="container mt-5 pt-5">
+     <div class="my-5 pt-5">
+         <h3>Detalle Orden Proveedor</h3>
+     </div>
+
+     <form action="" method="POST">
+        {% csrf_token %}
+
+        <label for="cboProveedor">Proveedor</label>
+        <select disabled class="form-control" name="cboProveedor" id="cboProveedor">
+            {% for p in proveedores%}
+            <option 
+            {% if p.id_proveedor == orden.PROVEEDOR_ID_PROVEEDOR%}
+            {{'selected'}}
+            {%endif%}
+    
+            value="{{p.id_proveedor}}">{{p.nombre_proveedor}} </option>
+            {%endfor%}
+        </select>
+
+        <div class="form-group">
+            <label for="txtId">Orden Numero</label>
+            <input type="text" class="form-control" readonly name="txtId" id="txtId" value="{{orden.ID_ORDEN_COMPRA}}">
+        </div>
+
+        <div class="form-group">
+            <label for="txtFechaSolicitud">Fecha Solicitud</label>
+            <input readonly type="text" class="form-control" name="txtFechaSolicitud" id="txtFechaSolicitud" value="{{orden.FECHA_SOLICITUD}}">
+        </div>
+
+        <label for="cboEmpleado">Responsable</label>
+        <select disabled class="form-control" name="cboEmpleado" id="cboEmpleado">
+          {% for e in empleados%}
+          <option 
+          {% if e.rut_empleado == orden.EMPLEADO_RUT_EMPLEADO%}
+          {{'selected'}}
+          {%endif%}
+          value="{{e.rut_empleado}}"  id="cboEmpleado">{{e.nombres}}</option>
+          {%endfor%}
+        </select>
+
+        <label for="cboEstado">Estado Orden</label>
+        <select disabled required class="form-control" name="cboEstado" id="cboEstado">
+            {% for eo in estadosOrden%}
+            <option 
+            {% if eo.id_estado == orden.ESTADO_ORDEN_ID_ESTADO%}
+            {{'selected'}}
+            {%endif%}
+            value="{{eo.id_estado}}" id="cboEstado">{{eo.descripcion}}</option>
+            {%endfor%}
+        </select>
+
+        <div class="form-group">
+            <label for="txtNeto">Neto</label>
+            <input type="text" class="form-control" readonly name="txtNeto" id="txtNeto" value="{{orden.NETO}}">
+          </div>
+
+          <div class="form-group">
+            <label for="txtIva">Iva</label>
+            <input type="text" class="form-control" readonly name="txtIva" id="txtIva" value="{{orden.IVA}}">
+          </div>
+
+          <div class="form-group">
+            <label for="txtTotal">Total</label>
+            <input type="text" class="form-control" readonly name="txtTotal" id="txtTotal" value="{{orden.TOTAL}}">
+          </div>
+          <br>
+          <hr>
+          <h5>Listado Productos Asociados a la Orden De Compra</h5>
+          <hr>
+          <table id="tabla_productos_orden" class="table table-hover" style="width:100%">
+              <thead class="">
+                  <tr>
+                      <th>id_orden</th>
+                      <th>SKU Producto</th>
+                      <th>Cantidad</th>
+                      <th>Valor Producto</th>
+                      <th>Total</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% if productos_orden %}
+                  {%for poc in productos_orden%}
+                  <tr>
+                      <td>{{poc.ID_ORDEN}}</td>
+                      <td>{{poc.SKU_PRODUCTO}}</td>
+                      <td>{{poc.CANTIDAD}}</td>
+                      <td>{{poc.VALOR_PRODUCTO_COMPRA}}</td>
+                      <td>{{poc.TOTAL}}</td>
+                  </tr>
+                  {%endfor%}
+                  {%endif%}
+              </tbody>
+              <tfoot>
+                  <tr>
+                      <th>id_orden</th>
+                      <th>SKU Producto</th>
+                      <th>Cantidad</th>
+                      <th>Valor Producto</th>
+                      <th>Total</th>
+                  </tr>
+              </tfoot>
+          </table>
+
+          <div class="row">
+              <div class="col-lg-4">
+                <a  href="#" onclick="confirmarRecepcionarProveedor('{{orden.ID_ORDEN_COMPRA}}')" class="btn btn-success btn-block my-5">Recepcionar Orden</a>
+
+                
+              </div>
+
+              <div class="col-lg-4">
+                <a href="#" onclick="confirmarRechazarOrdenProveedor('{{orden.ID_ORDEN_COMPRA}}')" class="btn btn-danger btn-block my-5">Rechazar Orden</a>
+              </div>
+          </div>
+    </form>
+ </div>
+
+{%endblock%}
+
+
+{% block js%}
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="{% static 'core/js/confirmacion.js'%}"></script>
+
+
+<script>
+
+    function confirmarRecepcionarProveedor(idOrden){
+
+        console.log(idOrden)
+
+        const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Estas Seguro de recepcionar la orden?',
+        text: "No Puedes Revertir Esta Accion!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, recepcionar orden de compra',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+        
+        window.location.href = "/recepcionar_orden_proveedor/"+idOrden+"/";
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'El Producto No fue eliminado de Orden de Compra :)',
+            'error'
+          )
+        }
+      })
+    }
+
+
+    function confirmarRechazarOrdenProveedor(idOrden){
+
+        console.log(idOrden)
+
+        const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Estas Seguro de rechazar la orden?',
+        text: "No Puedes Revertir Esta Accion!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, rechazar orden de compra',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+        
+        window.location.href = "/rechazar_orden_proveedor/"+idOrden+"/";
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'El Producto No fue eliminado de Orden de Compra :)',
+            'error'
+          )
+        }
+      })
+    }
+
+</script>
+
+{%endblock%}
