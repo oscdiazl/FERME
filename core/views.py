@@ -226,11 +226,16 @@ def listado_producto(request):
         'proveedores':proveedores
     }
 
+    numero = '105'
+    nuevo_numero = numero.zfill(3)
+    print(nuevo_numero)
+
     if request.method == 'POST':
 
         id_proveedor = request.POST.get('cboProveedor')
         id_producto = request.POST.get('id_producto')
         formulario = ProductoForm(request.POST, files=request.FILES)
+
         if formulario.is_valid():
             formulario.save()
             Producto.agregarDetalleProductoProveedor(id_producto,id_proveedor)
