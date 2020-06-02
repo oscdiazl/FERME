@@ -27,7 +27,7 @@
                 <label for="cboProveedor"> Proveedor </label>
 
                 <select class="form-control" name="cboProveedor" id="cboProveedor">
-                    <option value="000">Seleccionar Proveedor</option>
+                    <option value="0">Seleccionar Proveedor</option>
                     {% for p in proveedores%}
                     <option 
                     value="{{p.id_proveedor}}">{{p.nombre_proveedor}} </option>
@@ -75,7 +75,12 @@
         </thead>
         <tbody>
             {%for p in productos%}
-            <tr>
+
+            {% if p.stock <= p.stock_critico %}
+                <tr class="bg-danger text-white">
+            {% elif p.stock > p.stock_critico and p.stock < 20 %}
+                <tr class="bg-warning text-white">
+            {%endif%}
                 <td>{{p.id_producto}}</td>
                 <td>{{p.fecha_vencimiento}}</td>
                 <td>{{p.nombre}}</td>
@@ -86,7 +91,16 @@
                 <td>{{p.precio}}</td>
                 <td>{{p.valor_producto_compra}}</td>
                 <td>
-                    <a href="{% url 'modificar_producto' p.id_producto%}"><i class="fas fa-edit text-dark"></i></a>
+                    <a href="{% url 'modificar_producto' p.id_producto%}">
+                        {% if p.stock <= p.stock_critico %}
+                            <i class="fas fa-edit text-white"></i>
+                        {% elif p.stock > p.stock_critico and p.stock < 20 %}
+                            <i class="fas fa-edit text-white"></i>
+                        {%else%}
+                            <i class="fas fa-edit text-dark"></i>
+                        {%endif%}
+                        
+                    </a>
                     
                 </td>
                 </td>

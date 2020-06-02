@@ -179,6 +179,18 @@
   // Call the dataTables jQuery plugin
   $(document).ready(function() {
 
+
+      $("#id_proveedor_id_proveedor").change(function(){
+
+          var selectedText = $("#id_proveedor_id_proveedor option:selected").html();
+
+          var table = $('#example').DataTable();
+
+          table.search( selectedText ).draw();
+
+          
+      })
+
     $("#id_neto").val(0);
     $("#id_total").val(0);
     $("#id_iva").val(0);
@@ -303,8 +315,8 @@ function calcularDetalle(){
 
     $("#id_precio").val(total);
     $("#id_neto").val(total);
-    $("#id_iva").val(iva);
-    $("#id_total").val(total_final);
+    $("#id_iva").val(Math.round(iva));
+    $("#id_total").val(Math.round(total_final));
 
 
 }

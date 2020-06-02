@@ -78,9 +78,11 @@
               </li>
               {% endif%}
 
+              {% if perms.core.delete_ordencompra %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'listado_recepcion_orden' %}"> Recepcion </a>
               </li>
+              {%endif%}
 
               <li class="nav-item">
                 <a class="nav-link" href="#contact"><i class="fas fa-shopping-cart "></i></a>

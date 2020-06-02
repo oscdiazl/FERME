@@ -37,18 +37,18 @@
                             <th>Nombre</th>
                             <th>Proveedor</th>
                             <th>Valor Venta</th>
-                            <th>Stock</th>
+                            <th style = "display:none">Stock</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {%for p in productos%}
                         <tr>
-                            <td>{{p.ID_PRODUCTO}}</td>
-                            <td>{{p.NOMBRE}}</td>
-                            <td>{{p.NOMBRE_PROVEEDOR}}</td>
-                            <td>{{p.PRECIO}}</td>
-                            <td>{{p.STOCK}}</td>
+                            <td><small>{{p.ID_PRODUCTO}}</small></td>
+                            <td><small>{{p.NOMBRE}}</small></td>
+                            <td><small>{{p.NOMBRE_PROVEEDOR}}</small></td>
+                            <td><small>{{p.PRECIO}}</small></td>
+                            <td style = "display:none"><small>{{p.STOCK}}</small></td>
                             <td>
                                 <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}', '{{p.STOCK}}')"><i class="fas fa-plus-circle"></i></a>
 

@@ -249,7 +249,9 @@ def listado_producto(request):
 def modificar_producto(request, id): 
     producto = Producto.objects.get(id_producto=id)
     proveedores = Proveedor.objects.all()
+    """prod_proveedor = Producto.traerProveedorProducto(id)"""
     data = {
+        'producto': producto,
         'form' : ProductoForm(instance=producto),
         'proveedores':proveedores
     }
@@ -258,9 +260,8 @@ def modificar_producto(request, id):
         formulario = ProductoForm(data=request.POST, instance=producto, files=request.FILES)
         if formulario.is_valid():
             formulario.save()
-            data ["mensaje"] = "Modificado Correctamente"
             data['form']  = formulario
-            return redirect('listado_productos')
+            data ["mensaje"] = "Modificado Correctamente"
     return render(request, 'core/modificar_producto.html', data)
 
 def registro_usuario(request):

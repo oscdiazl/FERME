@@ -716,6 +716,19 @@ class Producto(models.Model):
         cur.close()
         conn.close()
 
+    @classmethod
+    def traerProveedorProducto(self, id_producto):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("select * from prod_proveedor where producto_id_producto =" + id_producto)
+        res=cur.fetchone()
+        column = [row[0] for row in cur.description]
+        obj = {column[0] :res[0], column[1]:res[1]}
+        cur.close()
+        conn.close()
+        return obj
+
     class Meta:
         managed = False
         db_table = 'producto'

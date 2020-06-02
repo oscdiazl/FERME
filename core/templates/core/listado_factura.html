@@ -55,10 +55,10 @@
                                 {% for c in clientes%}
 
                                 <tr>
-                                    <td>{{c.rut_cliente}}</td>
-                                    <td>{{c.nombres}}</td>
-                                    <td>{{c.rut_empresa}}</td>
-                                    <td>{{c.giro}}</td>
+                                    <td><small>{{c.rut_cliente}}</small></td>
+                                    <td><small>{{c.nombres}}</small></td>
+                                    <td><small>{{c.rut_empresa}}</small></td>
+                                    <td><small>{{c.giro}}</small></td>
                                     <td>
                                         <a onclick="selectCliente({{c.rut_cliente}},'{{c.giro}}')"><i class="fas fa-plus-circle"></i></a>
                                     </td>
@@ -90,18 +90,18 @@
                             <th>Nombre</th>
                             <th>Proveedor</th>
                             <th>Valor Venta</th>
-                            <th>Stock</th>
+                            <th style = "display:none">Stock</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {%for p in productos%}
                         <tr>
-                            <td>{{p.ID_PRODUCTO}}</td>
-                            <td>{{p.NOMBRE}}</td>
-                            <td>{{p.NOMBRE_PROVEEDOR}}</td>
-                            <td>{{p.PRECIO}}</td>
-                            <td>{{p.STOCK}}</td>
+                            <td><small>{{p.ID_PRODUCTO}}</small></td>
+                            <td><small>{{p.NOMBRE}}</small></td>
+                            <td><small>{{p.NOMBRE_PROVEEDOR}}</small></td>
+                            <td><small>{{p.PRECIO}}</small></td>
+                            <td style = "display:none">{{p.STOCK}}</td>
                             <td>
                                 
                                 <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}' ,'{{p.STOCK}}')"><i class="fas fa-plus-circle"></i></a>
@@ -384,9 +384,9 @@
         total_final = total + iva; 
 
         $("#id_precio").val(total);
-        $("#id_iva").val(iva);
+        $("#id_iva").val(Math.round(iva));
         $("#id_sub_total").val(total);
-        $("#id_total").val(total_final);
+        $("#id_total").val(Math.round(total_final));
 
         console.log(total);
 

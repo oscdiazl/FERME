@@ -269,6 +269,11 @@
   $(document).ready(function() {
       //      jQuery.datetimepicker.setLocale('es');
 
+    var selectedText = $("#id_proveedor_id_proveedor option:selected").html();
+
+
+    
+
       jQuery('#txtFechaSolicitud').datetimepicker({
           format: 'd-M-y',
           timepicker:false
@@ -305,6 +310,7 @@
           "sSortDescending": ": Activar para ordenar la columna de manera descendente"
       }
     }
+
   });
 
 
@@ -391,8 +397,8 @@ function calcularDetalle(){
 
     total_final = totalActual + iva;  
 
-    $("#txtIva").val(iva);
-    $("#txtTotal").val(total_final);
+    $("#txtIva").val(Math.round(iva));
+    $("#txtTotal").val(Math.round(total_final));
 
 
 }
