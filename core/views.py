@@ -9,6 +9,8 @@ from django.contrib.auth import login, authenticate
 import bcrypt
 import json
 from datetime import date
+from passlib.hash import pbkdf2_sha256
+from django.contrib.auth.hashers import make_password
 # Create your views here.
 
 def home(request):
@@ -55,17 +57,21 @@ def listado_empleados(request):
             password = userFormulario.cleaned_data['password1']
             rut_empleado = formulario.cleaned_data['rut_empleado']
 
+            hash = pbkdf2_sha256.using(rounds=29000).hash(password)
+
             max = Direccion.traerUltimoIdDireccion()
+
+            password_1 = make_password(password)
+
+            print(password_1)
 
             print(max)
             Empleado.agregarDireccionEmpleado(max['ID_MAX'], rut_empleado)
-            Empleado.agregarUsuarioEmpleado(rut_empleado, username, password)
+            Empleado.agregarUsuarioEmpleado(rut_empleado, username, password_1)
 
             data['mensaje'] = "Guardado Correctamente"
 
     return render(request, 'core/listado_empleados.html', data)
-
-
 
 
 
@@ -356,11 +362,52 @@ def edit_profile(request):
 
     data={
     }
+
+    user = request.user
+
     if request.method == 'POST':
         form = UserEditForm(request.POST, instance=request.user)
+        new_name = request.POST.get('username')
+        try:
+            try:
+                Empleado.modificarUsuarioCliente(str(user),new_name)
+                usuario_bd = UsuarioCliente.traerUsuarioEmpleado(str(new_name).lower())
+                print("Existe Usuario Empleado")
+                nombre = request.POST.get('first_name')
+                apellido = request.POST.get('last_name')
+                email = request.POST.get('email')
+
+                print(nombre, apellido, email, usuario_bd['EMPLEADO_RUT_EMPLEADO'], new_name)
+
+                try:
+                    Empleado.modificarDatosEmpleado(nombre, apellido, email, usuario_bd['EMPLEADO_RUT_EMPLEADO'])
+                except Exception as e:
+                    print(e)
+            except Exception as e: 
+                print(e)
+                print("No Existe Usuario Empleado")
+                try:
+                    UsuarioCliente.modificar_usuario_cliente(str(user),new_name)
+                    usuario_bd_cliente = UsuarioCliente.traerUsuarioCliente(str(new_name).lower())
+                    print("Si es usuario Cliente")
+
+                    try:
+                        nombre = request.POST.get('first_name')
+                        apellido = request.POST.get('last_name') 
+                        email = request.POST.get('email')
+                        UsuarioCliente.modificar_datos_cliente(nombre, apellido, email, usuario_bd_cliente['CLIENTE_RUT_CLIENTE'])
+                        print("Se Guardadron los datos del cliente")
+                    except Exception as e:
+                        print("No se guardaron los nuevos datos del cliente")
+                        print(e)
+                except Exception as e:
+                    print("No Es usuario Cliente")
+        except Exception as e:
+            print(e)
 
         if form.is_valid():
             form.save()
+            
             return redirect('edit_profile')
     else: 
         form = UserEditForm(instance=request.user)

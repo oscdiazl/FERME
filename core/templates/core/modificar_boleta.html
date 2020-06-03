@@ -50,7 +50,7 @@
                             <td><small>{{p.PRECIO}}</small></td>
                             <td style = "display:none"><small>{{p.STOCK}}</small></td>
                             <td class="borrame">
-                                <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}', '{{p.STOCK}}')"><i class="fas fa-plus-circle"></i></a>
+                                <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}', '{{p.STOCK}}')"><i class="fas fa-plus-circle"  data-toggle="tooltip_seleccionar_producto" title="Stock: {{p.STOCK}}"></i></a>
 
                             </td>
                         </tr>
@@ -140,8 +140,8 @@
                         <td>{{prod.TOTAL}}</td>
                         
                         <td class="borrame">
-                            <span><a href="#" onclick="confirmarEliminarProductoBoleta('{{prod.BOLETA_ID_BOLETA}}', '{{prod.ID_PRODUCTO}}', '{{prod.CANTIDAD}}', '{{prod.TOTAL}}')"  ><i class="fas fa-trash-alt text-dark"></i></a></span>
-                            <a href="#" class="mx-3" onclick="confirmarAnularStockBoleta('{{prod.BOLETA_ID_BOLETA }}','{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}')"><small>Devolver</small></a>
+                            <span><a href="#" onclick="confirmarEliminarProductoBoleta('{{prod.BOLETA_ID_BOLETA}}', '{{prod.ID_PRODUCTO}}', '{{prod.CANTIDAD}}', '{{prod.TOTAL}}')"  ><i class="fas fa-trash-alt text-dark" data-toggle="tooltip_eliminar_producto" title="Eliminar Producto de Boleta"></i></a></span>
+                            <a href="#" class="mx-3" onclick="confirmarAnularStockBoleta('{{prod.BOLETA_ID_BOLETA }}','{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}')"><i class="fas fa-box-open text-dark" data-toggle="tooltip_devolver_stock" title="Devolver Stock de Producto"></i></a>
                         </td>
                     </tr>
                     {%endfor%}
@@ -292,6 +292,18 @@
 
     $('#id_precio').attr('readonly',true);
     $('#id_precio_detalle').attr('readonly',true);
+
+    $('#id_stock').attr('readonly',true);
+    
+
+    $('[data-toggle="tooltip_devolver_stock"]').tooltip();  
+
+    $('[data-toggle="tooltip_eliminar_producto"]').tooltip();    
+
+    $('[data-toggle="tooltip_seleccionar_producto"]').tooltip();      
+
+
+    
 
 
 

@@ -60,7 +60,7 @@
                                     <td><small>{{c.rut_empresa}}</small></td>
                                     <td><small>{{c.giro}}</small></td>
                                     <td>
-                                        <a onclick="selectCliente({{c.rut_cliente}},'{{c.giro}}')"><i class="fas fa-plus-circle"></i></a>
+                                        <a onclick="selectCliente({{c.rut_cliente}},'{{c.giro}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_cliente" title="Cliente: {{c.nombres}}"></i></a>
                                     </td>
                                 </tr>
 
@@ -104,7 +104,7 @@
                             <td style = "display:none">{{p.STOCK}}</td>
                             <td>
                                 
-                                <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}' ,'{{p.STOCK}}')"><i class="fas fa-plus-circle"></i></a>
+                                <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}' ,'{{p.STOCK}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_producto" title="Stock: {{p.STOCK}}"></i></a>
                                 
                             </td>
                         </tr>
@@ -197,7 +197,7 @@
                         <td>{{f.total}}</td>
                         <td>{{f.estado_venta_id_estado_venta}}</td>
                         <td>
-                            <a href="{% url 'modificar_factura' f.id_factura %}"><i class="fas fa-edit text-dark"></i></a>
+                            <a href="{% url 'modificar_factura' f.id_factura %}"><i class="fas fa-edit text-dark" data-toggle="tooltip_modificar_factura" title="Modificar Factura"></i></a>
                         </td>
                     </tr>
                 {%endfor%}
@@ -244,6 +244,14 @@
 
         $('#id_rut_cliente').attr('readonly', true);
         $('#id_giro').attr('readonly', true);
+
+        $('#id_stock').attr('readonly', true);
+
+        $('[data-toggle="tooltip_modificar_factura"]').tooltip();
+
+        $('[data-toggle="tooltip_seleccionar_producto"]').tooltip();    
+
+        $('[data-toggle="tooltip_seleccionar_cliente"]').tooltip();  
 
 
 

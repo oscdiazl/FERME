@@ -302,6 +302,26 @@ class Empleado(models.Model):
         cur.close()
         conn.close()
 
+    @classmethod 
+    def modificarDatosEmpleado(self, nombre, apellido, email, rut_empleado):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("modificar_datos_empleado",[nombre, apellido, email, rut_empleado])
+        conn.commit()
+        cur.close()
+        conn.close()
+
+    @classmethod 
+    def modificarUsuarioCliente(self, old_name, new_name):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("modificar_usuario_empleado",[old_name, new_name])
+        conn.commit()
+        cur.close()
+        conn.close()
+
     def __str__(self):
         return self.nombres
 
@@ -862,18 +882,50 @@ class UsuarioCliente(models.Model):
         conn.close()
 
     @classmethod
-    def traerUsuarioCliente(self):
+    def traerUsuarioEmpleado(self, usuario):
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
         conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
         cur = conn.cursor()
-        cur.execute("select * from usuario_empleado a join empleado b  on b.rut_empleado = a.empleado_rut_empleado where a.usuario = lower('empleado_it2')")
+        cur.execute("select * from usuario_empleado a join empleado b  on b.rut_empleado = a.empleado_rut_empleado where a.usuario =" + "'"+usuario+"'")
         res=cur.fetchone()
         column = [row[0] for row in cur.description]
         obj = {column[0] :res[0], column[1]:res[1], column[2]:res[2],column[3]:res[3], column[4]:res[4], column[5]:res[5],column[6]:res[6],column[7]:res[7],column[8]:res[8],column[9]:res[9],column[10]:res[10],column[11]:res[11],column[12]:res[12]}
         cur.close()
         conn.close()
-        print(obj)
         return obj
+
+    @classmethod
+    def traerUsuarioCliente(self, usuario):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("select * from usuario_cliente a join cliente b on a.cliente_rut_cliente = b.rut_cliente where a.usuario =" + "'"+usuario+"'")
+        res=cur.fetchone()
+        column = [row[0] for row in cur.description]
+        obj = {column[0] :res[0], column[1]:res[1], column[2]:res[2],column[3]:res[3], column[4]:res[4], column[5]:res[5],column[6]:res[6],column[7]:res[7],column[8]:res[8],column[9]:res[9],column[10]:res[10],column[11]:res[11],column[12]:res[12],column[13]:res[13],column[14]:res[14]}
+        cur.close()
+        conn.close()
+        return obj
+
+    @classmethod 
+    def modificar_usuario_cliente(self, old_name, new_name):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("modificar_usuario_cliente",[old_name, new_name])
+        conn.commit()
+        cur.close()
+        conn.close()
+
+    @classmethod 
+    def modificar_datos_cliente(self, nombre, apellido, email, rut_cliente):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("modificar_datos_cliente",[nombre, apellido, email, rut_cliente])
+        conn.commit()
+        cur.close()
+        conn.close()
 
     class Meta:
         managed = False
@@ -963,3 +1015,6 @@ class Venta(models.Model):
     class Meta:
         managed = False
         db_table = 'venta'
+
+
+

@@ -100,12 +100,12 @@
                                 <tbody>
                                     {%for p in productos%}
                                     <tr>
-                                        <td>{{p.ID_PRODUCTO}}</td>
-                                        <td>{{p.NOMBRE}}</td>
-                                        <td>{{p.NOMBRE_PROVEEDOR}}</td>
-                                        <td>{{p.VALOR_PRODUCTO_COMPRA}}</td>
+                                        <td><small>{{p.ID_PRODUCTO}}</small></td>
+                                        <td><small>{{p.NOMBRE}}</small></td>
+                                        <td><small>{{p.NOMBRE_PROVEEDOR}}</small></td>
+                                        <td><small>{{p.VALOR_PRODUCTO_COMPRA}}</small></td>
                                         <td>
-                                            <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.VALOR_PRODUCTO_COMPRA}}')"><i class="fas fa-plus-circle"></i></a>
+                                            <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.VALOR_PRODUCTO_COMPRA}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_producto" title="Producto: {{p.ID_PRODUCTO}}"></i></a>
                                             
                                         </td>
                                     </tr>
@@ -190,7 +190,7 @@
                         <td>{{poc.TOTAL}}</td>
 
                         <td>
-                            <span><a href="#" onclick="confirmarEliminarProductoOrden('{{poc.ID_ORDEN}}', '{{poc.SKU_PRODUCTO}}', '{{poc.CANTIDAD}}', '{{poc.TOTAL}}')" ><i class="fas fa-trash-alt text-dark"></i></a></span>
+                            <span><a href="#" onclick="confirmarEliminarProductoOrden('{{poc.ID_ORDEN}}', '{{poc.SKU_PRODUCTO}}', '{{poc.CANTIDAD}}', '{{poc.TOTAL}}')" ><i class="fas fa-trash-alt text-dark" data-toggle="tooltip_eliminar_producto" title="Eliminar Producto de Orden"></i></a></span>
                         </td>
                     </tr>
                     {%endfor%}
@@ -282,6 +282,10 @@
         $('#id_cantidad').attr('readonly', true);
         $('#id_precio').attr('readonly', true);
         $('#id_precio_detalle').attr('readonly', true);
+
+
+        $('[data-toggle="tooltip_seleccionar_producto"]').tooltip();
+        $('[data-toggle="tooltip_eliminar_producto"]').tooltip();   
         
 
   $('#example').DataTable({

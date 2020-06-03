@@ -60,7 +60,7 @@
                             <td><small>{{c.rut_empresa}}</small></td>
                             <td><small>{{c.giro}}</small></td>
                             <td class="borrame">
-                                <a onclick="selectCliente({{c.rut_cliente}},'{{c.giro}}')"><i class="fas fa-plus-circle"></i></a>
+                                <a onclick="selectCliente({{c.rut_cliente}},'{{c.giro}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_cliente" title="Cliente: {{c.nombres}}"></i></a>
                             </td>
                         </tr>
 
@@ -105,7 +105,7 @@
                                 <td style = "display:none">{{p.STOCK}}</td>
                                 <td class="borrame">
                                     
-                                    <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}', '{{p.STOCK}}')"><i class="fas fa-plus-circle"></i></a>
+                                    <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}', '{{p.STOCK}}')"><i class="fas fa-plus-circle"  data-toggle="tooltip_seleccionar_producto" title="Stock: {{p.STOCK}}"></i></a>
                                     
                                 </td>
                             </tr>
@@ -192,8 +192,8 @@
                             <td>{{prod.TOTAL}}</td>
                             
                             <td class="borrame">
-                                <span id="icon_borrar" ><a href="#" onclick="confirmarEliminarProductoFactura('{{prod.FACTURA_ID_FACTURA }}' ,'{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}','{{prod.TOTAL}}')" ><i class="fas fa-trash-alt text-dark"></i></a></span>
-                                <a href="#" id="anular_prod" class="mx-3" onclick="confirmarAnularStockFactura('{{prod.FACTURA_ID_FACTURA }}','{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}')"><small>Devolver</small></a>
+                                <span id="icon_borrar" ><a href="#" onclick="confirmarEliminarProductoFactura('{{prod.FACTURA_ID_FACTURA }}' ,'{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}','{{prod.TOTAL}}')" ><i class="fas fa-trash-alt text-dark" data-toggle="tooltip_eliminar_producto" title="Eliminar Producto de Factura"></i></a></span>
+                                <a href="#" id="anular_prod" class="mx-3" onclick="confirmarAnularStockFactura('{{prod.FACTURA_ID_FACTURA }}','{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}')"><i class="fas fa-box-open text-dark" data-toggle="tooltip_devolver_stock" title="Devolver Stock de Producto"></i></a>
                             </td>
                         </tr>
                         {%endfor%}
@@ -368,6 +368,14 @@
             $("#actualizar_fact").attr('disabled', true)
             $(".anular_fact").attr('disabled', true)
         }
+
+
+        $('[data-toggle="tooltip_devolver_stock"]').tooltip();
+        $('[data-toggle="tooltip_eliminar_producto"]').tooltip();    
+
+        $('[data-toggle="tooltip_seleccionar_producto"]').tooltip();    
+
+        $('[data-toggle="tooltip_seleccionar_cliente"]').tooltip();  
 
 
 

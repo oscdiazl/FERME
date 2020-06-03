@@ -41,12 +41,12 @@
                 <tbody>
                     {%for p in productos%}
                     <tr>
-                        <td>{{p.ID_PRODUCTO}}</td>
-                        <td>{{p.NOMBRE}}</td>
-                        <td>{{p.NOMBRE_PROVEEDOR}}</td>
-                        <td>{{p.VALOR_PRODUCTO_COMPRA}}</td>
+                        <td><small>{{p.ID_PRODUCTO}}</small></td>
+                        <td><small>{{p.NOMBRE}}</small></td>
+                        <td><small>{{p.NOMBRE_PROVEEDOR}}</small></td>
+                        <td><small>{{p.VALOR_PRODUCTO_COMPRA}}</small></td>
                         <td>
-                            <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.VALOR_PRODUCTO_COMPRA}}')"><i class="fas fa-plus-circle"></i></a>
+                            <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.VALOR_PRODUCTO_COMPRA}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_producto" title="Producto: {{p.ID_PRODUCTO}}"></i></a>
                             
                         </td>
                     </tr>
@@ -142,7 +142,7 @@
                     <td>{{o.DESCRIPCION}}</td>
                     <td>{{o.TOTAL}}</td>
                     <td>
-                        <a href="{% url 'modificar_orden' o.ID_ORDEN_COMPRA %}"><i class="fas fa-edit text-dark"></i></a>
+                        <a href="{% url 'modificar_orden' o.ID_ORDEN_COMPRA %}"><i class="fas fa-edit text-dark" data-toggle="tooltip_modificar_orden" title="Modificar Orden"></i></a>
                     </td>
                 </tr>
             {%endfor%}
@@ -202,6 +202,9 @@
     $('#id_cantidad').attr('readonly', true);
     $('#id_precio').attr('readonly', true);
     $('#id_precio_detalle').attr('readonly', true);
+
+    $('[data-toggle="tooltip_seleccionar_producto"]').tooltip();  
+    $('[data-toggle="tooltip_modificar_orden"]').tooltip();  
 
 
     jQuery('#id_fecha_solicitud').datetimepicker({

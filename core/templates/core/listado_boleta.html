@@ -51,7 +51,7 @@
                                 <td><small>{{p.PRECIO}}</small></td>
                                 <td style = "display:none"><small>{{p.STOCK}}</small></td>
                                 <td>
-                                    <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}', '{{p.STOCK}}')"><i class="fas fa-plus-circle"></i></a>
+                                    <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}', '{{p.STOCK}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_producto" title="Stock: {{p.STOCK}}"></i></a>
     
                                 </td>
                             </tr>
@@ -141,7 +141,7 @@
                         <td>{{b.total}}</td>
                         <td>{{b.estado_venta_id_estado_venta}}</td>
                         <td>
-                            <a href="{% url 'modificar_boleta' b.id_boleta%}"><i class="fas fa-edit text-dark"></i></a>
+                            <a href="{% url 'modificar_boleta' b.id_boleta%}"><i class="fas fa-edit text-dark" data-toggle="tooltip_modificar_boleta" title="Modificar Boleta"></i></a>
                         </td>
                     </tr>
                 {%endfor%}
@@ -175,7 +175,16 @@
     $('#id_precio').attr('readonly',true);
     $('#id_precio_detalle').attr('readonly',true);
 
+    $('#id_stock').attr('readonly',true);
+
     $('#id_total').attr('readonly',true);
+
+    $('[data-toggle="tooltip_modificar_boleta"]').tooltip();
+
+    $('[data-toggle="tooltip_seleccionar_producto"]').tooltip();      
+
+
+    
 
 
 
