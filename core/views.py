@@ -353,8 +353,7 @@ def change_password(request):
     return render(request, 'registration/change_password.html', data)
 
 def edit_profile(request):
-    usuario = UsuarioCliente.traerUsuarioCliente()
-    print(usuario)
+
     data={
     }
     if request.method == 'POST':
@@ -436,7 +435,8 @@ def modificar_factura(request, id):
         'productos' : productos,
         'productos_factura' : productos_factura, 
         'empleados': empleados, 
-        'venta': venta
+        'venta': venta, 
+        'factura':factura
     }
 
     if request.method == 'POST': 
@@ -544,12 +544,15 @@ def modificar_boleta(request, id):
 
     empleados = Empleado.objects.all()
 
+    id_factura = id
+
     data = {
         'form': BoletaForm(instance=boleta),
         'productos' : productos,
         'productos_boleta' : productosBoleta,
         'empleados': empleados, 
-        'venta' : venta
+        'venta' : venta, 
+        'boleta':boleta
     }
 
     if request.method == 'POST':
@@ -718,3 +721,35 @@ def rechazar_orden_proveedor(request,id):
     except Exception as e:
         print(e)
     return redirect('modificar_consultar_proveedor', id)
+
+
+def anular_stock_factura(request, id, sku, cantidad):
+    Producto.sumarStockFactura(sku, cantidad)
+    return redirect('modificar_factura', id)
+
+def anular_factura(request, id):
+    try:
+        Factura.anular_factura(id)
+        print("Se anulo")
+    except Exception as e:
+        print(e)
+
+    return redirect('modificar_factura', id)
+
+def anular_stock_boleta(request, id, sku, cantidad):
+    try:
+        Producto.sumarStockFactura(sku, cantidad)
+    except Exception as e:
+        print(e)
+    return redirect('modificar_boleta', id)
+
+def anular_boleta(request, id):
+
+    try:
+        Boleta.anular_boleta(id)
+        print("Se Anulo")
+    except Exception as e:
+        print(e)
+
+    return redirect('modificar_boleta', id)
+

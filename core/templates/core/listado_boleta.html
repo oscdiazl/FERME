@@ -130,6 +130,7 @@
                     <tr>
                         <th>Boleta número</th>
                         <th>Total</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -138,6 +139,7 @@
                     <tr>
                         <td>{{b.id_boleta}}</td>
                         <td>{{b.total}}</td>
+                        <td>{{b.estado_venta_id_estado_venta}}</td>
                         <td>
                             <a href="{% url 'modificar_boleta' b.id_boleta%}"><i class="fas fa-edit text-dark"></i></a>
                         </td>

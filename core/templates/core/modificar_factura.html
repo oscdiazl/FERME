@@ -47,7 +47,7 @@
                             <th>Nombre</th>
                             <th>Rut Empresa</th>
                             <th>Giro</th>
-                            <th>Acciones</th>
+                            <th class="borrame">Acciones</th>
                         </tr>
                     </thead>
 
@@ -59,7 +59,7 @@
                             <td><small>{{c.nombres}}</small></td>
                             <td><small>{{c.rut_empresa}}</small></td>
                             <td><small>{{c.giro}}</small></td>
-                            <td>
+                            <td class="borrame">
                                 <a onclick="selectCliente({{c.rut_cliente}},'{{c.giro}}')"><i class="fas fa-plus-circle"></i></a>
                             </td>
                         </tr>
@@ -92,7 +92,7 @@
                                 <th>Proveedor</th>
                                 <th>Valor Venta</th>
                                 <th style = "display:none">Stock</th>
-                                <th>Acciones</th>
+                                <th class="borrame">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,7 +103,7 @@
                                 <td><small>{{p.NOMBRE_PROVEEDOR}}</small></td>
                                 <td><small>{{p.PRECIO}}</small></td>
                                 <td style = "display:none">{{p.STOCK}}</td>
-                                <td>
+                                <td class="borrame">
                                     
                                     <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}', '{{p.STOCK}}')"><i class="fas fa-plus-circle"></i></a>
                                     
@@ -155,8 +155,8 @@
                     
                 </div>
 
-                <input class="btn btn-success" type="submit" value="Actualizar Factura">
-                <a class="btn btn-danger mx-3" href="{% url 'listado_factura' %}">Descartar Cambios</a>
+                <input id="actualizar_fact" class="btn btn-success" type="submit" value="Actualizar Factura">
+                <button class="btn btn-danger mx-3 anular_fact" href="#" onclick="confirmarAnularFactura('{{factura.id_factura}}')">Anular Factura</button>
             </form>
 
     </div>
@@ -177,7 +177,7 @@
                             <th>Cantidad</th>
                             <th>Precio</th>
                             <th>Total</th>
-                            <th>Acciones</th>
+                            <th class="borrame" >Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -191,8 +191,9 @@
                             <td>{{prod.PRECIO}}</td>
                             <td>{{prod.TOTAL}}</td>
                             
-                            <td>
-                                <span><a href="#"  onclick="confirmarEliminarProductoFactura('{{prod.FACTURA_ID_FACTURA }}' ,'{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}','{{prod.TOTAL}}')" ><i class="fas fa-trash-alt text-dark"></i></a></span>
+                            <td class="borrame">
+                                <span id="icon_borrar" ><a href="#" onclick="confirmarEliminarProductoFactura('{{prod.FACTURA_ID_FACTURA }}' ,'{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}','{{prod.TOTAL}}')" ><i class="fas fa-trash-alt text-dark"></i></a></span>
+                                <a href="#" id="anular_prod" class="mx-3" onclick="confirmarAnularStockFactura('{{prod.FACTURA_ID_FACTURA }}','{{prod.ID_PRODUCTO}}','{{prod.CANTIDAD}}')"><small>Devolver</small></a>
                             </td>
                         </tr>
                         {%endfor%}
@@ -206,6 +207,7 @@
                             <th>Cantidad</th>
                             <th>Precio</th>
                             <th>Total</th>
+                            <th class="borrame" >Acciones</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -265,6 +267,75 @@
       })
     }
 
+    function confirmarAnularStockFactura(id_factura, id_producto, cantidad){
+        const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Estas Seguro?',
+        text: "Al Aceptar, devolveras al sistema el stock del producto, para luego anular la factura",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, Devolver Stock del producto',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+        
+            window.location.href = "/anular_stock_factura/"+id_factura+"/"+id_producto+"/"+cantidad+"/";
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'El Stock no fue reinsertado :)',
+            'error'
+          )
+        }
+      })
+    }
+
+
+    function confirmarAnularFactura(id_factura){
+        const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+      })
+      
+      swalWithBootstrapButtons.fire({
+        title: 'Estas Seguro?',
+        text: "Antes de Anular la factura, por favor devuelve al stock los productos asociados a esta",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, Anular Factura',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+        
+            window.location.href = "/anular_factura/"+id_factura+"/";
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'La factura no fue anulada :)',
+            'error'
+          )
+        }
+      })
+    }
+
     $(document).ready(function(){
 
 
@@ -278,6 +349,25 @@
 
         $('#id_rut_cliente').attr('readonly', true);
         $('#id_giro').attr('readonly', true);
+
+        var selectedText = $("#id_estado_venta_id_estado_venta option:selected").html();
+
+        console.log(selectedText);
+
+        if(selectedText === "Anulada"){
+            console.log("Fue anulada")
+
+            $("th").remove('.borrame');
+            $("td").remove('.borrame');
+
+            $('#id_estado_venta_id_estado_venta').attr('disabled', true);
+            $('#id_cantidad').attr('readonly', true);
+            $('#id_stock').attr('readonly', true);
+
+            $("#cboEmpleado").attr('disabled', true)
+            $("#actualizar_fact").attr('disabled', true)
+            $(".anular_fact").attr('disabled', true)
+        }
 
 
 

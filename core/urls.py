@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, productos, listado_proveedor, listado_empleados, listado_orden_compra, sobre_nosotros, modificar_empleado, eliminar_empleado, modificar_proveedor, eliminar_proveedor, modificar_orden, listado_producto, registro_usuario, modificar_producto, change_password, edit_profile, listado_factura, modificar_factura, eliminar_producto_factura, eliminar_producto_oc, listado_boleta, modificar_boleta, eliminar_producto_boleta, recepcion_orden_compra,modificar_recepcion_orden,actualizar_stock_recepcion,aprobar_orden,rechazar_orden,consultar_proveedor,modificar_consultar_proveedor, eliminar_producto_orden_prov, recepcionar_orden_proveedor, rechazar_orden_proveedor
+from .views import home, productos, listado_proveedor, listado_empleados, listado_orden_compra, sobre_nosotros, modificar_empleado, eliminar_empleado, modificar_proveedor, eliminar_proveedor, modificar_orden, listado_producto, registro_usuario, modificar_producto, change_password, edit_profile, listado_factura, modificar_factura, eliminar_producto_factura, eliminar_producto_oc, listado_boleta, modificar_boleta, eliminar_producto_boleta, recepcion_orden_compra,modificar_recepcion_orden,actualizar_stock_recepcion,aprobar_orden,rechazar_orden,consultar_proveedor,modificar_consultar_proveedor, eliminar_producto_orden_prov, recepcionar_orden_proveedor, rechazar_orden_proveedor, anular_stock_factura,anular_factura, anular_stock_boleta, anular_boleta
 
 urlpatterns = [
     path('', home, name="home"),
@@ -45,7 +45,13 @@ urlpatterns = [
     path('rechazar_orden_proveedor/<id>/', rechazar_orden_proveedor, name="rechazar_orden_proveedor"),  
 
     path('consulta_proveedor/', consultar_proveedor, name="consultar_proveedor"), 
-    path('modificar_consultar_proveedor/<id>', modificar_consultar_proveedor, name="modificar_consultar_proveedor")
+    path('modificar_consultar_proveedor/<id>', modificar_consultar_proveedor, name="modificar_consultar_proveedor"), 
+    
+    path('anular_stock_factura/<id>/<sku>/<cantidad>/', anular_stock_factura, name="anular_stock_factura"), 
+    path('anular_factura/<id>/', anular_factura, name="anular_factura"), 
+
+    path('anular_stock_boleta/<id>/<sku>/<cantidad>/', anular_stock_boleta, name="anular_stock_boleta"), 
+    path('anular_boleta/<id>/', anular_boleta, name="anular_boleta")
 
 
 ]
