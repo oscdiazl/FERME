@@ -10,29 +10,82 @@
         
 
     <div class="row mt-5 pt-5">
-        <div class="col-lg-6 text-center justify-content-center align-self-center">
-            <img src="{%  static 'core/img/empleado.png' %}" alt="">
-            <h2 class=" h-100 py-4">Modificar Empleado</h2>
-        </div>
         <div class="col-lg-6">
             <form class="form-group" action="" method="POST">
+                <h3 class="my-5">Datos Empleado</h3>
                 {% csrf_token %}
                     {{form | crispy}}
-    
                 
-                <input class="btn btn-success" type="submit" value="Guardar Cambios">
-                <a class="btn btn-danger" href="{% url 'listado_empleados' %}">Descartar Cambios</a>
-            </form>
+                </div>
 
-            {% if mensaje %}
-            
-            <div class="alert alert-success" role="alert">
-                
-                {{mensaje}}
-            </div>
-            {% endif%}
-        </div>
-    </div>
+                    <div class="col-lg-6">
+                        <h3 class="my-5">Direccion Empleado</h3>
+
+                        <input type="hidden" value="{{direccion_emp.DIRECCION_ID_DIRECCION}}" name="id_dir" id="id_dir">
+
+                        <div class="form-group">
+                            <label for="id_calle_numero text-left">Numero</label>
+                            <input required type="number" class="form-control" name="id_calle_numero" id="id_calle_numero" value="{{direccion_emp.NUMERO}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_calle_direccion text-left">Calle</label>
+                            <input required type="text" class="form-control" name="id_calle_direccion" id="id_calle_direccion" value="{{direccion_emp.CALLE}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_piso text-left">Piso</label>
+                            <input required type="number" class="form-control" name="id_piso" id="id_piso" value="{{direccion_emp.PISO}}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_codigo_postal text-left">Codigo Postal</label>
+                            <input required type="number" class="form-control" name="id_codigo_postal" id="id_codigo_postal" value="{{direccion_emp.CODIGO_POSTAL}}">
+                        </div>
+
+
+                        <label for="cboTipoVivienda">Tipo Vivienda</label>
+                        <select class="form-control" name="cboTipoVivienda" id="cboTipoVivienda">
+                            {% for t in tipo_vivienda%}
+                            <option 
+                            {% if t.id_tipo_vivienda == direccion_emp.TIPO_VIVIENDA_ID_TIPO_VIVIENDA%}
+                            {{'selected'}}
+                            {%endif%}
+                            value="{{t.id_tipo_vivienda}}"  id="cboTipoVivienda">{{t.descripcion}}</option>
+                            {%endfor%}
+                          </select>
+
+
+                          <label for="cboComuna">Comuna</label>
+                          <select class="form-control" name="cboComuna" id="cboComuna">
+                              {% for c in comuna%}
+                              <option 
+                              {% if c.id_comuna == direccion_emp.COMUNA_ID_COMUNA%}
+                              {{'selected'}}
+                              {%endif%}
+                              value="{{c.id_comuna}}"  id="cboComuna">{{c.descripcion}}</option>
+                              {%endfor%}
+                            </select>
+                    </div>
+    
+                <div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <span><input class="btn btn-success" type="submit" value="Guardar Cambios"></span> <span><a class="btn btn-danger" href="{% url 'listado_empleados' %}">Descartar Cambios</a></span>
+                            
+                        </div>
+
+                        <div class="col-lg-12 mt-4">
+                            {% if mensaje %}
+                            <div class="alert alert-success" role="alert">
+                                {{mensaje}}
+                            </div>
+                            {% endif%}
+                        </div>
+                    </div>
+                    
+                </div>
+            </form>
 
 
 </div>

@@ -26,6 +26,9 @@
                 <select class="form-control" name="cboProveedor" id="cboProveedor">
                     {% for p in proveedores%}
                     <option 
+                    {% if p.id_proveedor == prod_proveedor.PROVEEDOR_ID_PROVEEDOR%}
+                    {{'selected'}}
+                    {%endif%}
                     value="{{p.id_proveedor}}">{{p.nombre_proveedor}} </option>
                     {%endfor%}
                 </select>

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm, UserChangeForm
-from .models import Proveedor, Empleado, OrdenCompra, Producto, DetalleOc, EstadoOrden, Producto, Cliente, Direccion, EstadoCli, UsuarioCliente, Factura, Venta, Boleta, Venta
+from .models import Proveedor, Empleado, OrdenCompra, Producto, DetalleOc, EstadoOrden, Producto, Cliente, Direccion, EstadoCli, UsuarioCliente, Factura, Venta, Boleta, Venta, DireccionEmp, TipoVivienda, Comuna
 from .forms import ProveedorForm, EmpleadoForm,OrdenDeCompraForm, ProductoForm, CustomUserForm, DireccionForm, ClienteForm,UserEditForm, FacturaForm, BoletaForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, authenticate
@@ -56,8 +56,6 @@ def listado_empleados(request):
             username = userFormulario.cleaned_data['username']
             password = userFormulario.cleaned_data['password1']
             rut_empleado = formulario.cleaned_data['rut_empleado']
-
-            hash = pbkdf2_sha256.using(rounds=29000).hash(password)
 
             max = Direccion.traerUltimoIdDireccion()
 
@@ -177,14 +175,42 @@ def modificar_orden(request, id):
 def modificar_empleado(request, id):
     empleado = Empleado.objects.get(rut_empleado=id)
 
+    direccion_empleado = Empleado.traerDireccionEmpleado(id)
+
+    tipo_viviendas = TipoVivienda.objects.all()
+
+    comunas = Comuna.objects.all()
+
+    print(direccion_empleado)
+
     data={
-        'form': EmpleadoForm(instance=empleado)
+        'form': EmpleadoForm(instance=empleado), 
+        'direccion_emp': direccion_empleado, 
+        'tipo_vivienda': tipo_viviendas, 
+        'comuna': comunas
     }
 
     if request.method == 'POST':
         formulario = EmpleadoForm(data=request.POST, instance=empleado)
         if formulario.is_valid():
+
+            numero = request.POST.get('id_calle_numero')
+            calle = request.POST.get('id_calle_direccion')
+            piso = request.POST.get('id_piso')
+            codigo_postal = request.POST.get('id_codigo_postal')
+            tipo_vivienda = request.POST.get('cboTipoVivienda')
+            comuna = request.POST.get('cboComuna')
+
+            id_direccion = request.POST.get('id_dir')
+
+            try:
+                Empleado.modificar_direccion_empleado(id_direccion, numero, calle, piso, codigo_postal, tipo_vivienda, comuna)
+                print("Se Actualizo Empleado")
+            except Exception as e:
+                print("No se Actualizo Empleado" + e)
+
             formulario.save()
+            data['direccion_emp'] = Empleado.traerDireccionEmpleado(id)
             data ["mensaje"] = "Modificado Correctamente"
             data['form']  = formulario
             
@@ -255,11 +281,14 @@ def listado_producto(request):
 def modificar_producto(request, id): 
     producto = Producto.objects.get(id_producto=id)
     proveedores = Proveedor.objects.all()
-    """prod_proveedor = Producto.traerProveedorProducto(id)"""
+    prod_proveedor = Producto.traerProveedorProducto(str(id))
+
+    print(prod_proveedor)
     data = {
         'producto': producto,
         'form' : ProductoForm(instance=producto),
-        'proveedores':proveedores
+        'proveedores':proveedores, 
+        'prod_proveedor': prod_proveedor
     }
 
     if request.method == 'POST':
@@ -279,14 +308,6 @@ def registro_usuario(request):
         'formDir':DireccionForm(),
         'estados_cliente':estado_clientes
     }
-
-    passw = b"portafolio2020"
-    hashed = bcrypt.hashpw(passw, bcrypt.gensalt())
-
-    if bcrypt.checkpw(passw, hashed):
-        print('Coinciden')
-    else:
-        print('no coinciden')
 
     if request.method == 'POST':
 
@@ -319,7 +340,9 @@ def registro_usuario(request):
 
                     print(username, password, rut)
 
-                    UsuarioCliente.agregarUsuarioCliente(username, password, rut)
+                    password_1 = make_password(password)
+
+                    UsuarioCliente.agregarUsuarioCliente(username, password_1, rut)
                     Cliente.agregarDireccionCliente(max['ID_MAX'], rut)
 
                     user = authenticate(username=username, password=password)
@@ -343,16 +366,51 @@ def change_password(request):
 
     data={}
 
+    user = request.user
+
     if request.method =='POST':
         form = PasswordChangeForm(data=request.POST, user=request.user)
 
         data = {'form' : form}
 
         if form.is_valid():
+            try:
+                usuario_bd = UsuarioCliente.traerUsuarioEmpleado(str(user).lower())
+                print(usuario_bd)
+                new_pass = request.POST.get('new_password2')
+                print("Es usuario Empleado")
+
+                try:
+                    password_1 = make_password(new_pass)
+                    Empleado.actualizar_pass_empleado(usuario_bd['EMPLEADO_RUT_EMPLEADO'], password_1)
+                    print("Password Fue Actualizada")
+                    data['mensaje'] = "Contrasenia de empleoado fue Modificada Correctamente"
+                except Exception as e:
+                    print("No fue actualizada la pass" + e)
+            except Exception as e:
+                print("No Es usuario Empleado")
+                print(e)
+
+                try:
+                    usuario_bd_cliente = UsuarioCliente.traerUsuarioCliente(str(user).lower())
+                    print("Es Usuario Cliente")
+                    print(usuario_bd_cliente)
+
+                    try:
+                        new_pass = request.POST.get('new_password2')
+                        password_1 = make_password(new_pass)
+
+                        Cliente.actualizar_pass_cliente(usuario_bd_cliente['CLIENTE_RUT_CLIENTE'], password_1)
+                        print("la pass de cliente se actualizo")
+                        data['mensaje'] = "Contrasenia de cliente fue Modificada Correctamente"
+                    except Exception as e:
+                        print("No Se pudo actualizar la pass")
+                except Exception as e: 
+                    print("No Es usuario Cliente")
+                    print(e)
             form.save()
-            data['mensaje'] = "Guardado Correctamente"
             update_session_auth_hash(request, form.user)
-            return redirect('change_password')
+            
     else: 
         form = PasswordChangeForm(user=request.user)
         data = {'form' : form}
