@@ -858,3 +858,52 @@ def anular_boleta(request, id):
 
     return redirect('modificar_boleta', id)
 
+def listado_clientes(request): 
+
+    clientes = Cliente.objects.all()
+
+    data={
+        'clientes': clientes
+    }
+
+    return render(request, 'core/listado_clientes.html', data)
+
+def modificar_cliente(request, id):
+
+    cliente = Cliente.objects.get(rut_cliente=id)
+    direccion_cliente = Cliente.traerDireccionCliente(id)
+
+    tipo_viviendas = TipoVivienda.objects.all()
+    comunas = Comuna.objects.all()
+
+    data ={
+        'form' : ClienteForm(instance=cliente),
+        'direccion_cliente': direccion_cliente, 
+        'tipo_vivienda': tipo_viviendas, 
+        'comuna': comunas
+    }
+
+    if request.method == 'POST': 
+        formulario = ClienteForm(data=request.POST, instance=cliente)
+        if formulario.is_valid():
+            numero = request.POST.get('id_numero')
+            calle = request.POST.get('id_calle')
+            piso = request.POST.get('id_piso')
+            codigo_postal = request.POST.get('id_codigo_postal')
+            tipo_vivienda = request.POST.get('cboTipoVivienda')
+            comuna = request.POST.get('cboComuna')
+            id_direccion = request.POST.get('id_dir')
+
+            try:
+                Empleado.modificar_direccion_empleado(id_direccion, numero, calle, piso, codigo_postal, tipo_vivienda, comuna)
+                print("Se Actualizo Cliente")
+            except Exception as e:
+                print(e)
+
+            formulario.save()
+            data['direccion_cliente'] = Cliente.traerDireccionCliente(id)
+            data['mensaje'] = "Modificado Correctamente"
+            data['form'] = formulario
+
+    return render(request, 'core/modificar_cliente.html', data)
+

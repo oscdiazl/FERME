@@ -1,0 +1,144 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% load crispy_forms_tags %}
+
+
+{%block css%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" >
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css">
+{%endblock%}
+
+{% block contenido%}
+<div class="container my-5 py-5">
+    <div class="mt-5 pt-5">
+        <h3 class="mt-5">Listado Clientes</h3>
+        <hr>
+    </div>
+
+
+    <div>
+        <table id="listado_clientes" class="table table-hover" style="width:100%">
+            <thead class="bg-warning">
+                <tr>
+                    <th>Rut Cliente</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Telefono</th>
+                    <th>Razon Social</th>
+                    <th>Giro</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for c in clientes%}
+                <tr>
+                    <td>{{c.rut_cliente}}</td>
+                    <td>{{c.nombres}}</td>
+                    <td>{{c.apaterno}}</td>
+                    <td>{{c.telefono}}</td>
+                    <td>{{c.razon_social}}</td>
+                    <td>{{c.giro}}</td>
+                    <td>{{c.correo}}</td>
+                    <td>
+                        <a href="{% url 'modificar_cliente' c.rut_cliente %}"><i class="fas fa-edit text-dark" data-toggle="tooltip_modificar_boleta" title="Modificar Boleta"></i></a>
+                    </td>
+                </tr>
+            {%endfor%}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Boleta número</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</div>
+
+<style>
+    .pull-left{
+        float: right !important;
+        margin-top: -20px;
+        padding: 10px 0px;
+    }
+</style>
+{%endblock%}
+
+
+    {% block js%}
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+
+
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<script>
+    $(document).ready(function(){
+
+        $('#listado_clientes').DataTable({
+    dom: 'Bfrtip',
+        buttons: [
+            'copy', 
+            'excel',
+            'pdf', 
+            'print'
+        ],
+    "pageLength": 5,
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left mx-3'></span>",
+          "sLast": "<span class='fa fa-angle-double-right mx-3'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }, 
+
+      buttons: {
+                copyTitle: 'Se Copio el listado de facturas',
+                copySuccess: {
+                    _: '%d columnas copiadas',
+                    1: '1 ligne copiée'
+                }
+            }
+      
+    }
+  });
+
+
+  $('.dataTables_filter').addClass('pull-left');
+    })
+</script>
+{%endblock%}

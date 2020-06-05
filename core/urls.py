@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, productos, listado_proveedor, listado_empleados, listado_orden_compra, sobre_nosotros, modificar_empleado, eliminar_empleado, modificar_proveedor, eliminar_proveedor, modificar_orden, listado_producto, registro_usuario, modificar_producto, change_password, edit_profile, listado_factura, modificar_factura, eliminar_producto_factura, eliminar_producto_oc, listado_boleta, modificar_boleta, eliminar_producto_boleta, recepcion_orden_compra,modificar_recepcion_orden,actualizar_stock_recepcion,aprobar_orden,rechazar_orden,consultar_proveedor,modificar_consultar_proveedor, eliminar_producto_orden_prov, recepcionar_orden_proveedor, rechazar_orden_proveedor, anular_stock_factura,anular_factura, anular_stock_boleta, anular_boleta
+from .views import home, productos, listado_proveedor, listado_empleados, listado_orden_compra, sobre_nosotros, modificar_empleado, eliminar_empleado, modificar_proveedor, eliminar_proveedor, modificar_orden, listado_producto, registro_usuario, modificar_producto, change_password, edit_profile, listado_factura, modificar_factura, eliminar_producto_factura, eliminar_producto_oc, listado_boleta, modificar_boleta, eliminar_producto_boleta, recepcion_orden_compra,modificar_recepcion_orden,actualizar_stock_recepcion,aprobar_orden,rechazar_orden,consultar_proveedor,modificar_consultar_proveedor, eliminar_producto_orden_prov, recepcionar_orden_proveedor, rechazar_orden_proveedor, anular_stock_factura,anular_factura, anular_stock_boleta, anular_boleta, listado_clientes, modificar_cliente
 
 urlpatterns = [
     path('', home, name="home"),
@@ -16,6 +16,7 @@ urlpatterns = [
     path('sobre_nosotros/',sobre_nosotros, name="sobre_nosotros" ), 
 
     path('listado_productos/', listado_producto, name="listado_productos"),
+    path('listado_clientes/', listado_clientes, name="listado_clientes"),
 
     path('modificar_empleado/<id>/', modificar_empleado, name="modificar_empleado"),
     path('modificar_proveedor/<id>/', modificar_proveedor, name="modificar_proveedor"),
@@ -24,6 +25,7 @@ urlpatterns = [
     path('modificar_factura/<id>/',modificar_factura, name="modificar_factura" ),
     path('modificar_boleta/<id>/', modificar_boleta, name="modificar_boleta"),
     path('modificar_recepcion_orden/<id>', modificar_recepcion_orden, name="modificar_recepcion_orden"),
+    path('modificar_cliente/<id>', modificar_cliente, name="modificar_cliente"),
 
     path('change_password/', change_password, name="change_password"),
     path('edit_profile/', edit_profile, name="edit_profile"),

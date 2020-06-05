@@ -1,0 +1,114 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% load crispy_forms_tags %}
+
+
+{%block css%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" >
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css">
+{%endblock%}
+
+{% block contenido%}
+
+<div class="container mt-5 pt-5">
+    <div class="mt-5">
+        <h3 class="my-5 pt-5">Modificar Cliente</h3>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6"> 
+            <h5>Datos Cliente</h5>
+            <hr>
+             <form action="" method="POST">
+                 {% csrf_token %}
+
+                 {{form | crispy}}
+             
+        </div>
+
+        <div class="col-lg-6">
+            <h5>Datos Direccion</h5>
+            <hr>
+
+            <input type="hidden" value="{{direccion_cliente.DIRECCION_ID_DIRECCION}}" name="id_dir" id="id_dir">
+
+            <div class="form-group">
+                <label for="id_numero text-left">Numero</label>
+                <input required type="number" class="form-control" name="id_numero" id="id_numero" value="{{direccion_cliente.NUMERO}}">
+            </div>
+
+            <div class="form-group">
+                <label for="id_calle text-left">Calle</label>
+                <input required type="text" class="form-control" name="id_calle" id="id_calle" value="{{direccion_cliente.CALLE}}">
+            </div>
+
+            <div class="form-group">
+                <label for="id_piso text-left">Piso</label>
+                <input required type="number" class="form-control" name="id_piso" id="id_piso" value="{{direccion_cliente.PISO}}">
+            </div>
+
+            
+            <div class="form-group">
+                <label for="id_codigo_postal text-left">Codigo Postal</label>
+                <input required type="number" class="form-control" name="id_codigo_postal" id="id_codigo_postal" value="{{direccion_cliente.CODIGO_POSTAL}}">
+            </div>
+
+            <label for="cboTipoVivienda">Tipo Vivienda</label>
+            <select class="form-control" name="cboTipoVivienda" id="cboTipoVivienda">
+                {% for t in tipo_vivienda%}
+                <option 
+                {% if t.id_tipo_vivienda == direccion_cliente.TIPO_VIVIENDA_ID_TIPO_VIVIENDA%}
+                {{'selected'}}
+                {%endif%}
+                value="{{t.id_tipo_vivienda}}"  id="cboTipoVivienda">{{t.descripcion}}</option>
+                {%endfor%}
+              </select>
+
+
+              <label for="cboComuna">Comuna</label>
+              <select class="form-control" name="cboComuna" id="cboComuna">
+                  {% for c in comuna%}
+                  <option 
+                  {% if c.id_comuna == direccion_cliente.COMUNA_ID_COMUNA%}
+                  {{'selected'}}
+                  {%endif%}
+                  value="{{c.id_comuna}}"  id="cboComuna">{{c.descripcion}}</option>
+                  {%endfor%}
+                </select>
+
+        </div>
+
+        <div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <span><input class="btn btn-success" type="submit" value="Guardar Cambios"></span> <span><a class="btn btn-danger" href="{% url 'listado_clientes' %}">Descartar Cambios</a></span>
+                    
+                </div>
+
+                <div class="col-lg-12 mt-4">
+                    {% if mensaje %}
+                    <div class="alert alert-success" role="alert">
+                        {{mensaje}}
+                    </div>
+                    {% endif%}
+                </div>
+            </div>
+            
+        </div>
+
+    </form>
+    </div>
+</div>
+
+{%endblock%}
+
+
+{% block js%}
+<script>
+    $(document).ready(function(){
+        
+    })
+</script>
+{%endblock%}

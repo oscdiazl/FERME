@@ -6,6 +6,7 @@
 
 {%block css%}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" >
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css">
 {%endblock%}
 
 {% block contenido%}
@@ -44,6 +45,7 @@
 
     <div class="mt-2 pt-2 container">
         <h5 class="mt-5 pt-2">Listado Proveedores</h5>
+        <hr>
     </div>
 
     <div>
@@ -77,6 +79,14 @@
           </table>
         </div>
     </div>
+
+    <style>
+        .pull-left{
+            float: right !important;
+            margin-top: -20px;
+            padding: 10px 0px;
+        }
+    </style>
 {%endblock%}
 
 
@@ -85,15 +95,36 @@
 
 <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script> 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+
+
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.flash.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
+
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>  
 
 <script>
 
 $(document).ready(function(){
+    
     $('#tabla_proveedores').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 
+            'excel',
+            'pdf', 
+            'print'
+        ],
     "pageLength": 5,
     "language": {
       "sProcessing": "Procesando...",
@@ -120,6 +151,8 @@ $(document).ready(function(){
       }
     }
   });
+
+  $('.dataTables_filter').addClass('pull-left');
 });
         
     var options = {

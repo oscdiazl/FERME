@@ -177,6 +177,19 @@ class Cliente(models.Model):
         cur.close()
         conn.close()
 
+    @classmethod
+    def traerDireccionCliente(self, rut_cliente):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("select * from direccion_cli a join direccion b on a.direccion_id_direccion = b.id_direccion where a.cliente_rut_cliente =" + rut_cliente)
+        res=cur.fetchone()
+        column = [row[0] for row in cur.description]
+        obj = {column[0] :res[0], column[1]:res[1], column[2]:res[2],column[3]:res[3], column[4]:res[4], column[5]:res[5],column[6]:res[6],column[7]:res[7],column[8]:res[8]}
+        cur.close()
+        conn.close()
+        return obj
+
     class Meta:
         managed = False
         db_table = 'cliente'
@@ -376,6 +389,9 @@ class Empleado(models.Model):
 class EstadoCli(models.Model):
     id_estado_cli = models.FloatField(primary_key=True)
     descripcion = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.descripcion
 
     class Meta:
         managed = False
