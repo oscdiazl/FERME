@@ -14,10 +14,22 @@ from django.contrib.auth.hashers import make_password
 # Create your views here.
 
 def home(request):
-    return render(request, 'core/home.html')
+    prod_tipo_taladro = Producto.objects.filter(tipo_producto_id_tipo_producto=2)
+    data ={
+        'prod_tipo_taladro': prod_tipo_taladro
+    }
+    return render(request, 'core/home.html', data)
 
 def productos(request):
-    return render(request, 'core/productos.html')
+    prod_cerraduras = Producto.objects.filter(tipo_producto_id_tipo_producto=21)
+    prod_herramientas_manuales = Producto.objects.filter(tipo_producto_id_tipo_producto=22)
+    productos = Producto.objects.all()
+    data ={
+        'prod_tipo_cerradura': prod_cerraduras, 
+        'prod_herramientas_manuales': prod_herramientas_manuales, 
+        'productos': productos
+    }
+    return render(request, 'core/productos.html', data)
 
 @login_required
 def listado_proveedor(request):

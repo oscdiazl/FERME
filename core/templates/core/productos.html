@@ -8,38 +8,18 @@
     <div class="glide">
       <div class="glide__track" data-glide-el="track">
         <ul class="glide__slides">
-          <li class="glide__slide">
-              <img src="{%  static 'core/img/producto1.jpeg' %}" alt="">
-              <p class="pt-3 pl-2 pr-4">Sierra circular 7¼'' 1200W + maleta HS7600K Makita</p>
-              <p class=" pl-2">Precio: 69.990</p>
-              <a href="" class=" text-dark mt-3 pl-2"><small class="">Agregar Al Carrito</small></a>
-          </li>
-          <li class="glide__slide">
-            <img src="{%  static 'core/img/producto5.jpeg' %}" alt="">
-            <p class="pt-3 pl-2 pr-4">Pileta 110 x 50 x 40mm sanitaria pvc básica Hoffens</p>
-            <p class=" pl-2">Precio: 2.090</p>
-            <a href="" class=" text-dark mt-3 pl-2"><small class="">Agregar Al Carrito</small></a>
-          </li>
-          <li class="glide__slide">
-            <img src="{%  static 'core/img/producto6.jpeg' %}" alt="">
-            <p class="pt-3 pl-2 pr-4">Extensión eléctrica 15 m ME-1215 + alargador múltiple 1,5 m ME-204W1 Macrotel</p>
-            <p class=" pl-2">Precio: 15.990</p>
-            <a href="" class=" text-dark mt-3 pl-2"><small class="">Agregar Al Carrito</small></a>
-          </li>
-
-          <li class="glide__slide">
-            <img src="{%  static 'core/img/producto7.jpeg' %}" alt="">
-            <p class="pt-3 pl-2 pr-4">Pack 2 candados estándar interior bronce 25mm SB Odis</p>
-            <p class=" pl-2">Precio: 9.790</p>
-            <a href="" class=" text-dark mt-3 pl-2"><small class="">Agregar Al Carrito</small></a>
-          </li>
-
-          <li class="glide__slide">
-            <img src="{%  static 'core/img/producto8.jpeg' %}" alt="">
-            <p class="pt-3 pl-2 pr-4">Cerradura embutida manilla acceso negra Colonial 1084-935 Scanavini</p>
-            <p class=" pl-2">Precio: 41.390</p>
-            <a href="" class=" text-dark mt-3 pl-2"><small class="">Agregar Al Carrito</small></a>
-          </li>
+          {% for p in productos%}
+            <li class="glide__slide">
+                <img src="{{p.imagen.url}}" alt="">
+                <p>{{c.nombre}}</p>
+                <p><small>{{p.id_producto}}</small></p>
+                <hr>
+                <p><small>Quedan: {{p.stock}}</small></p>
+                <p><small>Precio: {{p.precio}}</small></p>
+                <hr>
+                <a href="" class=" text-dark mt-3 pl-2"><small class="">Agregar Al Carrito</small></a>
+            </li>
+          {% endfor%}
         </ul>
       </div>
 
@@ -53,140 +33,36 @@
     <h5>CERRADURAS</h5>
 
     <div class="row p-3"> 
+
+      {%for c in prod_tipo_cerradura%}
       <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto9.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Cerradura pomo dormitorio/baño bola envejecido Arnik</p>
-
-        <p>Precio: 10.590</p>
+        <img src="{{c.imagen.url}}" alt="..." class="img-responsive w-100">
+        <p>{{c.nombre}}</p>
+        <p><small>{{c.id_producto}}</small></p>
+        <hr>
+        <p><small>Quedan: {{c.stock}}</small></p>
+        <p><small>Precio: {{c.precio}}</small></p>
+        <hr>
         <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
       </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto10.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Cerradura embutida pomo acceso 6180 negro Scanavini</p>
-
-        <p>Precio: 47.690</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3  p-1">
-        <img src="{%  static 'core/img/producto11.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Cerradura cilíndrica pomo dormitorio plata antibacteriana Bash</p>
-        
-
-        <p>Precio: 13.990</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto12.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Cerradura tubular manilla acceso plata antibacteriana Bash</p>
-
-        <p>Precio: 15.990</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto13.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Cerradura tubular pomo oficina/dormitorio plata 4040 Scanavini</p>
-
-        <p>Precio: 29.690</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto14.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Cerradura sobreponer puertas de 30 mm cerrojo antipalanca Security negro Poli</p>
-
-        <p>Precio: 32.290</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto15.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Cerradura embutida manilla acceso 1/2 izquierda plata B60 Yale</p>
-
-        <p>Precio: 29.690</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto16.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Cerradura tubular pomo acceso/bodega plata 4043 Scanavini</p>
-
-        <p>Precio: 34.990</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
+      {%endfor%}
 
     </div>
 
     <h5 class="py-5">HERRAMIENTAS MANUALES</h5>
 
     <div class="row p-3"> 
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto17.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Juego destornilladores 6 piezas Stanley</p>
-
-        <p>Precio: 6.990</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto18.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Engrapadora 10-14mm Hela</p>
-
-        <p>Precio: 10.390</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3  p-1">
-        <img src="{%  static 'core/img/producto19.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Juego herramienta BMT125C-LA 125 piezas Black+Decker</p>
-        
-
-        <p>Precio: 16.990</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto20.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Caja herramientas 13'' azul Robust</p>
-
-        <p>Precio: 4.990</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto21.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Arco de sierra 12'' 20-206 Stanley</p>
-
-        <p>Precio: 6.090</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto22.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Caja de herramientas 60 litros 4750PTBW47 negro Bahco</p>
-
-        <p>Precio: 37.290</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto23.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Martillo mecánico 0,45kg Robust</p>
-
-        <p>Precio: 1.690</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
-
-      <div class="col-lg-3 p-1">
-        <img src="{%  static 'core/img/producto24.jpeg' %}" alt="..." class="img-responsive w-100">
-        <p>Huincha de medir metálica largo 3.0m S@nlon</p>
-
-        <p>Precio: 1.990</p>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-      </div>
+      {% for h in prod_herramientas_manuales%}
+        <div class="col-lg-3 p-1">
+          <img src="{{h.imagen.url}}" alt="..." class="img-responsive w-100">
+          <p>{{h.nombre}}</p>
+          <p><small>{{h.id_producto}}</small></p>
+          <hr>
+          <p><small>Quedan: {{h.stock}}</small></p>
+          <p><small>Precio: {{h.precio}}</small></p>
+          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
+        </div>
+      {%endfor%}
 
     </div>
 
@@ -197,18 +73,7 @@
 {%block js%}
 <script>
         
-    var options = {
-      strings: ["Ferreteria FERME", "Agradece su Preferencia"],
-      typeSpeed: 30,
-          typeSpeed: 30,
-          startDelay: 1000,
-          backSpeed: 20,
-          backDelay: 500,
-          loop: true,
-          
-      };
 
-      var typed = new Typed('.element', options);
 
       const config1 = {
       autoplay:1300,

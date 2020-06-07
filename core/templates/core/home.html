@@ -32,38 +32,19 @@
       <h3 class="py-5">Productos Mas Vendidos</h3>
 
       <div class="row p-3"> 
-        <div class="col-lg-3 p-1">
-          <img src="{%  static 'core/img/producto1.jpeg' %}" alt="..." class="img-responsive w-100">
-          <p>Sierra circular 7¼'' 1200W + maleta HS7600K Makita</p>
 
-          <p>Precio: 69.990</p>
-          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-        </div>
-
-        <div class="col-lg-3 p-1">
-          <img src="{%  static 'core/img/producto2.jpeg' %}" alt="..." class="img-responsive w-100">
-          <p>Taladro inalámbrico 12V 10mm CD121K100 + 100 accesorios Black+Decker</p>
-
-          <p>Precio: 37.990</p>
-          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-        </div>
-
-        <div class="col-lg-3  p-1">
-          <img src="{%  static 'core/img/producto3.jpeg' %}" alt="..." class="img-responsive w-100">
-          <p>Gancho mini clear 6 unidades Command Black Decker</p>
-          
-
-          <p>Precio: 3.990</p>
-          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-        </div>
-
-        <div class="col-lg-3 p-1">
-          <img src="{%  static 'core/img/producto4.jpeg' %}" alt="..." class="img-responsive w-100">
-          <p>Adhesivo PVC 240 cc humedad con aplicador Vinilit</p>
-
-          <p>Precio: 2.990</p>
-          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
-        </div>
+        {%for p in prod_tipo_taladro%}
+          <div class="col-lg-3 p-1">
+            <img src="{{p.imagen.url}}" alt="..." class="img-responsive w-100">
+            <p>{{p.nombre}}</p>
+            <p><small>{{p.id_producto}}</small></p>
+            <hr>
+            <p><small>Quedan: {{p.stock}}</small></p>
+            <p><small>Precio: {{p.precio}}</small></p>
+            <hr>
+            <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
+          </div>
+        {%endfor%}
 
       </div>
 

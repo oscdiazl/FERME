@@ -201,6 +201,8 @@
   // Call the dataTables jQuery plugin
   $(document).ready(function() {
 
+    $("#id_estado_orden_id_estado").prop("selectedIndex", 1);
+
 
       $("#id_proveedor_id_proveedor").change(function(){
 
@@ -307,6 +309,12 @@
   });
 
   $('.dataTables_filter').addClass('pull-left');
+
+
+  $('#id_proveedor_id_proveedor').change(function(){
+      console.log($(this).find('option:selected').text());
+      $("#listado_productos").DataTable().search($(this).find('option:selected').text()).draw();
+  });
 });
 
 

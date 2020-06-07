@@ -148,6 +148,7 @@
                         </div>
 
                         <input type="submit" class="btn btn-success" name="btnGuardar" value="Actualizar Orden"/>
+                        <a href="#" class="btn btn-danger" onclick="confirmarAnularOrden('{{orden.ID_ORDEN_COMPRA}}')">Anular Orden</a>
 
 
                         
@@ -234,8 +235,8 @@
 
         const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
-          confirmButton: 'btn btn-success',
-          cancelButton: 'btn btn-danger'
+          confirmButton: 'btn btn-success mx-2 my-1',
+          cancelButton: 'btn btn-danger mx-2 my-1'
         },
         buttonsStyling: false
       })
@@ -245,7 +246,7 @@
         text: "No Puedes Revertir Esta Accion!",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Si, Eliminar Producto de Orden de Compra',
+        confirmButtonText: 'Si, Eliminar Producto de Orden de Compra.',
         cancelButtonText: 'No, cancelar!',
         reverseButtons: true
       }).then((result) => {
@@ -269,10 +270,11 @@
   $(document).ready(function() {
       //      jQuery.datetimepicker.setLocale('es');
 
-    var selectedText = $("#id_proveedor_id_proveedor option:selected").html();
-
+    var selectedText = $("#cboProveedor option:selected").html();
 
     
+
+    console.log(selectedText)
 
       jQuery('#txtFechaSolicitud').datetimepicker({
           format: 'd-M-y',
@@ -317,6 +319,8 @@
 
   });
 
+  $("#example").DataTable().search($("#cboProveedor option:selected").html()).draw();
+
 
   $('#example1').DataTable({
     "pageLength": 5,
@@ -349,6 +353,7 @@
   $('#id_cantidad, #id_precio_detalle').change(function(){
       calcularDetalle();
   });
+
 
   $('#cboProveedor').change(function(){
       console.log($(this).find('option:selected').text());
@@ -405,6 +410,56 @@ function calcularDetalle(){
     $("#txtTotal").val(Math.round(total_final));
 
 
+}
+
+
+function confirmarAnularOrden(idoc){
+
+    var estado_orden = $("#cboEstado option:selected").html();
+
+    if(estado_orden == "Enviada a Proveedor"){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'La Orden ya fue enviada, contacta a tu proveedor.'
+            })
+    }else{
+         
+const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success mx-2',
+            cancelButton: 'btn btn-danger mx-2'
+        },
+        buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+        title: 'Estas Seguro?',
+        text: "No Puedes revertir esta accion!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si, Anular Orden!',
+        cancelButtonText: 'No, cancelar!',
+        reverseButtons: true
+        }).then((result) => {
+        if (result.value) {
+            swalWithBootstrapButtons.fire(
+            'Anulada!',
+            'La orden ha sido anulada.',
+            'success'
+            )
+        } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+        ) {
+            swalWithBootstrapButtons.fire(
+            'Cancelado',
+            'La Orden no fue anulada',
+            'error'
+            )
+        }
+        })
+    }
 }
     </script>
 {%endblock%}
