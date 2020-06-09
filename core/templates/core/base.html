@@ -20,6 +20,36 @@
     {%endblock%}
 </head>
 <body>
+
+  <style>
+        
+    .submenu {
+        position: relative;
+    }
+
+    .submenu #carrito{
+        display: none;
+    }
+
+    .submenu:hover #carrito{
+        display: block;
+        position: absolute;
+        right:0;
+        top:100%;
+        z-index: 1;
+        background-color: white;
+        padding: 20px;
+        min-height: 650px;
+        min-width: 500px;
+    }
+
+    .borrar-curso-carrito {
+    border-radius: 50%;
+    padding: 10px 10px;
+    text-decoration: none;
+    font-weight: bold;
+    }
+  </style>
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container">
           <a class="navbar-brand" href="/"><img src="{%  static 'core/img/ferme2.jpg' %}" class="img-responsive logo-img" alt="Logo del sitio web"></a>
@@ -38,6 +68,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'listado_clientes' %}">Clientes</a>
               </li>
+
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'productos' %}">Productos</a>
               </li>
@@ -87,10 +118,6 @@
               </li>
               {%endif%}
 
-              <li class="nav-item">
-                <a class="nav-link" href="#contact"><i class="fas fa-shopping-cart "></i></a>
-              </li>
-
               {% if user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'edit_profile'%}">Bienvenido: {{user.username }}</a>
@@ -104,6 +131,29 @@
                 <a class="nav-link" href="{% url 'registro_usuario' %}"> Registrarse </a>
               </li>
               {% endif %}
+
+              
+              <li class="submenu nav-item">
+                <img src="{%  static 'core/img/cart.png' %}" id="img-carrito" width="25px">
+                <div id="carrito">
+                        
+                        <table id="lista-carrito" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>SKU</th>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <a href="#" id="pedido" class="btn btn-outline-success w-100 my-2">Ir Al Pedido</a>
+                        <a href="#" id="vaciar-carrito" class="btn btn-outline-danger w-100">Vaciar Carrito</a>
+                </div>
+                </li>
+
             </ul>
           </div>
         </div>
@@ -212,6 +262,8 @@
     
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <script src="{%  static 'core/js/carrito.js' %}"></script>
 
 
     

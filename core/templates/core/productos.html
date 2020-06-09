@@ -17,7 +17,7 @@
                 <p><small>Quedan: {{p.stock}}</small></p>
                 <p><small>Precio: {{p.precio}}</small></p>
                 <hr>
-                <a href="" class=" text-dark mt-3 pl-2"><small class="">Agregar Al Carrito</small></a>
+                <a href="#" class=" text-dark mt-3 pl-2"><small class="">Agregar Al Carrito</small></a>
             </li>
           {% endfor%}
         </ul>
@@ -27,7 +27,7 @@
     </div>
 
 
-  <div class="container-fluid py-5">
+  <div class="container-fluid py-5" id="lista-productos">
 
     <h3 class="py-4">Categorias</h3>
     <h5>CERRADURAS</h5>
@@ -37,13 +37,13 @@
       {%for c in prod_tipo_cerradura%}
       <div class="col-lg-3 p-1">
         <img src="{{c.imagen.url}}" alt="..." class="img-responsive w-100">
-        <p>{{c.nombre}}</p>
-        <p><small>{{c.id_producto}}</small></p>
+        <p class="nombre_prod">{{c.nombre}}</p>
+        <p><small class="id_prod">{{c.id_producto}}</small></p>
         <hr>
-        <p><small>Quedan: {{c.stock}}</small></p>
-        <p><small>Precio: {{c.precio}}</small></p>
+        <p><small class="stock_prod">Quedan: {{c.stock}}</small></p>
+        <p><small class="">Precio: <span class="precio_prod">{{c.precio}}</span></small></p>
         <hr>
-        <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
+        <a href="#" class="boton-carrito text-dark agregar-carrito">Agregar Al Carrito</a>
       </div>
       {%endfor%}
 
@@ -55,12 +55,12 @@
       {% for h in prod_herramientas_manuales%}
         <div class="col-lg-3 p-1">
           <img src="{{h.imagen.url}}" alt="..." class="img-responsive w-100">
-          <p>{{h.nombre}}</p>
-          <p><small>{{h.id_producto}}</small></p>
+          <p class="nombre_prod">{{h.nombre}}</p>
+          <p><small class="id_prod">{{h.id_producto}}</small></p>
           <hr>
-          <p><small>Quedan: {{h.stock}}</small></p>
-          <p><small>Precio: {{h.precio}}</small></p>
-          <a href="" class="boton-carrito text-dark"><small>Agregar Al Carrito</small></a>
+          <p><small class="stock_prod">Quedan: {{h.stock}}</small></p>
+          <p><small>Precio: <span class="precio_prod">{{h.precio}}</span></small></p>
+          <a href="#" class="boton-carrito text-dark agregar-carrito">Agregar Al Carrito</a>
         </div>
       {%endfor%}
 
@@ -89,4 +89,5 @@
     }
     new Glide('.glide2', config2).mount()
 </script>
+
 {%endblock%}

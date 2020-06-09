@@ -444,13 +444,13 @@ def edit_profile(request):
                 usuario_bd = UsuarioCliente.traerUsuarioEmpleado(str(new_name).lower())
                 print("Existe Usuario Empleado")
                 nombre = request.POST.get('first_name')
-                apellido = request.POST.get('last_name')
+                apellido = request.POST.get('last_name').split(" ")
                 email = request.POST.get('email')
 
                 print(nombre, apellido, email, usuario_bd['EMPLEADO_RUT_EMPLEADO'], new_name)
 
                 try:
-                    Empleado.modificarDatosEmpleado(nombre, apellido, email, usuario_bd['EMPLEADO_RUT_EMPLEADO'])
+                    Empleado.modificarDatosEmpleado(nombre, apellido[0], email, usuario_bd['EMPLEADO_RUT_EMPLEADO'])
                 except Exception as e:
                     print(e)
             except Exception as e: 
@@ -463,9 +463,9 @@ def edit_profile(request):
 
                     try:
                         nombre = request.POST.get('first_name')
-                        apellido = request.POST.get('last_name') 
+                        apellido = request.POST.get('last_name').split(" ") 
                         email = request.POST.get('email')
-                        UsuarioCliente.modificar_datos_cliente(nombre, apellido, email, usuario_bd_cliente['CLIENTE_RUT_CLIENTE'])
+                        UsuarioCliente.modificar_datos_cliente(nombre, apellido[0],apellido[1], email, usuario_bd_cliente['CLIENTE_RUT_CLIENTE'])
                         print("Se Guardadron los datos del cliente")
                     except Exception as e:
                         print("No se guardaron los nuevos datos del cliente")
@@ -477,11 +477,12 @@ def edit_profile(request):
 
         if form.is_valid():
             form.save()
-            
+            data['mensaje'] = "Guardado Correctamente"
             return redirect('edit_profile')
     else: 
         form = UserEditForm(instance=request.user)
         data = {'form' : form}
+        
     return render(request, 'registration/edit_profile.html', data)
 
 
@@ -514,9 +515,10 @@ def listado_factura(request):
 
             rut_cliente = request.POST.get('id_rut_cliente')
             empleado_rut_empleado = request.POST.get('cboEmpleado')
+            fecha_venta = date.today()
 
             Factura.agregarDetalleFactura(ultima_factura['ID_MAX'],id_producto, cantidad)
-            Factura.agregarVentaFactura(rut_cliente, '070903',ultima_factura['ID_MAX'], empleado_rut_empleado)
+            Factura.agregarVentaFactura(rut_cliente, fecha_venta,ultima_factura['ID_MAX'], empleado_rut_empleado)
 
             ultima_venta = Venta.traerUltimoIdVenta()
 
@@ -788,7 +790,7 @@ def consultar_proveedor(request):
         if len(ordenes_proveedor) > 0:
             data['ordenes_prov'] = ordenes_proveedor
         else:
-            data['error'] = "No Existe Proveedor"
+            data['error'] = "No Hay Ordenes Asociadas al Proveedor"
 
     return render(request, 'core/consulta_proveedor.html', data)
 

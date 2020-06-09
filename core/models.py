@@ -861,7 +861,7 @@ class Proveedor(models.Model):
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
         conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
         cur = conn.cursor()
-        cur.execute("select a.id_orden_compra, a.fecha_solicitud, b.rut_proveedor, b.nombre_proveedor,c.descripcion estado, a.total from orden_compra a join proveedor b on a.proveedor_id_proveedor = b.id_proveedor join estado_orden c on a.estado_orden_id_estado = c.id_estado where b.rut_proveedor =" + rut_proveedor)
+        cur.execute("select a.id_orden_compra, a.fecha_solicitud, b.rut_proveedor, b.nombre_proveedor,c.descripcion estado, a.total from orden_compra a join proveedor b on a.proveedor_id_proveedor = b.id_proveedor join estado_orden c on a.estado_orden_id_estado = c.id_estado where c.descripcion = 'Enviada a Proveedor' and b.rut_proveedor =" + rut_proveedor)
         columns = [column[0] for column in cur.description]
         productosOrden = []
         for row in cur.fetchall():
@@ -977,11 +977,11 @@ class UsuarioCliente(models.Model):
         conn.close()
 
     @classmethod 
-    def modificar_datos_cliente(self, nombre, apellido, email, rut_cliente):
+    def modificar_datos_cliente(self, nombre, apellido,apmaterno, email, rut_cliente):
         dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
         conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
         cur = conn.cursor()
-        cur.callproc("modificar_datos_cliente",[nombre, apellido, email, rut_cliente])
+        cur.callproc("modificar_datos_cliente",[nombre, apellido,apmaterno, email, rut_cliente])
         conn.commit()
         cur.close()
         conn.close()
