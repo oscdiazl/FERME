@@ -149,7 +149,7 @@
                             </thead>
                             <tbody></tbody>
                         </table>
-                        <a href="#" id="pedido" class="btn btn-outline-success w-100 my-2">Ir Al Pedido</a>
+                        <a href="{% url 'pedido' %}" onclick="pedido()"  class="btn btn-outline-success w-100 my-2">Ir Al Pedido</a>
                         <a href="#" id="vaciar-carrito" class="btn btn-outline-danger w-100">Vaciar Carrito</a>
                 </div>
                 </li>
@@ -173,6 +173,10 @@
                 <li>Cuenta</li>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'consultar_proveedor' %}"> Consultar Proveedor </a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'reportes' %}"> Reportes </a>
                 </li>
               </ul>
             </div>
@@ -225,8 +229,14 @@
         <script src="node_modules/@glidejs/glide/dist/glide.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
 
+        <script>
+          function pedido(){
+            window.location.href = "/pedido/";
+          }
+        </script>
+
       {%block js%}
-              <script>
+      <script>
         const config1 = {
           autoplay:2000,
           type:'carousel', 
@@ -240,18 +250,6 @@
           perView: 4
         }
         new Glide('.glide2', config2).mount()
-
-        var options = {
-          strings: ["", ""],
-          typeSpeed: 30,
-		      typeSpeed: 30,
-		      startDelay: 1000,
-		      backSpeed: 20,
-		      backDelay: 500,
-		      loop: true,
-          };
-
-        var typed = new Typed('.element', options);
         
       </script>
 
@@ -263,7 +261,6 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-    <script src="{%  static 'core/js/carrito.js' %}"></script>
 
 
     

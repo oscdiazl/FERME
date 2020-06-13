@@ -7,6 +7,7 @@ const lista_productos_carrito = document.querySelector('#lista-carrito tbody');
 
 const vaciarCarritoBtn = document.getElementById('vaciar-carrito'); 
 
+
 //Listeners
 
 cargarEventListeners(); 
@@ -103,6 +104,8 @@ function vaciarCarrito(e){
         lista_productos_carrito.removeChild(lista_productos_carrito.firstChild);
     }
 
+    vaciarLocalStorage(); 
+
     return false;
 }
 
@@ -173,4 +176,9 @@ function eliminarProductoLocalStorage(producto_id){
     }); 
 
     localStorage.setItem('productos', JSON.stringify(productosLS) )
+}
+
+
+function vaciarLocalStorage(){
+    localStorage.clear(); 
 }

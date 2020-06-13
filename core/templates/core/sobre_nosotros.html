@@ -101,4 +101,112 @@
   var typed = new Typed('.element', options);
   
 </script>
+
+<script>
+
+    const carrito = document.getElementById('carrito');
+    const lista_productos_carrito = document.querySelector('#lista-carrito tbody'); 
+
+    const vaciarCarritoBtn = document.getElementById('vaciar-carrito'); 
+
+    cargarEventListeners(); 
+
+
+    function cargarEventListeners(){
+        //Al cargar el documento, mostrar productos desde locals
+        document.addEventListener('DOMContentLoaded', leerLocalStorage)
+
+          //Cuando se elimina un producto del carrito
+        carrito.addEventListener('click', eliminarProductoDeCarrito);
+
+        vaciarCarritoBtn.addEventListener('click', vaciarCarrito);
+
+    }
+
+    function vaciarCarrito(e){
+
+    while(lista_productos_carrito.firstChild){
+        lista_productos_carrito.removeChild(lista_productos_carrito.firstChild);
+    }
+    vaciarLocalStorage(); 
+
+    return false;
+    }
+
+        //Comprueba que haya elementos en locals
+    function obtenerProductosLocalStorage(){
+        let productos_localStorage; 
+
+        //Comprobar si hay algo en locals
+
+        if(localStorage.getItem('productos') === null){
+            productos_localStorage = []
+        }else{
+            productos_localStorage = JSON.parse( localStorage.getItem('productos') );
+        }
+
+        return productos_localStorage;
+    }
+
+
+
+    //mostrar productos desde locals
+    function leerLocalStorage(){
+        let productosLocalStorage; 
+
+        productosLocalStorage = obtenerProductosLocalStorage();
+
+        productosLocalStorage.forEach(infoProducto => {
+            const row = document.createElement('tr');
+
+            row.innerHTML = `
+                <td> <img src="${infoProducto.imagen}" width="70px">  </td>
+                <td><small>${infoProducto.id_producto}</small></td>
+                <td><small>${infoProducto.nombre_producto}</small></td>
+                <td><small>${infoProducto.precio_producto}</small></td>
+                <td>
+                    <a href="#" class="borrar-curso-carrito" data-id="${infoProducto.id_producto}">X</a>
+                </td>
+                <td></td>
+            `;
+        
+            lista_productos_carrito.appendChild(row);
+        });
+    }
+
+
+    
+  function eliminarProductoDeCarrito(e){
+        e.preventDefault();
+
+        let producto, productoId;
+
+        if(e.target.classList.contains('borrar-curso-carrito')){
+          e.target.parentElement.parentElement.remove();
+          producto = e.target.parentElement.parentElement;
+          productoId = producto.querySelector('a').getAttribute('data-id');
+        }
+
+        eliminarProductoLocalStorage(productoId)
+    }
+
+    function eliminarProductoLocalStorage(producto_id){
+    let productosLS; 
+
+    productosLS = obtenerProductosLocalStorage();
+
+    productosLS.forEach(function(productoLS, index) {
+        if(productoLS.id_producto === producto_id){
+            productosLS.splice(index, 1);
+        }
+    }); 
+
+    localStorage.setItem('productos', JSON.stringify(productosLS) )
+  }
+
+  
+function vaciarLocalStorage(){
+    localStorage.clear(); 
+}
+ </script>
 {%endblock%}

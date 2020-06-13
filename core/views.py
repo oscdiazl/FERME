@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm, UserChangeForm
-from .models import Proveedor, Empleado, OrdenCompra, Producto, DetalleOc, EstadoOrden, Producto, Cliente, Direccion, EstadoCli, UsuarioCliente, Factura, Venta, Boleta, Venta, DireccionEmp, TipoVivienda, Comuna
+from .models import Proveedor, Empleado, OrdenCompra, Producto, DetalleOc, EstadoOrden, Producto, Cliente, Direccion, EstadoCli, UsuarioCliente, Factura, Venta, Boleta, Venta, DireccionEmp, TipoVivienda, Comuna, EstadoPedido, Pedido
 from .forms import ProveedorForm, EmpleadoForm,OrdenDeCompraForm, ProductoForm, CustomUserForm, DireccionForm, ClienteForm,UserEditForm, FacturaForm, BoletaForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, authenticate
@@ -921,3 +921,80 @@ def modificar_cliente(request, id):
 
     return render(request, 'core/modificar_cliente.html', data)
 
+
+def pedido(request): 
+    estados_pedido = EstadoPedido.objects.all()
+    comunas = Comuna.objects.all()
+
+    user = request.user
+
+    
+
+    data = {
+        'estado_ped' : estados_pedido, 
+        'comunas': comunas
+    }
+
+    if request.method == 'POST': 
+        estado_pedido = request.POST.get('cboEstadoPedido')
+        fecha_recepcion = request.POST.get('fecha_recep')
+        fecha_pedido = request.POST.get('fecha_ped')
+        detalle_pedido = request.POST.get('txtDetallePedido')
+        direccion_pedido = request.POST.get('txtDireccion')
+        comuna_pedido = request.POST.get('cboComuna')
+
+        print(estado_pedido, fecha_recepcion, fecha_pedido, detalle_pedido, direccion_pedido, comuna_pedido)
+
+        try:
+            usuario_bd_cliente = UsuarioCliente.traerUsuarioCliente(str(user).lower())
+            print("Datos Del CLiente")
+            print(usuario_bd_cliente)
+            Pedido.insertar_pedido(estado_pedido, fecha_recepcion, fecha_pedido, detalle_pedido, direccion_pedido, comuna_pedido)
+            data['mensaje'] = "Pedido Agregado Correctamente"
+        except Exception as e: 
+            print(e)
+            data['error'] = "Pedido no pudo ser agregado"
+
+
+    return render(request, 'core/pedido.html', data)
+
+def reportes(request):
+    data = {}
+
+    if request.method == 'POST' and 'btnVentasAcumuladas' in request.POST:
+        getMes = request.POST.get('nombre_mes')
+        anio = getMes.split('-')[0]
+        mes = getMes.split('-')[1]
+        reporteVentaTotal = Venta.reporteVentasTotal(mes,anio)
+        print(reporteVentaTotal)
+        data['reporteVentaTotal'] = reporteVentaTotal
+    elif request.method == 'POST' and 'btnBoletasMensuales' in request.POST:
+        getMes = request.POST.get('mes_boletas')
+        anio = getMes.split('-')[0]
+        mes = getMes.split('-')[1]
+        reporteBoleta = Boleta.reporteBoleta(mes,anio)
+        print(reporteBoleta)
+        data['reporteBoleta'] = reporteBoleta
+    elif request.method == 'POST' and 'btnFacturasMensuales' in request.POST:
+        getMes = request.POST.get('mes_facturas')
+        anio = getMes.split('-')[0]
+        mes = getMes.split('-')[1]
+        reporteFactura = Factura.reporteFactura(mes, anio)
+        print(reporteFactura)
+        data['reporteFactura'] = reporteFactura
+    elif request.method == 'POST' and 'btnCantidadVentas' in request.POST:
+        getMes = request.POST.get('cantidad_ventas_mes')
+        anio = getMes.split('-')[0]
+        mes = getMes.split('-')[1]
+        reporteVenta = Venta.reporteVenta(mes,anio)
+        print(reporteVenta)
+        data['reporteVenta'] = reporteVenta
+    elif request.method == 'POST' and 'btnProductoMasVendido' in request.POST:
+        getMes = request.POST.get('producto_mas_vendido_mes')
+        anio = getMes.split('-')[0]
+        mes = getMes.split('-')[1]
+        reporteProducto = Producto.reporteProducto(mes,anio)
+        print(reporteProducto)
+        data['reporteProducto'] = reporteProducto
+
+    return render(request, 'core/reportes.html', data)

@@ -120,6 +120,20 @@ class Boleta(models.Model):
         cur.close()
         conn.close()
 
+    @classmethod
+    def reporteBoleta(self, mes, anio):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("SELECT A.ID_BOLETA , A.TOTAL, TO_CHAR(C.FECHA_VENTA, 'DD/Mon/YYYY') FECHA_VENTA, B.DESCRIPCION FROM BOLETA A JOIN ESTADO_VENTA B ON A.ESTADO_VENTA_ID_ESTADO_VENTA = B.ID_ESTADO_VENTA JOIN VENTA C ON C.BOLETA_ID_BOLETA = A.ID_BOLETA where extract(MONTH from fecha_venta) = '"+ mes +"' and extract(YEAR from fecha_venta) = '" + anio + "'")
+        columns = [column[0] for column in cur.description]
+        ventasBoleta = []
+        for row in cur.fetchall():
+            ventasBoleta.append(dict(zip(columns, row)))
+        cur.close()
+        conn.close()
+        return ventasBoleta
+
     class Meta:
         managed = False
         db_table = 'boleta'
@@ -426,6 +440,9 @@ class EstadoPedido(models.Model):
     id_estado_pedido = models.BigAutoField(primary_key=True)
     descripcion = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.descripcion
+
     class Meta:
         managed = False
         db_table = 'estado_pedido'
@@ -578,6 +595,20 @@ class Factura(models.Model):
         conn.commit()
         cur.close()
         conn.close()
+
+    @classmethod
+    def reporteFactura(self, mes, anio):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("SELECT A.ID_FACTURA, A.TOTAL, TO_CHAR(C.FECHA_VENTA, 'DD/Mon/YYYY') FECHA_VENTA, B.DESCRIPCION FROM FACTURA A JOIN ESTADO_VENTA B ON A.ESTADO_VENTA_ID_ESTADO_VENTA = B.ID_ESTADO_VENTA JOIN VENTA C ON C.FACTURA_ID_FACTURA = A.ID_FACTURA WHERE EXTRACT(MONTH FROM FECHA_VENTA) = '"+ mes +"' AND EXTRACT(YEAR FROM FECHA_VENTA) = '" + anio +"'")
+        columns = [column[0] for column in cur.description]
+        ventasFactura = []
+        for row in cur.fetchall():
+            ventasFactura.append(dict(zip(columns, row)))
+        cur.close()
+        conn.close()
+        return ventasFactura
 
     class Meta:
         managed = False
@@ -746,6 +777,16 @@ class Pedido(models.Model):
     direccion = models.CharField(max_length=100)
     comuna_id_comuna = models.ForeignKey(Comuna, models.DO_NOTHING, db_column='comuna_id_comuna')
 
+    @classmethod
+    def insertar_pedido(self, estado_pedido, fecha_recepcion, fecha_pedido, detalle_pedido, direccion_pedido, comuna_pedido):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.callproc("insertar_pedido",[estado_pedido,fecha_recepcion,fecha_pedido, detalle_pedido,direccion_pedido, comuna_pedido])
+        conn.commit()
+        cur.close()
+        conn.close()
+
     class Meta:
         managed = False
         db_table = 'pedido'
@@ -840,6 +881,20 @@ class Producto(models.Model):
         cur.close()
         conn.close()
         return obj
+
+    @classmethod
+    def reporteProducto(self, mes, anio):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(B.PRODUCTO_ID_PRODUCTO) AS VENDIDO, C.ID_PRODUCTO, C.NOMBRE FROM VENTA A JOIN DETALLE_VENTA B ON A.ID_VENTA = B.VENTA_ID_VENTA JOIN PRODUCTO C ON B.PRODUCTO_ID_PRODUCTO = C.ID_PRODUCTO WHERE EXTRACT (MONTH FROM A.FECHA_VENTA) = '" + mes + "' AND EXTRACT (YEAR FROM A.FECHA_VENTA) = '" + anio + "' GROUP BY C.ID_PRODUCTO, C.NOMBRE")
+        columns = [column[0] for column in cur.description]
+        reporteProducto = []
+        for row in cur.fetchall():
+            reporteProducto.append(dict(zip(columns, row)))
+        cur.close()
+        conn.close()
+        return reporteProducto
 
     class Meta:
         managed = False
@@ -1071,9 +1126,38 @@ class Venta(models.Model):
         cur.close()
         conn.close()
 
+    @classmethod
+    def reporteVentasTotal(self, mes, anio):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("SELECT SUM(TOTAL) AS TOTAL FROM(SELECT B.TOTAL FROM VENTA A JOIN BOLETA B ON A.BOLETA_ID_BOLETA = B.ID_BOLETA WHERE EXTRACT (MONTH FROM A.FECHA_VENTA) = '" + mes + "' AND EXTRACT (YEAR FROM A.FECHA_VENTA) = '"+ anio +"' UNION ALL SELECT B.TOTAL FROM VENTA A JOIN FACTURA B ON A.FACTURA_ID_FACTURA = B.ID_FACTURA WHERE EXTRACT (MONTH FROM A.FECHA_VENTA) = '" + mes + "' AND EXTRACT (YEAR FROM A.FECHA_VENTA) = '"+ anio +"')")
+        res=cur.fetchone()
+        column = [row[0] for row in cur.description]
+        obj = {column[0] :res[0]}
+        cur.close()
+        conn.close()
+        return obj
+
+    @classmethod
+    def reporteVenta(self, mes, anio):
+        dsn_tns = cx_Oracle.makedsn('localhost', '1521', service_name='orcl') # if needed, place an 'r' before any parameter in order to address special characters such as ''.
+        conn = cx_Oracle.connect(user=r'c##fermme0', password='oracle', dsn=dsn_tns) # if needed, place an 'r' before any parameter in order to address special characters such as ''. For example, if your user name contains '', you'll need to place 'r' before the user name: user=r'User Name'
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(A.ID_VENTA) AS VENTAS FROM VENTA A JOIN DETALLE_VENTA B ON A.ID_VENTA = B.VENTA_ID_VENTA JOIN PRODUCTO C ON B.PRODUCTO_ID_PRODUCTO = C.ID_PRODUCTO WHERE EXTRACT (MONTH FROM A.FECHA_VENTA) = '"+ mes +"' AND EXTRACT (YEAR FROM A.FECHA_VENTA) = '"+ anio +"'")
+        res=cur.fetchone()
+        column = [row[0] for row in cur.description]
+        obj = {column[0] :res[0]}
+        cur.close()
+        conn.close()
+        return obj
+
     class Meta:
         managed = False
         db_table = 'venta'
+
+
+
 
 
 

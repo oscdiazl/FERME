@@ -1,0 +1,243 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% block contenido%}
+    <div class="container mt-5 py-5">
+        <h5 class="mt-5 pt-5">Reportes Ferme</h5>
+        <hr>
+        <div class="row">
+
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group input-group-sm pt-2">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
+                                </div>
+                                <input required type="month" name="nombre_mes" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-3 py-1">
+                            <button type="submit" name="btnVentasAcumuladas" class="btn btn-light btn-block">
+                                Buscar
+                            </button>
+                        </div>
+                        </form>
+                </div>
+            </div>
+            <div class="col-lg-12 text-center">
+                <div class="alert alert-success mt-2" role="alert">
+                    <h4 class="alert-heading">Ventas Acumuladas Mensualmente</h4>
+                    <hr>
+                    <h1 class="display-1">
+                        {% if reporteVentaTotal.TOTAL%}
+                            ${{reporteVentaTotal.TOTAL}}
+                        {% elif reporteVentaTotal.TOTAL == 'None' %}
+                            <h2>No hay </h2>
+                        {%else%}
+                            <small>Selecciona un mes </small>
+                        {%endif%}
+                    </h1>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <h5>Boletas</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-9">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group input-group-sm pt-2">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
+                                </div>
+                                <input required type="month" class="form-control" name="mes_boletas" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-3 py-1">
+                            <button type="submit" name="btnBoletasMensuales"class="btn btn-light btn-block">
+                                Buscar
+                            </button>
+                        </div>
+
+                        </form>
+                </div>
+
+                {% if reporteBoleta %}
+                <table class="table table-sm">
+                    <thead>
+                        <tr class="table-info">
+                            <th>Nro Boleta</th>
+                            <th>Fecha Venta</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for b in reporteBoleta%}
+
+                        <tr>
+                            <td>{{b.ID_BOLETA}}</td>
+                            <td>{{b.FECHA_VENTA}}</td>
+                            <td>{{b.DESCRIPCION}}</td>
+                            <td>{{b.TOTAL}}</td>
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+                {%else%}
+                    <h5>Selecciona un mes</h5>
+                {%endif%}
+
+            </div>
+
+            <div class="col-lg-6">
+                <h5>Facturas</h5>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-9">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group input-group-sm pt-2">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
+                                </div>
+                                <input required type="month" name="mes_facturas" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-3 py-1">
+                            <button type="submit" name="btnFacturasMensuales" class="btn btn-light btn-block">
+                                Buscar
+                            </button>
+                        </div>
+                        </form>
+                </div>
+
+                {% if reporteFactura%}
+                <table class="table table-sm">
+                    <thead>
+                        <tr class="table-active">
+                            <th>Nro Factura</th>
+                            <th>Fecha Venta</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                            {% for f in reporteFactura%}
+                            <tr>
+                                <td>{{f.ID_FACTURA}}</td>
+                                <td>{{f.FECHA_VENTA}}</td>
+                                <td>{{f.DESCRIPCION}}</td>
+                                <td>{{f.TOTAL}}</td>
+                            </tr>
+
+                            {%endfor%}
+                    </tbody>
+                </table>
+                {%else%}
+                    <h5>Seleccione un mes</h5>
+                {%endif%}
+            </div>
+
+            <div class="col-lg-12 mt-5">
+                <h3>Cantidad de Ventas Mensuales</h3>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-9">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="input-group input-group-sm pt-2">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
+                                </div>
+                                <input required type="month" name="cantidad_ventas_mes" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-3 py-1">
+                            <button type="submit" name="btnCantidadVentas" class="btn btn-light btn-block">
+                                Buscar
+                            </button>
+                        </div>
+                        </form>
+                </div>
+            </div>
+
+            <div class="col-lg-12 text-center">
+                <div class="alert alert-warning mt-2" role="alert">
+                    <h4 class="alert-heading">Ventas Realizadas Mensualmente</h4>
+                    <hr>
+                    <h1 class="display-2">
+                        {% if reporteVenta.VENTAS%}
+                            {{reporteVenta.VENTAS}} Ventas fueron realizadas este mes
+                        {% elif reporteVenta.VENTAS == 'None' %}
+                            <h2>No hay </h2>
+                        {%else%}
+                            <small>Selecciona un mes </small>
+                        {%endif%}
+                    </h1>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <h5 class="my-3">Productos Mas Vendidos</h5>
+                <hr>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                       <form method="POST">
+                        {% csrf_token %}
+                        <div class="input-group input-group-sm pt-2">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
+                            </div>
+                            <input required type="month" name="producto_mas_vendido_mes" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 my-2">
+                        <button type="submit" name="btnProductoMasVendido" class="btn btn-light btn-block">
+                            Buscar
+                        </button>
+                       </form>
+                    </div>
+                </div>
+                {% if reporteProducto%}
+                    
+                <table class="table table-sm">
+                    <thead>
+                        <tr class="table-success">
+                            <th>Cantidad Prod</th>
+                            <th>SKU</th>
+                            <th>Nombre</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {%for p in reporteProducto%}
+                        <tr>
+                            <td>{{p.VENDIDO}}</td>
+                            <td>{{p.ID_PRODUCTO}}</td>
+                            <td>{{p.NOMBRE}}</td>
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+                </table>
+                {%else%}
+                    <h5>Selecciona un mes</h5>
+                {%endif%}
+            </div>
+
+        </div>
+    </div>
+{%endblock%}
