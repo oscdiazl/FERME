@@ -8,6 +8,12 @@
 
 <div class="container mt-5 pt-5">
 
+    <div class="col-lg-12 mt-5">
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_modificar_proveedor.pdf' %}">Manual modificar Proveedor</a>
+        </div>
+    </div>
+
         
 
     <div class="row mt-5 pt-5">
@@ -16,7 +22,7 @@
             <h2 class=" h-100 py-4">Modificar Un Proveedor</h2>
         </div>
         <div class="col-lg-6">
-            <form class="form-group" action="" method="POST">
+            <form class="form-group" action="" method="POST" id="formulario_modificar_proveedor">
                 {% csrf_token %}
                     {{form | crispy}}
     
@@ -36,4 +42,69 @@
 
 
 </div>
+
+<style>
+        #id_nombre_proveedor-error, #id_rut_proveedor-error, 
+        #id_telefono-error, #id_correo-error, #id_giro-error {
+            color:red;
+        }
+</style>
 {% endblock %}
+
+
+{%block js%}
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+
+        
+	jQuery.extend(jQuery.validator.messages, {
+  	required: "Este campo es obligatorio.",
+  	remote: "Por favor, rellena este campo.",
+  	email: "Por favor, escribe una dirección de correo válida",
+  	url: "Por favor, escribe una URL válida.",
+  	date: "Por favor, escribe una fecha válida.",
+  	dateISO: "Por favor, escribe una fecha (ISO) válida.",
+  	number: "Por favor, escribe un número entero válido.",
+  	digits: "Por favor, escribe sólo dígitos.",
+  	creditcard: "Por favor, escribe un número de tarjeta válido.",
+  	equalTo: "Por favor, escribe el mismo valor de nuevo.",
+  	accept: "Por favor, escribe un valor con una extensión aceptada.",
+  	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+  	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+  	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+  	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+  	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+  	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+	});
+
+        var validator = $('#formulario_modificar_proveedor').validate({
+        rules:{
+            nombre_proveedor:{
+                required:true, 
+                minlength:4
+            }, 
+            rut_proveedor:{
+                required:true, 
+                minlength:9, 
+                number:true
+            }, 
+            telefono:{
+                number:true,
+                minlength:9
+            }, 
+            correo:{
+                email:true,
+                required:true
+            }, 
+            giro:{
+                required:true,
+                minlength:5
+            }
+        }
+    })
+    }); 
+</script>
+{%endblock%}

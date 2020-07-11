@@ -4,6 +4,9 @@
 
 {% block contenido%}
 
+<br>
+<br>
+<br>
 <div class="container-fluid carrusel-home">
     <div class="glide">
       <div class="glide__track" data-glide-el="track">
@@ -43,6 +46,9 @@
             <p><small class="">Precio: <span class="precio_prod">{{p.precio}}</span></small></p>
             <hr>
             <a href="#" class="text-dark agregar-carrito">Agregar Al Carrito</a>
+            <br>
+            <label for="cantidad_carrito" style="font-size: 0.8em;">Cantidad:</label>
+            <input class="mx-5 px-2 text-center"style="width: 25%; height: 20px; font-size:12px; border:0px solid white; border-bottom:1px solid #ccc;" type="number" placeholder="" name="cantidad_carrito" class="cantidad_carrito" id="cantidad_carrito" value="1">
           </div>
         {%endfor%}
 
@@ -121,12 +127,15 @@
 
 function leerDatosProducto(producto){
 
+  precio_final = parseInt(producto.querySelector('.precio_prod').textContent) * parseInt(producto.querySelector('#cantidad_carrito').value)
+
 const infoProducto = {
     imagen: producto.querySelector('img').src, 
     nombre_producto: producto.querySelector('.nombre_prod').textContent, 
     id_producto : producto.querySelector('.id_prod').textContent, 
     stock_producto: producto.querySelector('.stock_prod').textContent, 
-    precio_producto: producto.querySelector('.precio_prod').textContent
+    precio_producto: precio_final, 
+    cantidad: producto.querySelector('#cantidad_carrito').value
 }
 
 
@@ -140,6 +149,7 @@ function insertarProductoAlCarrito(infoProducto){
         <td> <img src="${infoProducto.imagen}" width="70px">  </td>
         <td><small>${infoProducto.id_producto}</small></td>
         <td><small>${infoProducto.nombre_producto}</small></td>
+        <td><small>${infoProducto.cantidad}</small></td>
         <td><small>${infoProducto.precio_producto}</small></td>
         <td>
             <a href="#" class="borrar-curso-carrito" data-id="${infoProducto.id_producto}">X</a>

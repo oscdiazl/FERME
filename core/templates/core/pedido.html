@@ -5,27 +5,24 @@
 {% block contenido%}
 <div class="container mt-5 pt-5">
     <div class="row mt-5">
+        <div class="col-lg-12 mt-5">
+            <h5>PASO 1</h5>
+            <hr>
+            <div class="progress my-5">
+                <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 50%"></div>
+            </div>
+        </div>
         <div class="col-lg-6 detalle_pedido">
             <h2 class="my-5">Pedido</h2>
-            <h5 class="mt-3">Aqui Puedes Revisar el detalle de tu pedido</h5>
+            <h5 class="my-3 py-2">Por Favor llena los datos asociados al pedido</h5>
 
-            <table class="my-5" id="detalle_pedido">
-                <thead>
-                    <tr>
-                        <th class="px-3">Imagen</th>
-                        <th class="px-3" >SKU</th>
-                        <th class="px-3">Nombre</th>
-                        <th class="px-3">Precio</th>
-                        <th></th>
 
-                    </tr>
-                </thead>
+            <p class="fecha_recepcion py-5"> </p>
 
-                <tbody>
-
-                </tbody>
-
-            </table>
+            <div class="form-group">
+                <label for="txtRutTitular">Rut Titular</label>
+                <input type="text" readonly class="form-control" name="txtRutTitular" id="txtRutTitular" value="{{rut_cliente}}">
+            </div>
         </div>
         <div class="col-lg-6">
             <h5 class="mt-5">Escribe los datos asociados a tu pedido</h5>
@@ -63,14 +60,15 @@
 
                 <label for="cbo_doc_pedido pt-3"> Elige El Metodo de tu compra</label>
                 <select class="form-control"  name="cbo_doc_pedido" id="cbo_doc_pedido">
-                    <option value="1" id="cbo_doc_pedido">Boleta</option>
-                    <option value="2" id="cbo_doc_pedido">Factura</option>
+                    <option value="Boleta" id="cbo_doc_pedido">Boleta</option>
+                    <option value="Factura" id="cbo_doc_pedido">Factura</option>
                 </select>
         </div>
 
         <div class="col-lg-6">
+            <input type="hidden" id="totalInput" name="totalInput">
             <p class=" total font-weight-light my-3"></p>
-            <p class="fecha_recepcion"> </p>
+            
         </div>
 
         <div class="col-lg-6">
@@ -79,12 +77,15 @@
 
 
         <div class="col-lg-6 my-4">
-            <button type="submit" class="btn btn-success">Realizar Pedido</button>
+            <button type="submit" class="btn btn-success" id="btnConfirmarPedido" onclick="guardarProductosPedido()">Confirmar Datos Pedido</button>
+            <p id="error_titular"></p>
             {% if mensaje %}
                 <div class="alert alert-success mt-2" role="alert">
                     {{mensaje}}
                 </div>
             {%endif%}
+
+            <p class="id_pedido" id="id_pedido"> {{id_pedido.ID_MAX}}</p>
         </div>
 
     </form>
@@ -102,147 +103,6 @@
 
 {% block js%}
  <script>
-
-    const detalle_pedido = document.getElementById('detalle_pedido');
-
-    const lista_detalle_pedido = document.querySelector('#detalle_pedido tbody'); 
-    const lista_productos_carrito = document.querySelector('#lista-carrito tbody'); 
-
-    
-    const vaciarCarritoBtn = document.getElementById('vaciar-carrito'); 
-
-
-    cargarEventListeners(); 
-
-
-    function cargarEventListeners(){
-        //Cuando se elimina un producto del carrito
-        detalle_pedido.addEventListener('click', eliminarProductoDeCarrito);
-
-        vaciarCarritoBtn.addEventListener('click', vaciarCarrito);
-
-        //Al cargar el documento, mostrar productos desde locals
-        document.addEventListener('DOMContentLoaded', leerLocalStorage)
-
-    }
-
-    function vaciarCarrito(e){
-
-        while(lista_productos_carrito.firstChild){
-            lista_productos_carrito.removeChild(lista_productos_carrito.firstChild);
-        }
-
-        vaciarLocalStorage(); 
-
-        return false;
-    }
-
-    function vaciarLocalStorage(){
-    localStorage.clear(); 
-    }
-
-        //Comprueba que haya elementos en locals
-    function obtenerProductosLocalStorage(){
-        let productos_localStorage; 
-
-        //Comprobar si hay algo en locals
-
-        if(localStorage.getItem('productos') === null){
-            productos_localStorage = []
-        }else{
-            productos_localStorage = JSON.parse( localStorage.getItem('productos') );
-        }
-
-        return productos_localStorage;
-    }
-
-
-
-    //mostrar productos desde locals
-    function leerLocalStorage(){
-        let productosLocalStorage; 
-
-        productosLocalStorage = obtenerProductosLocalStorage();
-
-        productosLocalStorage.forEach(infoProducto => {
-            const row = document.createElement('tr');
-            const row1 = document.createElement('tr');
-
-            row.innerHTML = `
-                <td class="px-3"> <img src="${infoProducto.imagen}" width="70px">  </td>
-                <td class="px-3"><small>${infoProducto.id_producto}</small></td>
-                <td class="px-3" ><small>${infoProducto.nombre_producto}</small></td>
-                <td class="px-3" id="precio_prod"><small>${infoProducto.precio_producto}</small></td>
-                <td>
-                    <a href="#" class="borrar-curso-carrito text-danger" data-id="${infoProducto.id_producto}">X</a>
-                </td>
-                <td></td>
-            `;
-
-            row1.innerHTML = `
-                <td class="px-3"> <img src="${infoProducto.imagen}" width="70px">  </td>
-                <td class="px-3"><small>${infoProducto.id_producto}</small></td>
-                <td class="px-3" ><small>${infoProducto.nombre_producto}</small></td>
-                <td class="px-3" id="precio_prod"><small>${infoProducto.precio_producto}</small></td>
-                <td>
-                    <a href="#" class="borrar-curso-carrito text-danger" data-id="${infoProducto.id_producto}">X</a>
-                </td>
-                <td></td>
-            `;
-        
-            lista_detalle_pedido.appendChild(row);
-            lista_productos_carrito.appendChild(row1);
-            
-        });
-    }
-
-    function eliminarProductoDeCarrito(e){
-    e.preventDefault();
-
-    let producto, productoId;
-
-    if(e.target.classList.contains('borrar-curso-carrito')){
-       e.target.parentElement.parentElement.remove();
-       producto = e.target.parentElement.parentElement;
-       productoId = producto.querySelector('a').getAttribute('data-id');
-    }
-
-    eliminarProductoLocalStorage(productoId)
-    }
-
-
-    function eliminarProductoLocalStorage(producto_id){
-    let productosLS; 
-
-    productosLS = obtenerProductosLocalStorage();
-
-    productosLS.forEach(function(productoLS, index) {
-        if(productoLS.id_producto === producto_id){
-            productosLS.splice(index, 1);
-        }
-    }); 
-
-    localStorage.setItem('productos', JSON.stringify(productosLS) )
-    }
-
-
-    //Cargar el total
-    productos_localStorage = JSON.parse( localStorage.getItem('productos') );
-
-    let suma_total_pedido = 0; 
-
-    for(let i in productos_localStorage){
-        suma_total_pedido += parseInt(productos_localStorage[i].precio_producto, 10); 
-    }
-
-    let total = document.createElement('p');
-
-    total = `${suma_total_pedido}`;
-
-    document.querySelector('.total').innerHTML = ` Tu Pedido Tiene un costo de: $${suma_total_pedido}`
-
-    //Cargar la fecha
-
     Date.prototype.addDays = function(days) {
     var date = new Date(this.valueOf());
     date.setDate(date.getDate() + days);
@@ -253,13 +113,19 @@
 
     fecha_7 = date.addDays(7).toLocaleDateString()
 
-    document.querySelector('.fecha_recepcion').innerHTML = `Fecha Estimada Para llegada de tu producto: ${fecha_7}`;  
+    document.querySelector('.fecha_recepcion').innerHTML = `Fecha Estimada Para llegada de tu pedido: ${fecha_7}`;  
 
     document.getElementById('fecha_recep').value = fecha_7;
 
     document.getElementById('fecha_ped').value = date.toLocaleDateString()
 
+    document.addEventListener('DOMContentLoaded', function(){
+        if(document.getElementById('txtRutTitular').value.length < 1){
+            document.getElementById('btnConfirmarPedido').setAttribute('disabled', true);
 
+            document.getElementById('error_titular').innerHTML = 'Solo los usuarios de tipo cliente pueden realizar pedidos'
+        }
+    })
 
  </script>
 {%endblock%}

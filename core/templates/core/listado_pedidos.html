@@ -1,0 +1,146 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% block contenido%}
+
+<div class="container mt-5 pt-5">
+
+    <div class="col-lg-12 my-5">
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_listado_pedidos.pdf' %}">Manual Listado Pedidos</a>
+        </div>
+    </div>
+
+    <div class="row pt-5 mt-3">
+        <div class="col-lg-12">
+            <h4 class="my-5">Listado de Pedidos</h4>
+            <hr>
+        </div>
+
+            {% if error %}
+                <p class="error">{{error}}</p>
+            {%endif%}
+
+        <table id="listado_pedidos" class="table table-hover" style="width:100%">
+            <thead class="bg-info">
+                <tr>
+                    <th>Pedido Numero</th>
+                    <th>Cliente</th>
+                    <th>Documento</th>
+                    <th>Fecha Pedido</th>
+                    <th>Num Boleta</th>
+                    <th>Num Factura</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for p in pedidos_db%}
+
+                    {%if p.ID_PEDIDO%}
+                    <tr>
+                        <td>{{p.ID_PEDIDO}}</td>
+                        <td>{{p.RUT_TITULAR}}</td>
+                        <td>{{p.DOCUMENTO}}</td>
+                        <td class="fecha_pedido_final" >{{p.FECHA_PEDIDO}}</td>
+    
+                        {% if p.BOLETA_ID_BOLETA == None %}
+                            <td>-</td>
+                        {%else%}
+                            <td><a href="{% url 'modificar_boleta' p.BOLETA_ID_BOLETA%}" style="color: black;">{{p.BOLETA_ID_BOLETA}}</a></td>
+                        {%endif%}
+    
+                        
+                        {% if p.FACTURA_ID_FACTURA == None %}
+                            <td>-</td>
+                        {%else%}
+                        <td><a href="{% url 'modificar_factura' p.FACTURA_ID_FACTURA%}" style="color: black;">{{p.FACTURA_ID_FACTURA}}</a></td>
+                        {%endif%}
+    
+                        <td>{{p.TOTAL}}</td>
+                        <td>
+                            {%if p.DOCUMENTO == "Boleta" %}
+                            <a href="#" onclick="insertarVentaPedido('{{p.ID_PEDIDO}}', '{{p.FECHA_PEDIDO}}', '{{p.RUT_TITULAR}}')"><i class="fas text-dark fa-file-invoice-dollar fa-2x mx-2" title="Realizar Venta Boleta"></i></a>
+                            {%else%}
+                                <a href="#" onclick="insertarVentaPedidoFactura('{{p.ID_PEDIDO}}', '{{p.FECHA_PEDIDO}}','{{p.RUT_TITULAR}}')"><i class="fas text-dark fa-file-invoice-dollar fa-2x mx-2" title="Realizar Venta Factura"></i></a>
+                            {%endif%}
+                            <a href="{% url 'detalle_pedido' p.ID_PEDIDO%}"><i class="fas text-dark fa-info-circle fa-2x mx-2" title="Detalle Pedido"></i></a>
+                        </td>
+                    </tr>
+                    {%endif%}
+                {%endfor%}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Pedido Numero</th>
+                    <th>Direccion</th>
+                    <th>Tipo Documento</th>
+                    <th>Fecha Pedido</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<style>
+    .error{
+        color:red;
+    }
+</style>
+{%endblock%}
+
+{%block js%}
+<script>
+    function insertarVentaPedido(id_pedido, fecha_pedido, rut_cliente){
+
+        arr_fecha = fecha_pedido.split('-')
+
+        console.log(arr_fecha)
+
+        console.log(arr_fecha[2].substring(0,3))
+
+
+        dia_ped = arr_fecha[0]
+        mes_ped = arr_fecha[1].substring(0,3)
+        anio_ped = arr_fecha[2]
+
+        fecha_final = dia_ped +mes_ped + anio_ped; 
+
+        try {
+            window.location.href = "/insertar_venta_pedido/"+id_pedido+"/"+fecha_final+"/"+rut_cliente+"/";
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    function insertarVentaPedidoFactura (id_pedido, fecha_pedido, rut_cliente){
+        //console.log(id_pedido, fecha_pedido)
+
+        arr_fecha = fecha_pedido.split('-')
+
+        console.log(arr_fecha)
+
+        console.log(arr_fecha[2].substring(0,3))
+
+
+        dia_ped = arr_fecha[0]
+        mes_ped = arr_fecha[1].substring(0,3)
+        anio_ped = arr_fecha[2]
+
+        fecha_final = dia_ped +mes_ped + anio_ped; 
+
+
+        window.location.href = "/insertar_venta_pedido_factura/"+id_pedido+"/"+fecha_final+"/"+rut_cliente+"/";
+    }
+
+    
+
+    document.addEventListener('DOMContentLoaded', function(){
+
+    })
+</script>
+{%endblock%}

@@ -1,0 +1,82 @@
+{% extends 'core/base.html' %}
+
+{% load static%}
+
+{% load crispy_forms_tags %}
+
+{% block contenido%}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-16 my-5 pt-5">
+            <h4 class="mt-5 pt-4"> ESTADO DE PEDIDO NUMERO: {{id_pedido}}</h4>
+
+            <div>
+                Pedido con fecha estimada de llegada para el dia <span class="fecha_recep_pedido">{{pedido.FECHA_RECEPCION}}</span>
+            </div>
+
+
+            <div class="my-5 py-5">
+                <h2>Total Pedido:</h2> 
+
+                <h4><span> $ {{pedido.TOTAL}}</span></h4>
+            </div>
+        </div>
+
+
+        <div class="col-lg-6 mt-5 pt-5">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="pt-5 mt-5">
+                        <h5 class="mt-5 pt-5">Estado Pedido</h5>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="pt-5 mt-5">
+                        <h5 class="mt-5 py-5 estado_pedido">{{pedido.ESTADO_PEDIDO_ID_ESTADO_PEDIDO}}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
+
+
+{% block js %}
+
+<script>
+    const fecha_recep = document.querySelector('.fecha_recep_pedido').textContent;
+    const new_fecha = fecha_recep.slice(0,-11)
+    document.querySelector('.fecha_recep_pedido').textContent = new_fecha;
+
+
+
+    const estado_pedido = document.querySelector('.estado_pedido').textContent; 
+
+    if(estado_pedido == 1){
+        console.log("Pedido En Proceso"); 
+        document.querySelector('.estado_pedido').textContent = "Tu Pedido se encuentra en proceso para ser armado y enviado a su destino"; 
+        document.querySelector('.estado_pedido').classList.add('alert-info');
+        document.querySelector('.estado_pedido').classList.add('alert');
+    }else if(estado_pedido == 2){ 
+        console.log("Pedido en enviado"); 
+        document.querySelector('.estado_pedido').textContent = "Tu Pedido ha sido enviado a su destino, debes estar atento a su llegada."; 
+        document.querySelector('.estado_pedido').classList.add('alert-warning');
+        document.querySelector('.estado_pedido').classList.add('alert');
+    }else if(estado_pedido ==3){
+        console.log("Pedido cancelado"); 
+        document.querySelector('.estado_pedido').textContent = "Tu Pedido ha sido cancelado, te contactaremos a la brevedad.";
+        document.querySelector('.estado_pedido').classList.add('alert-danger');
+        document.querySelector('.estado_pedido').classList.add('alert'); 
+    }else{
+        console.log('Pedido Recibido'); 
+        document.querySelector('.estado_pedido').textContent = "Ya recibiste tu pedido, cualquier inconveniente no dudes en contactarnos."; 
+        document.querySelector('.estado_pedido').classList.add('alert-success');
+        document.querySelector('.estado_pedido').classList.add('alert');
+    } 
+</script>
+
+{% endblock %}

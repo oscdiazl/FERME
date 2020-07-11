@@ -11,6 +11,12 @@
 
 <div class="container mt-5 pt-5">
 
+    <div class="col-lg-12 my-5">
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_registro_cliente.pdf' %}">Manual Registrar Cliente</a>
+        </div>
+    </div>
+
         
 
     <div class="row mt-5 pt-5">
@@ -21,7 +27,7 @@
 
         <div class="col-lg-12 pt-5 mt-5">
 
-            <form class="form-group" action="" method="POST">
+            <form class="form-group" action="" method="POST" id="formulario_registro_cliente">
                 {% csrf_token %}
 
                 <hr>
@@ -40,6 +46,7 @@
                         <div class="form-group">
                             <label for="txtRutCliente">Rut Cliente</label>
                             <input type="text" class="form-control" name="txtRutCliente" id="txtRutCliente" placeholder="Rut Cliente">
+                            <small class="">Si su rut termina en k reemplace por un 1</small>
                         </div>
 
                         <div class="form-group">
@@ -133,6 +140,19 @@
     </div>
 
 
+    <style>
+        #id_username-error, 
+        #id_first_name-error, #id_last_name-error, 
+        #id_email-error, #id_password1-error, 
+        #id_password2-error, #txtRutCliente-error, 
+        #txtNombres-error, #id_calle-error, #txtaPaterno-error, 
+        #txtaMaterno-error, #txtTelefono-error, #txtCorreo-error, #id_numero-error, 
+        #id_piso-error, #id_codigo_postal-error, #id_tipo_vivienda_id_tipo_vivienda-error, 
+        #id_comuna_id_comuna-error{
+            color:red !important;
+        }
+    </style>
+
 </div>
 
 
@@ -142,18 +162,114 @@
 
 {% block js%}
 
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>  
 
-
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
 
 <script>
 
   // Call the dataTables jQuery plugin
   $(document).ready(function() {
+
+    //version traducida
+
+	jQuery.extend(jQuery.validator.messages, {
+  	required: "Este campo es obligatorio.",
+  	remote: "Por favor, rellena este campo.",
+  	email: "Por favor, escribe una dirección de correo válida",
+  	url: "Por favor, escribe una URL válida.",
+  	date: "Por favor, escribe una fecha válida.",
+  	dateISO: "Por favor, escribe una fecha (ISO) válida.",
+  	number: "Por favor, escribe un número entero válido.",
+  	digits: "Por favor, escribe sólo dígitos.",
+  	creditcard: "Por favor, escribe un número de tarjeta válido.",
+  	equalTo: "Por favor, escribe el mismo valor de nuevo.",
+  	accept: "Por favor, escribe un valor con una extensión aceptada.",
+  	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+  	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+  	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+  	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+  	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+  	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+	});
+
+
+    var validator = $('#formulario_registro_cliente').validate({
+        rules:{
+            username:{
+                required:true, 
+                minlength:4
+            }, 
+            first_name:{
+                required:true,
+                minlength:2
+            }, 
+            last_name:{
+                required:true,
+                minlength:10
+            },
+            email:{
+                required:true, 
+                email:true
+            },
+            password1:{
+                required:true
+            },
+            password2:{
+                required:true
+            },
+            txtRutCliente:{
+                required:true,
+                number:true, 
+                minlength:9
+            }, 
+            txtNombres:{
+                required:true
+            }, 
+            txtaPaterno:{
+                required:true
+            }, 
+            txtaMaterno:{
+                required:true
+            }, 
+            txtTelefono:{
+                required:true,
+                minlength:9, 
+                number:true
+            }, 
+            txtCorreo:{
+                required:true,
+                email:true
+            }, 
+            numero:{
+                required:true, 
+                number:true, 
+                min:1
+            },
+            calle:{
+                required:true, 
+                minlength:3
+            }, 
+            piso:{
+                required:true, 
+                min:1
+            }, 
+            codigo_postal:{
+                required:true, 
+                min:10
+            }, 
+            tipo_vivienda_id_tipo_vivienda:{
+                required:true
+            }, 
+            comuna_id_comuna:{
+                required:true
+            }
+        }
+    })
 
     $('#txtRutEmpresa').attr('readonly', true);
     $('#txtRazonSocial').attr('readonly', true);

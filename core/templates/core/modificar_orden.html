@@ -11,13 +11,18 @@
 
 
 <div class="container">
-    <div class="py-5 my-5">
+    <div class="col-lg-12 mt-5 pt-5">
+        <div class="d-flex justify-content-end mt-5 pt-2">
+            <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_modificar_oc.pdf' %}">Manual Modificar Orden de compra</a>
+        </div>
+    </div>
+    <div class="mb-5">
         <h2 class="mt-5 pt-5">Detalle Orden De Compra</h2>
     </div>
 
     <div class="row"> 
-        <div class="col-lg-5">
-            <form action="" method="POST">
+        <div class="col-lg-6">
+            <form action="" method="POST" id="formulario_modificar_orden">
 
                 {% csrf_token %}
                 <label for="cboProveedor">Proveedor</label>
@@ -81,12 +86,8 @@
                         <input type="text" class="form-control" readonly name="txtTotal" id="txtTotal" value="{{orden.TOTAL}}">
                       </div>
 
-                    </div>
-
-
-
-
-                    <div class="col-lg-6">
+                   
+                    <div class="prod_listado">
                             <table id="example" class="table table-hover" style="width:100%">
                                 <thead class="">
                                     <tr>
@@ -147,8 +148,8 @@
                             <input required type="text" class="form-control" name="id_precio" id="id_precio">
                         </div>
 
-                        <input type="submit" class="btn btn-success" name="btnGuardar" value="Actualizar Orden"/>
-                        <a href="#" class="btn btn-danger" onclick="confirmarAnularOrden('{{orden.ID_ORDEN_COMPRA}}')">Anular Orden</a>
+                        <input type="submit" class="btn btn-success" id="btnActualizarOc" name="btnGuardar" value="Actualizar Orden"/>
+                        <input href="#" class="btn btn-danger" id="btnAnularOc" value="Anular Orden" onclick="confirmarAnularOrden('{{orden.ID_ORDEN_COMPRA}}')"></input>
 
 
                         
@@ -208,10 +209,30 @@
                     </tr>
                 </tfoot>
             </table>
+
+            <div class="d-flex align-items-end flex-column" style="height: 200px;">
+                <div class="p-2 display-5"><h4 id="subtotal_pie"></h4></div>
+                <div class="p-2"><h4 id="iva_pie"></h4></div>
+                <div class="p-2"><h1 id="total_pie"></h1></div>
+              </div>
         </div>
     </div>
 
 </div>
+
+<style>
+
+    #id_producto-error, #nombre_producto-error, #id_cantidad-error, 
+    #id_precio_detalle-error, #id_precio-error{
+        color: red;
+    }
+
+    .prod_listado{
+        margin-top: -37em;
+        margin-left: 35em;
+        width:100%;
+    }
+</style>
 
 
 {% endblock %}
@@ -228,7 +249,20 @@
 <script src="{% static 'core/js/confirmacion.js'%}"></script>
 
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+
+
 <script>
+
+    function formatNumber(n) {
+      n = n.toString()
+      while (true) {
+        var n2 = n.replace(/(\d)(\d{3})($|,|\.)/g, '$1,$2$3')
+        if (n == n2) break
+        n = n2
+      }
+      return n
+    }
 
     function confirmarEliminarProductoOrden(idOrden, idProducto, cantidad, total){
         console.log(idOrden, idProducto, cantidad, total)
@@ -269,6 +303,64 @@
   // Call the dataTables jQuery plugin
   $(document).ready(function() {
       //      jQuery.datetimepicker.setLocale('es');
+
+      var estado_orden = $("#cboEstado option:selected").html();
+
+      if(estado_orden == "Anulada"){
+          $('#cboProveedor').attr('disabled', true);
+          $('#txtFechaSolicitud').attr('disabled', true);
+          $('#cboEmpleado').attr('disabled', true);
+          $('#cboEstado').attr('disabled', true);
+
+          $('#btnActualizarOc').attr('disabled', true);
+
+          $('#btnAnularOc').attr('disabled', true);
+
+      }
+
+      $("#subtotal_pie").text(`Subtotal: $ ${formatNumber($("#txtNeto").val())}`)
+      $("#iva_pie").text(`IVA: $ ${formatNumber($("#txtIva").val())}`)
+      $("#total_pie").text(`Total: $ ${formatNumber($("#txtTotal").val())}`)
+
+      
+jQuery.extend(jQuery.validator.messages, {
+  	required: "Este campo es obligatorio.",
+  	remote: "Por favor, rellena este campo.",
+  	email: "Por favor, escribe una dirección de correo válida",
+  	url: "Por favor, escribe una URL válida.",
+  	date: "Por favor, escribe una fecha válida.",
+  	dateISO: "Por favor, escribe una fecha (ISO) válida.",
+  	number: "Por favor, escribe un número entero válido.",
+  	digits: "Por favor, escribe sólo dígitos.",
+  	creditcard: "Por favor, escribe un número de tarjeta válido.",
+  	equalTo: "Por favor, escribe el mismo valor de nuevo.",
+  	accept: "Por favor, escribe un valor con una extensión aceptada.",
+  	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+  	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+  	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+  	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+  	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+  	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+	});
+
+
+    var validator = $('#formulario_modificar_orden').validate({
+        rules:{
+            id_producto:{
+                required:false
+            }, 
+            nombre_producto:{
+                required:false
+            }, 
+            id_precio_detalle:{
+                required:false
+            }, 
+            id_precio:{
+                required:false
+            }
+        }
+    }); 
+
 
     var selectedText = $("#cboProveedor option:selected").html();
 
@@ -409,6 +501,10 @@ function calcularDetalle(){
     $("#txtIva").val(Math.round(iva));
     $("#txtTotal").val(Math.round(total_final));
 
+    $("#subtotal_pie").text(`Subtotal: $ ${formatNumber(totalActual)}`)
+      $("#iva_pie").text(`IVA: $ ${formatNumber(Math.round(iva))}`)
+      $("#total_pie").text(`Total: $ ${formatNumber(Math.round(total_final))}`)
+
 
 }
 
@@ -417,7 +513,7 @@ function confirmarAnularOrden(idoc){
 
     var estado_orden = $("#cboEstado option:selected").html();
 
-    if(estado_orden == "Enviada a Proveedor"){
+    if(estado_orden == "Enviada a proveedor"){
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
@@ -448,6 +544,8 @@ const swalWithBootstrapButtons = Swal.mixin({
             'La orden ha sido anulada.',
             'success'
             )
+
+            window.location.href = "/anular_orden/"+idoc+"/";
         } else if (
             /* Read more about handling dismissals below */
             result.dismiss === Swal.DismissReason.cancel

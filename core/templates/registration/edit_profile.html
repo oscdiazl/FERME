@@ -8,11 +8,38 @@
 
 <div class="container mt-5 pt-5">
 
+    <div class="col-lg-12 mt-5">
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_editar_perfil.pdf' %}">Manual Editar Perfil</a>
+        </div>
+    </div>
+
     <div class="row">
-        <div class="col-lg-3"></div>
+        <div class="col-lg-3 my-3">
+            <div class="toast mt-5 pt-5 " data-autohide="false">
+                <div class="toast-header">
+                  <strong class="mr-auto text-primary">Pedidos</strong>
+                  <small class="text-muted">Revisa tus pedidos</small>
+                  <button type="button" class="ml-2 mb-1 close text-danger" data-dismiss="toast">&times;</button>
+                </div>
+                <div class="toast-body">
+                    {% if pedidos_cliente%}
+                        <h6>Detalle Pedidos</h6>
+
+                        {% for p in pedidos_cliente%}
+                        <hr>
+                            <span>Numero Pedido: </span> <a href="{% url 'detalle_pedido_cliente' p.PEDIDO_ID_PEDIDO%}" target="_blank" class="text-dark"><p>{{p.PEDIDO_ID_PEDIDO}}</p></a> 
+                        <hr>
+                        {%endfor%}
+                    {%else%}
+                        <h6>No hay Pedidos</h6>
+                    {%endif%}
+                </div>
+              </div>
+        </div>
         <div class="col-lg-6 my-5">
             <h3 class="my-5">Editar Perfil</h3>
-            <form method="post">
+            <form method="post" id="formulario_editar_perfil">
                 {% csrf_token %}
                 {{ form | crispy}}
     
@@ -20,18 +47,75 @@
                 <button type="submit" class="btn btn-success">Actualizar Datos</button>
             </form>
 
-            {{mensaje}}
+            {% if mensaje %}
+            
+            <div class="alert alert-success my-3" role="alert">
+        
+                {{mensaje}}
+            </div>
+            {% endif%}
         </div>
         <div class="col-lg-3"></div>
     </div>
 </div>
+
+<style>
+    #id_username-error, #id_first_name-error, #id_last_name-error, #id_email-error{
+        color:red;
+    }
+</style>
 
 {%endblock%}
 
 
 
 {% block js%}
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
 <script>
+
+    $(document).ready(function(){
+        $('.toast').toast('show');
+
+        jQuery.extend(jQuery.validator.messages, {
+            required: "Este campo es obligatorio.",
+            remote: "Por favor, rellena este campo.",
+            email: "Por favor, escribe una dirección de correo válida",
+            url: "Por favor, escribe una URL válida.",
+            date: "Por favor, escribe una fecha válida.",
+            dateISO: "Por favor, escribe una fecha (ISO) válida.",
+            number: "Por favor, escribe un número entero válido.",
+            digits: "Por favor, escribe sólo dígitos.",
+            creditcard: "Por favor, escribe un número de tarjeta válido.",
+            equalTo: "Por favor, escribe el mismo valor de nuevo.",
+            accept: "Por favor, escribe un valor con una extensión aceptada.",
+            maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+            minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+            rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+            range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+            max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+            min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+        });
+
+
+        var validator = $('#formulario_editar_perfil').validate({
+            rules:{
+                first_name:{
+                    required:true, 
+                    minlength:4
+                }, 
+                last_name:{
+                    required:true, 
+                    minlength:10
+                }, 
+                email:{
+                    required:true, 
+                    email:true
+                }
+            }
+        })
+    }); 
 
     const carrito = document.getElementById('carrito');
     const lista_productos_carrito = document.querySelector('#lista-carrito tbody'); 
@@ -137,5 +221,9 @@
 function vaciarLocalStorage(){
     localStorage.clear(); 
 }
+
+
+
+
  </script>
 {%endblock%}

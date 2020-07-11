@@ -13,15 +13,23 @@
 {% block contenido%}
     <div class="container">
         <div class="row mt-5 pt-5">
+
+            
+            <div class="col-lg-12 mt-5">
+                <div class="d-flex justify-content-end">
+                    <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_agregar_factura.pdf' %}">Manual Agregar Factura</a>
+                </div>
+            </div>
+           
             <div class="col-lg-6 mt-5">
                 <h3 class="mt-5 mb-5">Agregar Factura</h3>
-                <form method="POST">
+                <form method="POST" id="formulario_agregar_factura">
 
                     <label for="cboEmpleado">Responsable</label>
                     <select class="form-control" name="cboEmpleado" id="cboEmpleado">
                       {% for e in empleados%}
                       <option 
-                      {% if e.rut_empleado == orden.EMPLEADO_RUT_EMPLEADO%}
+                      {% if e.rut_empleado == rut_empleado%}
                       {{'selected'}}
                       {%endif%}
                       value="{{e.rut_empleado}}"  id="cboEmpleado">{{e.nombres}}</option>
@@ -71,90 +79,96 @@
                         </table>
                     </div>
 
-                    <div class="mt-5">
+                    
                         {% csrf_token %}
                         {{form | crispy}}
 
+                        <div class="prod_listado">
+                            <div class="">
+                                <hr class="">
+                                <h5>Productos</h5>
+                                <hr>
+                            </div>
+                            <table id="listado_productos" class="table table-hover" style="width:100%">
+                                <thead class="">
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Nombre</th>
+                                        <th>Proveedor</th>
+                                        <th>Valor Venta</th>
+                                        <th style = "display:none">Stock</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {%for p in productos%}
+                                    <tr>
+                                        <td><small>{{p.ID_PRODUCTO}}</small></td>
+                                        <td><small>{{p.NOMBRE}}</small></td>
+                                        <td><small>{{p.NOMBRE_PROVEEDOR}}</small></td>
+                                        <td><small>{{p.PRECIO}}</small></td>
+                                        <td style = "display:none">{{p.STOCK}}</td>
+                                        <td>
+                                            
+                                            <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}' ,'{{p.STOCK}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_producto" title="Stock: {{p.STOCK}}"></i></a>
+                                            
+                                        </td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Nombre</th>
+                                        <th>Proveedor</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+
+                            <div class="form-group">
+                                <label for="id_producto">SKU Producto</label>
+                                <input required type="text" readonly class="form-control" name="id_producto" id="id_producto">
+                            </div>
+            
+        
+                            <div class="form-group">
+                                <label for="nombre_producto text-left">Nombre Producto</label>
+                                <input required type="text" readonly class="form-control" name="nombre_producto" id="nombre_producto">                    
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="id_cantidad text-left">Cantidad</label>
+                                <input required type="text" class="form-control" name="id_cantidad" id="id_cantidad">
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="id_precio_detalle text-left">Precio</label>
+                                <input required type="text" class="form-control" name="id_precio_detalle" id="id_precio_detalle">
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="id_precio text-left">Total</label>
+                                <input required type="text" class="form-control" name="id_precio" id="id_precio">
+                            </div>
+            
+                            <div class="form-group">
+                                <label for="id_precio text-left">Stock</label>
+                                <input required type="text" class="form-control" name="id_stock" id="id_stock">
+                            </div>
+
+                            <input type="submit" class="btn btn-success my-4" name="btnGuardar" value="Guardar Factura"/>
+                        </div>
+            
+                        
                     </div>
+
+
+                    
             </div>
 
-            <div class="col-lg-6 mt-5 pt-5">
-                <div class="pt-4">
-                    <hr class="mt-5">
-                    <h5>Productos</h5>
-                    <hr>
-                </div>
-                <table id="listado_productos" class="table table-hover" style="width:100%">
-                    <thead class="">
-                        <tr>
-                            <th>SKU</th>
-                            <th>Nombre</th>
-                            <th>Proveedor</th>
-                            <th>Valor Venta</th>
-                            <th style = "display:none">Stock</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {%for p in productos%}
-                        <tr>
-                            <td><small>{{p.ID_PRODUCTO}}</small></td>
-                            <td><small>{{p.NOMBRE}}</small></td>
-                            <td><small>{{p.NOMBRE_PROVEEDOR}}</small></td>
-                            <td><small>{{p.PRECIO}}</small></td>
-                            <td style = "display:none">{{p.STOCK}}</td>
-                            <td>
-                                
-                                <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.PRECIO}}' ,'{{p.STOCK}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_producto" title="Stock: {{p.STOCK}}"></i></a>
-                                
-                            </td>
-                        </tr>
-                        {%endfor%}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>SKU</th>
-                            <th>Nombre</th>
-                            <th>Proveedor</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </tfoot>
-                </table>
-
-
-                <div class="form-group">
-                    <label for="id_producto">SKU Producto</label>
-                    <input required type="text" readonly class="form-control" name="id_producto" id="id_producto">
-                </div>
-    
-                <div class="form-group">
-                    <label for="nombre_producto text-left">Nombre Producto</label>
-                    <input required type="text" readonly class="form-control" name="nombre_producto" id="nombre_producto">                    
-                </div>
-    
-                <div class="form-group">
-                    <label for="id_cantidad text-left">Cantidad</label>
-                    <input required type="text" class="form-control" name="id_cantidad" id="id_cantidad">
-                </div>
-    
-                <div class="form-group">
-                    <label for="id_precio_detalle text-left">Precio</label>
-                    <input required type="text" class="form-control" name="id_precio_detalle" id="id_precio_detalle">
-                </div>
-    
-                <div class="form-group">
-                    <label for="id_precio text-left">Total</label>
-                    <input required type="text" class="form-control" name="id_precio" id="id_precio">
-                </div>
-
-                <div class="form-group">
-                    <label for="id_precio text-left">Stock</label>
-                    <input required type="text" class="form-control" name="id_stock" id="id_stock">
-                </div>
-            </div>
-
-            <input type="submit" class="btn btn-success" name="btnGuardar" value="Guardar Factura"/>
-        </div>
+            
 
         </form>
 
@@ -224,6 +238,20 @@
             margin-top: -20px;
             padding: 10px 0px;
         }
+
+        #id_rut_cliente-error, #id_sub_total-error, #id_iva-error, 
+        #id_giro-error, #id_giro-error, #id_total-error, #id_estado_venta_id_estado_venta-error, 
+        #id_producto-error,#nombre_producto-error,  #id_cantidad-error, #id_precio_detalle-error, 
+        #id_precio-error, #id_stock-error
+        {
+            color:red;
+        }
+
+        .prod_listado{
+        margin-top: -70em;
+        margin-left: 35em;
+        width:100%;
+        }
     </style>
 {%endblock%}
 
@@ -248,9 +276,89 @@
 
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+
 
 <script>
     $(document).ready(function(){
+
+            //version traducida
+
+	jQuery.extend(jQuery.validator.messages, {
+  	required: "Este campo es obligatorio.",
+  	remote: "Por favor, rellena este campo.",
+  	email: "Por favor, escribe una dirección de correo válida",
+  	url: "Por favor, escribe una URL válida.",
+  	date: "Por favor, escribe una fecha válida.",
+  	dateISO: "Por favor, escribe una fecha (ISO) válida.",
+  	number: "Por favor, escribe un número entero válido.",
+  	digits: "Por favor, escribe sólo dígitos.",
+  	creditcard: "Por favor, escribe un número de tarjeta válido.",
+  	equalTo: "Por favor, escribe el mismo valor de nuevo.",
+  	accept: "Por favor, escribe un valor con una extensión aceptada.",
+  	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+  	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+  	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+  	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+  	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+  	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+	});
+
+    var validator = $('#formulario_agregar_factura').validate({
+        rules:{
+            cboEmpleado:{
+                required:true
+            }, 
+            id_rut_cliente:{
+                required:true,
+                minlength:9
+            }, 
+            sub_total:{
+                required:true,
+                min:1
+            }, 
+            iva:{
+                required:true,
+                min:1
+            }, 
+            giro:{
+                required:true,
+                minlength:4
+            }, 
+            total:{
+                required:true,
+                min:1
+            }, 
+            estado_venta_id_estado_venta:{
+                required:true
+            }, 
+            id_producto:{
+                required:true,
+                minlength:10
+            }, 
+            nombre_producto:{
+                required:true
+            }, 
+            id_precio_detalle:{
+                required:true,
+                min:1
+            }, 
+            id_precio:{
+                required:true,
+                min:1, 
+                number:true
+            }, 
+            id_stock:{
+                required:true,
+                min:1, 
+                number:true
+            }, 
+            id_cantidad:{
+                number:true,
+                min:1
+            }
+        }
+    })
 
         $("#id_estado_venta_id_estado_venta").prop("selectedIndex", 1);
 

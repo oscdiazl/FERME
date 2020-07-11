@@ -7,18 +7,23 @@
 {% block contenido%}
 <div class="container mt-5 pt-5">
 
+    <div class="col-lg-12 my-5">
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_modificar_empleado.pdf' %}">Manual Modificar Empleado</a>
+        </div>
+    </div>
+
         
 
     <div class="row mt-5 pt-5">
-        <div class="col-lg-6">
-            <form class="form-group" action="" method="POST">
+        <div class="col-lg-12">
+            <form class="form-group" action="" method="POST" id="formulario_modificar_empleado">
                 <h3 class="my-5">Datos Empleado</h3>
                 {% csrf_token %}
                     {{form | crispy}}
                 
-                </div>
 
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
                         <h3 class="my-5">Direccion Empleado</h3>
 
                         <input type="hidden" value="{{direccion_emp.DIRECCION_ID_DIRECCION}}" name="id_dir" id="id_dir">
@@ -70,7 +75,7 @@
     
                 <div>
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 my-5">
                             <span><input class="btn btn-success" type="submit" value="Guardar Cambios"></span> <span><a class="btn btn-danger" href="{% url 'listado_empleados' %}">Descartar Cambios</a></span>
                             
                         </div>
@@ -89,4 +94,83 @@
 
 
 </div>
+
+
+<style>
+    #id_rut_empleado-error, #id_nombres-error, #id_apaterno-error, #id_amaterno-error, 
+    #id_telefono-error, #id_correo-error, #id_tipo_empleado_id_tipo_empleado-error,
+    #id_estado_empleado_id_estado_emp-error, #id_calle_numero-error, 
+    #id_calle_direccion-error, #id_piso-error, #id_codigo_postal-error {
+        color:red; 
+    }
+</style>
+{%endblock%}
+
+
+{%block js%}
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+
+    jQuery.extend(jQuery.validator.messages, {
+  	required: "Este campo es obligatorio.",
+  	remote: "Por favor, rellena este campo.",
+  	email: "Por favor, escribe una dirección de correo válida",
+  	url: "Por favor, escribe una URL válida.",
+  	date: "Por favor, escribe una fecha válida.",
+  	dateISO: "Por favor, escribe una fecha (ISO) válida.",
+  	number: "Por favor, escribe un número entero válido.",
+  	digits: "Por favor, escribe sólo dígitos.",
+  	creditcard: "Por favor, escribe un número de tarjeta válido.",
+  	equalTo: "Por favor, escribe el mismo valor de nuevo.",
+  	accept: "Por favor, escribe un valor con una extensión aceptada.",
+  	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+  	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+  	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+  	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+  	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+  	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+	});
+
+
+
+
+        var validator = $('#formulario_modificar_empleado').validate({
+            rules:{
+                rut_empleado:{
+                    required:true
+                }, 
+                nombres:{
+                    required:true
+                }, 
+                apaterno:{
+                    required:true
+                }, 
+                amaterno:{
+                    required:true
+                }, 
+                telefono:{
+                    required:true
+                }, 
+                correo:{
+                    required:true, 
+                    email:true
+                }, 
+                tipo_empleado_id_tipo_empleado:{
+                    required:true
+                }, 
+                estado_empleado_id_estado_emp:{
+                    required:true
+                }
+            }
+        }); 
+    }); 
+
+
+    const tipo_empleado = document.getElementById('id_estado_empleado_id_estado_emp');
+
+    tipo_empleado.setAttribute('readonly', true);
+</script>
 {%endblock%}

@@ -18,7 +18,10 @@
               <p><small class="stock_prod">Quedan: {{p.stock}}</small></p>
               <p><small class="">Precio: <span class="precio_prod">{{p.precio}}</span></small></p>
               <hr>
-              <a href="#" class="text-dark agregar-carrito">Agregar Al Carrito</a>
+              <a href="#" class="text-dark agregar-carrito">Agregar Al Carrito</a> 
+              <br>
+              <label for="cantidad_carrito" style="font-size: 0.8em;">Cantidad:</label>
+              <input class="mx-5 px-2 text-center"style="width: 25%; height: 20px; font-size:12px; border:0px solid white; border-bottom:1px solid #ccc;" type="number" placeholder="" name="cantidad_carrito" class="cantidad_carrito" id="cantidad_carrito" value="1">
             </li>
           {% endfor%}
         </ul>
@@ -28,7 +31,7 @@
     </div>
 
     <h3 class="py-4">Categorias</h3>
-    <h5>CERRADURAS</h5>
+    <h5 style="background-color: rgba(231, 216, 85, 0.7); padding: 15px;">CERRADURAS</h5>
 
     <div class="row p-3"> 
 
@@ -42,12 +45,15 @@
         <p><small class="">Precio: <span class="precio_prod">{{c.precio}}</span></small></p>
         <hr>
         <a href="#" class="boton-carrito text-dark agregar-carrito">Agregar Al Carrito</a>
+        <br>
+        <label for="cantidad_carrito" style="font-size: 0.8em;">Cantidad:</label>
+        <input class="mx-5 px-2 text-center"style="width: 25%; height: 20px; font-size:12px; border:0px solid white; border-bottom:1px solid #ccc;" type="number" placeholder="" name="cantidad_carrito" class="cantidad_carrito" id="cantidad_carrito" value="1">
       </div>
       {%endfor%}
 
     </div>
 
-    <h5 class="py-5">HERRAMIENTAS MANUALES</h5>
+    <h5 style="background-color: rgba(73, 141, 146, 0.5); padding: 15px;" class="my-5">HERRAMIENTAS MANUALES</h5>
 
     <div class="row p-3"> 
       {% for h in prod_herramientas_manuales%}
@@ -58,7 +64,55 @@
           <hr>
           <p><small class="stock_prod">Quedan: {{h.stock}}</small></p>
           <p><small>Precio: <span class="precio_prod">{{h.precio}}</span></small></p>
+          <hr>
           <a href="#" class="boton-carrito text-dark agregar-carrito">Agregar Al Carrito</a>
+          <br>
+          <label for="cantidad_carrito" style="font-size: 0.8em;">Cantidad:</label>
+          <input class="mx-5 px-2 text-center"style="width: 25%; height: 20px; font-size:12px; border:0px solid white; border-bottom:1px solid #ccc;" type="number" placeholder="" name="cantidad_carrito" class="cantidad_carrito" id="cantidad_carrito" value="1">
+        </div>
+      {%endfor%}
+
+    </div>
+
+
+    <h5 style="background-color: rgba(65, 171, 48, 0.5); padding: 15px;" class="my-5">PATIO & AIRE LIBRE</h5>
+
+    <div class="row p-3"> 
+      {% for h in prod_patio%}
+        <div class="col-lg-3 p-1">
+          <img src="{{h.imagen.url}}" alt="..." class="img-responsive w-100">
+          <p class="nombre_prod">{{h.nombre}}</p>
+          <p><small class="id_prod">{{h.id_producto}}</small></p>
+          <hr>
+          <p><small class="stock_prod">Quedan: {{h.stock}}</small></p>
+          <p><small>Precio: <span class="precio_prod">{{h.precio}}</span></small></p>
+          <hr>
+          <a href="#" class="boton-carrito text-dark agregar-carrito">Agregar Al Carrito</a>
+          <br>
+          <label for="cantidad_carrito" style="font-size: 0.8em;">Cantidad:</label>
+          <input class="mx-5 px-2 text-center"style="width: 25%; height: 20px; font-size:12px; border:0px solid white; border-bottom:1px solid #ccc;" type="number" placeholder="" name="cantidad_carrito" class="cantidad_carrito" id="cantidad_carrito" value="1">
+        </div>
+      {%endfor%}
+
+    </div>
+
+
+    <h5 style="background-color: rgba(75, 136, 190, 0.5); padding: 15px;" class="my-5">TALADROS</h5>
+
+    <div class="row p-3"> 
+      {% for h in prod_taladros%}
+        <div class="col-lg-3 p-1">
+          <img src="{{h.imagen.url}}" alt="..." class="img-responsive w-100">
+          <p class="nombre_prod">{{h.nombre}}</p>
+          <p><small class="id_prod">{{h.id_producto}}</small></p>
+          <hr>
+          <p><small class="stock_prod">Quedan: {{h.stock}}</small></p>
+          <p><small>Precio: <span class="precio_prod">{{h.precio}}</span></small></p>
+          <hr>
+          <a href="#" class="boton-carrito text-dark agregar-carrito">Agregar Al Carrito</a>
+          <br>
+          <label for="cantidad_carrito" style="font-size: 0.8em;">Cantidad:</label>
+          <input class="mx-5 px-2 text-center"style="width: 25%; height: 20px; font-size:12px; border:0px solid white; border-bottom:1px solid #ccc;" type="number" placeholder="" name="cantidad_carrito" class="cantidad_carrito" id="cantidad_carrito" value="1">
         </div>
       {%endfor%}
 
@@ -119,32 +173,43 @@
     if(e.target.classList.contains('agregar-carrito')){
         const producto = e.target.parentElement;
 
+        console.log(producto)
+
         leerDatosProducto(producto);
     }
 }
 
 function leerDatosProducto(producto){
 
+  precio_final = parseInt(producto.querySelector('.precio_prod').textContent) * parseInt(producto.querySelector('#cantidad_carrito').value)
+
 const infoProducto = {
     imagen: producto.querySelector('img').src, 
     nombre_producto: producto.querySelector('.nombre_prod').textContent, 
     id_producto : producto.querySelector('.id_prod').textContent, 
     stock_producto: producto.querySelector('.stock_prod').textContent, 
-    precio_producto: producto.querySelector('.precio_prod').textContent
+    precio_producto: precio_final, 
+    cantidad: producto.querySelector('#cantidad_carrito').value
 }
+
+console.log(infoProducto)
 
 
 insertarProductoAlCarrito(infoProducto);
 }
 
 function insertarProductoAlCarrito(infoProducto){
+
+    console.log(document.getElementById('cantidad_carrito').value);
     const row = document.createElement('tr');
 
     row.innerHTML = `
         <td> <img src="${infoProducto.imagen}" width="70px">  </td>
         <td><small>${infoProducto.id_producto}</small></td>
         <td><small>${infoProducto.nombre_producto}</small></td>
+        <td><small>${infoProducto.cantidad}</small></td>
         <td><small>${infoProducto.precio_producto}</small></td>
+        
         <td>
             <a href="#" class="borrar-curso-carrito" data-id="${infoProducto.id_producto}">X</a>
         </td>
@@ -225,6 +290,7 @@ function guardarProductoLocalStorage(infoProducto){
               <td> <img src="${infoProducto.imagen}" width="70px">  </td>
               <td><small>${infoProducto.id_producto}</small></td>
               <td><small>${infoProducto.nombre_producto}</small></td>
+              <td><small>${infoProducto.cantidad}</small></td>
               <td><small>${infoProducto.precio_producto}</small></td>
               <td>
                   <a href="#" class="borrar-curso-carrito" data-id="${infoProducto.id_producto}">X</a>
@@ -234,6 +300,7 @@ function guardarProductoLocalStorage(infoProducto){
       
           lista_productos_carrito.appendChild(row);
       });
+
   }
 
 

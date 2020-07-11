@@ -1,0 +1,105 @@
+{% load static%}
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Imprimir Factura</title>
+    <link rel="stylesheet" href="{%  static 'core/css/detalle_boleta.css' %}">
+    <style type="text/css">
+        @page {
+             width: 58mm; 
+            size: auto;   
+            margin: 0mm;
+            }
+    </style>
+</head>
+<body onload="window.print();" class="receipt">
+    <div class="col-md-1 col-sm-1 col-xs-1 col-xl-1">
+        <center>
+            <b class="text-center">Ferreteria FERME</b><br> 
+            <small>Av. Concha Y Toro 1149</small><br>
+            <small>FACTURA NUMERO: {{factura.id_factura}}</small><br>
+        </center>
+        <small>
+            <br>
+            <b style="display:none" id="fecha_venta">{{venta.FECHA_VENTA}}</b>
+            <b>Factura No.:</b>&nbsp;&nbsp;{{factura.id_factura}}&nbsp;&nbsp;
+            <b>Fecha Factura:</b>&nbsp;&nbsp;<span id="fecha_asignada" ></span>&nbsp;&nbsp; <br>
+            <b>Cliente:</b>&nbsp;&nbsp;{{venta.CLIENTE_RUT_CLIENTE}}<br>
+            <b>Giro Cliente:</b>&nbsp;&nbsp;{{factura.giro}}<br>
+            <br><br>
+        </small>
+        <table class="table table-condensed table-sm" width="60%">
+            <h5>Productos</h5>
+            <thead>
+                <th>Código</th>
+                <th  align='right'>Cant.</th>
+                <th  align='right'>P. Unit.</th>
+                <th  align='right'>Total</th>
+            </thead>
+            <tbody>
+                {% for p in productos_factura %}
+                <tr>
+                    <td>{{p.ID_PRODUCTO}}</td>
+                    <td>{{p.CANTIDAD}}</td>
+                    <td>{{p.PRECIO}}</td>
+                    <td>{{p.TOTAL}}</td>
+                </tr>
+                <tr>
+                    <td colspan="5">{{p.NOMBRE}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-11">
+            <div class="pull-right">
+            <table class="table-responsive dt-responsive nowrap">
+                <thead>
+                    <th colspan=2>Totales</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sub Total:</td> <td align='right'>{{factura.sub_total}}</td>
+                    </tr>
+                    <tr>
+                        <td>Iva:</td> <td align='right'>{{factura.iva}}</td>
+                    </tr>
+                    <tr>
+                        <td>Total:</td> <td align='right'><b>{{factura.total}}</b></td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="row">
+        <small class="pie">
+            <br><br>
+            <center>
+                Creada por:  Ferreteria Ferme - Fecha:  <span id="fecha_asignada1"></span>
+                <br>
+                <i> <b>Familia Ferme Agradece su preferencia</b><br> - ferreteriaferme@gmail.com</i> 
+            </center>
+        </small>
+        </div>
+    </div>
+
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function(){ 
+
+            const fecha_venta = document.getElementById('fecha_venta').textContent; 
+            const nueva_fecha = fecha_venta.slice(0, -11)
+
+            document.getElementById('fecha_asignada').textContent = nueva_fecha;
+            document.getElementById('fecha_asignada1').textContent = nueva_fecha;
+        })
+    </script>
+</body>
+</html>

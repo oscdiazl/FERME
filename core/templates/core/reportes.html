@@ -4,240 +4,468 @@
 
 {% block contenido%}
     <div class="container mt-5 py-5">
-        <h5 class="mt-5 pt-5">Reportes Ferme</h5>
+        <h2 class="my-5 py-5">Reportes Ferreteria Ferme</h2>
         <hr>
+
         <div class="row">
-
-            <div class="col-lg-12">
-                <div class="row">
-                    <div class="col-lg-9">
-                        <form method="POST">
-                            {% csrf_token %}
-                            <div class="input-group input-group-sm pt-2">
-                                <div class="input-group-prepend">
-                                  <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
-                                </div>
-                                <input required type="month" name="nombre_mes" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-                        </div>
-    
-                        <div class="col-lg-3 py-1">
-                            <button type="submit" name="btnVentasAcumuladas" class="btn btn-light btn-block">
-                                Buscar
-                            </button>
-                        </div>
-                        </form>
-                </div>
-            </div>
-            <div class="col-lg-12 text-center">
-                <div class="alert alert-success mt-2" role="alert">
-                    <h4 class="alert-heading">Ventas Acumuladas Mensualmente</h4>
-                    <hr>
-                    <h1 class="display-1">
-                        {% if reporteVentaTotal.TOTAL%}
-                            ${{reporteVentaTotal.TOTAL}}
-                        {% elif reporteVentaTotal.TOTAL == 'None' %}
-                            <h2>No hay </h2>
-                        {%else%}
-                            <small>Selecciona un mes </small>
-                        {%endif%}
-                    </h1>
-                </div>
-            </div>
-
-            <div class="col-lg-6">
-                <h5>Boletas</h5>
-                <hr>
-                <div class="row">
-                    <div class="col-lg-9">
-                        <form method="POST">
-                            {% csrf_token %}
-                            <div class="input-group input-group-sm pt-2">
-                                <div class="input-group-prepend">
-                                  <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
-                                </div>
-                                <input required type="month" class="form-control" name="mes_boletas" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-                        </div>
-    
-                        <div class="col-lg-3 py-1">
-                            <button type="submit" name="btnBoletasMensuales"class="btn btn-light btn-block">
-                                Buscar
-                            </button>
-                        </div>
-
-                        </form>
-                </div>
-
-                {% if reporteBoleta %}
-                <table class="table table-sm">
-                    <thead>
-                        <tr class="table-info">
-                            <th>Nro Boleta</th>
-                            <th>Fecha Venta</th>
-                            <th>Estado</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for b in reporteBoleta%}
-
-                        <tr>
-                            <td>{{b.ID_BOLETA}}</td>
-                            <td>{{b.FECHA_VENTA}}</td>
-                            <td>{{b.DESCRIPCION}}</td>
-                            <td>{{b.TOTAL}}</td>
-                        </tr>
+            <div class="col-lg-6 my-5 py-5">
+                <div>
+                    <div style="display: none;">
+                        <div id="mes_detalle_venta_anual">
+                        {% for v in detalle_venta_anual%}
+                            <span id="{{v.MES}}">{{v.MES}}</span>
                         {%endfor%}
-                    </tbody>
-                </table>
-                {%else%}
-                    <h5>Selecciona un mes</h5>
-                {%endif%}
+                        </div>
+                    </div>
 
+                    <h3 class="my-3">Cantidad ventas mensuales</h3>
+                    <canvas id="myChart"></canvas>
+                </div>
             </div>
 
-            <div class="col-lg-6">
-                <h5>Facturas</h5>
-                <hr>
-                <div class="row">
-                    <div class="col-lg-9">
-                        <form method="POST">
-                            {% csrf_token %}
-                            <div class="input-group input-group-sm pt-2">
-                                <div class="input-group-prepend">
-                                  <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
-                                </div>
-                                <input required type="month" name="mes_facturas" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+            <div class="col-lg-6 my-5 py-5">
+                <div>
+                    <div style="display: none;">
+                        <div id="total_venta_mensual">
+                        {% for v in detalle_venta_anual%}
+                            <span id="{{v.MES}}">{{v.CANTIDAD}}</span>
+                        {%endfor%}
+                        </div>
+                    </div>
+
+                    <div style="display: none;">
+                        <div id="total_venta_acumulada">
+                        {% for v in detalle_venta_anual%}
+                            <span id="{{v.MES}}">{{v.TOTAL}}</span>
+                        {%endfor%}
+                        </div>
+                    </div>
+                    <div style="display:none;">
+                        {% for v in detalle_venta_anual%}
+                            <div id="{{v.MES}}{{v.MES}}">
+                                <span id="total_id">{{v.TOTAL}}</span>
                             </div>
-                        </div>
-    
-                        <div class="col-lg-3 py-1">
-                            <button type="submit" name="btnFacturasMensuales" class="btn btn-light btn-block">
-                                Buscar
-                            </button>
-                        </div>
-                        </form>
+                        {%endfor%}
+                    </div>
+
+                    <h3 class="my-3">Ventas Acumuladas Mensualmente</h3>
+                    <canvas id="myChart1"></canvas>
                 </div>
+            </div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10 my-4">
+                <div class="container">
+                    <div style="display: none;">
+                        <div id="productos_id">
+                        {% for p in top_10_productos%}
+                            <span id="{{p.ID_PRODUCTO}}">{{p.NOMBRE}}</span>
+                        {%endfor%}
+                        </div>
 
-                {% if reporteFactura%}
-                <table class="table table-sm">
-                    <thead>
-                        <tr class="table-active">
-                            <th>Nro Factura</th>
-                            <th>Fecha Venta</th>
-                            <th>Estado</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                            {% for f in reporteFactura%}
-                            <tr>
-                                <td>{{f.ID_FACTURA}}</td>
-                                <td>{{f.FECHA_VENTA}}</td>
-                                <td>{{f.DESCRIPCION}}</td>
-                                <td>{{f.TOTAL}}</td>
-                            </tr>
-
+                        <div id="cantidad_idx">
+                            {% for p in top_10_productos%}
+                                <span id="{{p.ID_PRODUCTO}}">{{p.VENDIDO}}</span>
                             {%endfor%}
-                    </tbody>
-                </table>
-                {%else%}
-                    <h5>Seleccione un mes</h5>
-                {%endif%}
-            </div>
-
-            <div class="col-lg-12 mt-5">
-                <h3>Cantidad de Ventas Mensuales</h3>
-                <hr>
-                <div class="row">
-                    <div class="col-lg-9">
-                        <form method="POST">
-                            {% csrf_token %}
-                            <div class="input-group input-group-sm pt-2">
-                                <div class="input-group-prepend">
-                                  <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
-                                </div>
-                                <input required type="month" name="cantidad_ventas_mes" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-                        </div>
-    
-                        <div class="col-lg-3 py-1">
-                            <button type="submit" name="btnCantidadVentas" class="btn btn-light btn-block">
-                                Buscar
-                            </button>
-                        </div>
-                        </form>
-                </div>
-            </div>
-
-            <div class="col-lg-12 text-center">
-                <div class="alert alert-warning mt-2" role="alert">
-                    <h4 class="alert-heading">Ventas Realizadas Mensualmente</h4>
-                    <hr>
-                    <h1 class="display-2">
-                        {% if reporteVenta.VENTAS%}
-                            {{reporteVenta.VENTAS}} Ventas fueron realizadas este mes
-                        {% elif reporteVenta.VENTAS == 'None' %}
-                            <h2>No hay </h2>
-                        {%else%}
-                            <small>Selecciona un mes </small>
-                        {%endif%}
-                    </h1>
-                </div>
-            </div>
-
-            <div class="col-lg-5">
-                <h5 class="my-3">Productos Mas Vendidos</h5>
-                <hr>
-
-                <div class="row">
-                    <div class="col-lg-8">
-                       <form method="POST">
-                        {% csrf_token %}
-                        <div class="input-group input-group-sm pt-2">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text" id="inputGroup-sizing-sm">Mes</span>
-                            </div>
-                            <input required type="month" name="producto_mas_vendido_mes" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
                         </div>
                     </div>
 
-                    <div class="col-lg-3 my-2">
-                        <button type="submit" name="btnProductoMasVendido" class="btn btn-light btn-block">
-                            Buscar
-                        </button>
-                       </form>
-                    </div>
+                    <h3 class="my-3">Top 5 Productos Mas Vendidos</h3>
+                    <canvas id="pie-chart" width="800" height="450"></canvas>
                 </div>
-                {% if reporteProducto%}
-                    
-                <table class="table table-sm">
-                    <thead>
-                        <tr class="table-success">
-                            <th>Cantidad Prod</th>
-                            <th>SKU</th>
-                            <th>Nombre</th>
-                        </tr>
-                    </thead>
+            </div>
+            <div class="col-lg-1"></div>
 
-                    <tbody>
-                        {%for p in reporteProducto%}
-                        <tr>
-                            <td>{{p.VENDIDO}}</td>
-                            <td>{{p.ID_PRODUCTO}}</td>
-                            <td>{{p.NOMBRE}}</td>
-                        </tr>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10 my-5 py-3">
+
+                    <div style="display: none;">
+                        <div id="mes_venta_online">
+                        {% for v in ventas_anuales_online%}
+                            <span id="{{v.MES}}">{{v.MES}}</span>
                         {%endfor%}
-                    </tbody>
-                </table>
-                {%else%}
-                    <h5>Selecciona un mes</h5>
-                {%endif%}
-            </div>
+                        </div>
+                    </div>
+            
+                    <div style="display: none;">
+                        <div id="cantidad_ventas_online">
+                        {% for v in ventas_anuales_online%}
+                            <span id="{{v.MES}}">{{v.CANTIDAD}}</span>
+                        {%endfor%}
+                        </div>
+                    </div>
 
+                    <div style="display: none;">
+                        <div id="cantidad_ventas_locales">
+                        {% for v in ventas_anuales_locales%}
+                            <span id="{{v.MES}}">{{v.CANTIDAD}}</span>
+                        {%endfor%}
+                        </div>
+                    </div>
+            
+                    <!-- <canvas id="bar-chart-horizontal" width="800" height="450"></canvas> -->
+
+                    <h3 class="my-3">Comparacion ventas locales / online </h3>
+                    <canvas id="bar-chart-grouped" width="800" height="450"></canvas>
+                
+            </div>
         </div>
+        <div class="col-lg-1"></div>
+
+        <div class="col-lg-1"></div>
+        <div class="col-lg-10 my-5">
+            <div style="display: none;">
+                <div id="oc_meses">
+                {% for oc in oc_anuales%}
+                    <span id="{{oc.MES}}">{{oc.MES}}</span>
+                {%endfor%}
+                </div>
+            </div>
+    
+            <div style="display: none;">
+                <div id="oc_cantidad">
+                {% for oc in oc_anuales%}
+                    <span id="{{oc.MES}}">{{oc.CANTIDAD}}</span>
+                {%endfor%}
+                </div>
+            </div>
+    
+            <h3 class="my-3">Cantidad Ordenes Mensuales </h3>
+            <canvas id="line-chart" width="800" height="450"></canvas>
+        </div>
+    
+        <div class="col-lg-1"></div>
     </div>
+
+{%endblock%}
+
+{%block js%}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <script>
+
+
+
+        let productos, cantidad, mes_venta_online, cantidad_ventas_online, mes_detalle_venta_anual, total_venta_mensual, total_venta_acumulada, cantidad_ventas_locales, mes_oc, cant_oc; 
+
+        productos = document.getElementById('productos_id');
+        cantidad = document.getElementById('cantidad_idx');
+        mes_venta_online = document.getElementById('mes_venta_online')
+
+        cantidad_ventas_online = document.getElementById('cantidad_ventas_online');
+        mes_detalle_venta_anual = document.getElementById('mes_detalle_venta_anual');
+
+        cantidad_ventas_locales = document.getElementById('cantidad_ventas_locales');
+
+        total_venta_mensual_detalle = document.getElementById('total_venta_mensual');
+        total_venta_acumulada_detalle = document.getElementById('total_venta_acumulada');
+
+        mes_oc = document.getElementById('oc_meses');
+
+        cant_oc = document.getElementById('oc_cantidad');
+
+        console.log(traerTopProductos())
+
+
+        function traerCantidadOrdenes(){
+             let cant_oc_detalle; 
+
+             cant_oc_detalle = []; 
+
+             for(let i=0; i < cant_oc.children.length; i++){
+                 const element = cant_oc.children[i];
+                 
+                 cant_oc_detalle.push(element.textContent); 
+             }
+
+             return cant_oc_detalle;
+        }
+
+
+        function traerMesesOrdenes(){
+            let meses_oc; 
+
+            meses_oc = [];
+
+            for(let i =0; i < mes_oc.children.length; i++){
+                const element = mes_oc.children[i]; 
+
+                meses_oc.push(element.textContent);
+            }
+
+            return meses_oc;
+        }
+
+
+        function traerCantidadVentasLocales(){
+            let cant_ventas_locales; 
+
+            cant_ventas_locales = [];
+
+            for (let index = 0; index < cantidad_ventas_locales.children.length; index++) {
+                const element = cantidad_ventas_locales.children[index];
+
+                cant_ventas_locales.push(element.textContent)
+                
+            }
+
+            return cant_ventas_locales; 
+        }
+
+        function traerTotalVentaAcumulada(){
+            let total_venta_acumulada; 
+            total_venta_acumulada = [];
+
+            for(let i =0; i < total_venta_acumulada_detalle.children.length; i++){
+                const element = total_venta_acumulada_detalle.children[i]
+
+                total_venta_acumulada.push(element.textContent);
+            }
+
+            return total_venta_acumulada;
+
+
+        }
+
+
+        function traerVentaTotalMes(){
+            let total_venta_mensual; 
+            total_venta_mensual = []; 
+
+            for(let i =0; i< total_venta_mensual_detalle.children.length; i++){
+                const element = total_venta_mensual_detalle.children[i]
+
+                total_venta_mensual.push(element.textContent)
+            }
+
+            return total_venta_mensual;
+        }
+
+        function traerMesesCantVentasAnual(){
+            let mes_cant_venta; 
+
+            mes_cant_venta = [];
+
+            for(let i = 0; i < mes_detalle_venta_anual.children.length; i++ ){
+                const element = mes_detalle_venta_anual.children[i]
+                mes_cant_venta.push(element.textContent); 
+            }
+
+            return mes_cant_venta;
+
+
+        }
+
+        function traerCantidadVentasOnline(){
+            let cantidad_ventas; 
+
+            cantidad_ventas = []
+
+            for(let i = 0; i < cantidad_ventas_online.children.length; i++){
+                const element = cantidad_ventas_online.children[i]; 
+
+                cantidad_ventas.push(element.textContent);
+            }
+
+            return cantidad_ventas;
+        }
+
+
+        function traerMesVentasOnline(){ 
+
+            let mes_venta; 
+            mes_venta = []
+
+            for(let i = 0; i < mes_venta_online.children.length; i++){
+                const element = mes_venta_online.children[i]
+
+                mes_venta.push(element.textContent)
+            }
+
+            return mes_venta;
+
+        }
+
+        function traerCantidadTopProductos(){
+            let cant_ventas; 
+            cant_ventas = []
+        
+
+            for (let index = 0; index < cantidad.children.length; index++) {
+                const element = cantidad.children[index];
+
+                cant_ventas.push(element.textContent)
+            
+            }
+
+            return cant_ventas;
+        }
+
+
+
+        function traerTopProductos(){
+            let cant_productos; 
+            cant_productos = []
+        
+
+            for (let index = 0; index < productos.children.length; index++) {
+                const element = productos.children[index];
+
+                cant_productos.push(element.textContent)
+            
+            }
+
+            return cant_productos;
+        }
+
+        //console.log(traerTopProductos());
+
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+        type: 'line',
+
+            // The data for our dataset
+        data: {
+            labels: traerMesesCantVentasAnual(),
+            datasets: [{
+                label: 'Cantidad',
+                backgroundColor: 'rgba(255,0,0,0.2)',
+                borderColor: 'rgba(255,0,0,1)',
+                data: traerVentaTotalMes()
+            }]
+        },
+
+        // Configuration options go here
+        options: {
+            scales: {
+            yAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 10
+                }
+            }]
+        }
+        }
+        });
+
+
+        new Chart(document.getElementById("myChart1"), {
+            type: 'bar',
+            data: {
+            labels: traerMesesCantVentasAnual(),
+            datasets: [
+                {
+                label: "Ventas Acumuladas (mensuales)",
+                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#3cba9f","#8e5ea2"],
+                data: traerTotalVentaAcumulada()
+                }
+            ]
+            },
+            options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: 'Ventas acumuladas mensualmente'
+            }, 
+            scales: {
+            yAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 50000
+                }
+            }]
+        }
+        }
+});
+
+
+new Chart(document.getElementById("pie-chart"), {
+    type: 'pie',
+    data: {
+      labels: traerTopProductos(),
+      datasets: [{
+        label: "Population (millions)",
+        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+        data: traerCantidadTopProductos()
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Top 5 Productos Mas vendidos del mes'
+      }
+    }
+});
+
+
+
+
+new Chart(document.getElementById("bar-chart-grouped"), {
+    type: 'bar',
+    
+    data: {
+      labels: traerMesVentasOnline(),
+      datasets: [
+        {
+          label: "Ventas Online",
+          backgroundColor: "#3e95cd",
+          data: traerCantidadVentasOnline()
+        }, {
+          label: "Ventas Locales",
+          backgroundColor: "#8e5ea2",
+          data: traerCantidadVentasLocales()
+        }
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'Comparacion de ventas locales & online'
+      }, 
+
+      scales: {
+            yAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 5
+                }
+            }]
+        }
+    }
+});
+
+
+new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+    labels: traerMesesOrdenes(),
+    datasets: [{ 
+        data: traerCantidadOrdenes(),
+        label: "Cantidad",
+        borderColor: "#3e95cd",
+        fill: false
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Ordenes de Compra Realizadas anualmente'
+    }, 
+    scales: {
+            yAxes: [{
+                ticks: {
+                    suggestedMin: 0,
+                    suggestedMax: 5
+                }
+            }]
+        }
+  }
+});
+
+
+
+
+    </script>
 {%endblock%}

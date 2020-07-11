@@ -12,30 +12,74 @@
 {% block contenido%}
     <div class="container">
         <div class="row mt-5 pt-5">
-            <div class="col-lg-6 my-5">
+
+            <div class="col-lg-12 mt-5">
+                <div class="d-flex justify-content-end">
+                    <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_agregar_boleta.pdf' %}">Manual Agregar Boleta</a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-5">
                 <h2 class="my-5">Agregar Boleta</h2>
-                <form method="POST">
+                <form method="POST" id="formulario_agregar_boleta">
                     {% csrf_token %}
 
                     <label for="cboEmpleado">Responsable</label>
                     <select class="form-control" name="cboEmpleado" id="cboEmpleado">
                       {% for e in empleados%}
                       <option 
-                      {% if e.rut_empleado == venta.EMPLEADO_RUT_EMPLEADO%}
+                      {% if e.rut_empleado == rut_empleado %}
                       {{'selected'}}
                       {%endif%}
                       value="{{e.rut_empleado}}"  id="cboEmpleado">{{e.nombres}}</option>
                       {%endfor%}
                     </select>
                     <br>
-                    <br>
-                    <br>
+                    <hr>
+                        <h5>Clientes</h5>
+                        <hr>
+
+                        <div class="form-group">
+                            <label for="id_rut_cliente text-left">Rut Cliente</label>
+                            <input required type="text" class="form-control" name="id_rut_cliente" id="id_rut_cliente">
+                        </div>
+
+
+                        <table id="listado_clientes" class="table table-hover" style="width:100%">
+
+                            <thead>
+                                <tr>
+                                    <th>Rut Cliente</th>
+                                    <th>Nombre</th>
+                                    <th>Rut Empresa</th>
+                                    <th>Giro</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for c in clientes%}
+
+                                <tr>
+                                    <td><small>{{c.rut_cliente}}</small></td>
+                                    <td><small>{{c.nombres}}</small></td>
+                                    <td><small>{{c.rut_empresa}}</small></td>
+                                    <td><small>{{c.giro}}</small></td>
+                                    <td>
+                                        <a onclick="selectCliente({{c.rut_cliente}})"><i class="fas fa-plus-circle"  title="Cliente: {{c.nombres}}"></i></a>
+                                    </td>
+                                </tr>
+
+                                {%endfor%}
+                            </tbody>
+
+                        </table>
                     {{form | crispy}}
 
                 
-            </div>
+            
 
-            <div class="col-lg-6 mt-5 pt-5">
+            <div class=" prod_listado">
                     <table id="listado_productos" class="table table-hover" style="width:100%">
                         <thead class="">
                             <tr>
@@ -168,6 +212,18 @@
             margin-top: -20px;
             padding: 10px 0px;
         }
+
+        #id_total-error, #id_estado_venta_id_estado_venta-error, 
+        #id_producto-error, #nombre_producto-error,#id_cantidad-error, 
+        #id_stock-error, #id_precio_detalle-error, #id_rut_cliente-error{
+            color:red;
+        }
+
+        .prod_listado{
+        margin-top: -40em;
+        margin-left: 35em;
+        width:100%;
+        }
     </style>
 
 
@@ -193,8 +249,68 @@
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
 
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
 <script>
     $(document).ready(function(){
+
+        
+	jQuery.extend(jQuery.validator.messages, {
+  	required: "Este campo es obligatorio.",
+  	remote: "Por favor, rellena este campo.",
+  	email: "Por favor, escribe una dirección de correo válida",
+  	url: "Por favor, escribe una URL válida.",
+  	date: "Por favor, escribe una fecha válida.",
+  	dateISO: "Por favor, escribe una fecha (ISO) válida.",
+  	number: "Por favor, escribe un número entero válido.",
+  	digits: "Por favor, escribe sólo dígitos.",
+  	creditcard: "Por favor, escribe un número de tarjeta válido.",
+  	equalTo: "Por favor, escribe el mismo valor de nuevo.",
+  	accept: "Por favor, escribe un valor con una extensión aceptada.",
+  	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+  	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+  	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+  	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+  	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+  	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+	});
+
+    var validator = $('#formulario_agregar_boleta').validate({
+        rules:{
+            cboEmpleado:{
+                required:true
+            }, 
+            total:{
+                required:true,
+                number:true,
+                min:1
+            },
+            estado_venta_id_estado_venta:{
+                required:true
+            }, 
+            id_producto:{
+                required:true, 
+                minlength:10
+            }, 
+            id_cantidad:{
+                required:true,
+                min:1
+            }, 
+            id_precio_detalle:{
+                required:true,
+                min:1
+            }, 
+            id_precio:{
+                required:true,
+                min:1
+            }, 
+            id_stock:{
+                required:true, 
+                min:1
+            }
+        }
+    }); 
 
     $("#id_estado_venta_id_estado_venta").prop("selectedIndex", 1);
     $("#id_precio").val(0);
@@ -275,6 +391,35 @@
     }
   });
 
+  
+  $('#listado_clientes').DataTable({
+    "pageLength": 2,
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left mx-3'></span>",
+          "sLast": "<span class='fa fa-angle-double-right mx-3'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
+  });
+
   $('.dataTables_filter').addClass('pull-left');
 }); 
 
@@ -324,5 +469,11 @@
         }
 
     })
+
+
+
+    function selectCliente(rut_cliente){
+        $('#id_rut_cliente').val(rut_cliente);
+    }
 </script>
 {%endblock%}

@@ -18,6 +18,13 @@
 
 <div class="container mt-5 pt-5">
 
+    
+    <div class="col-lg-12 my-5">
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_agregar_empleado.pdf' %}">Manual Agregar Empleado</a>
+        </div>
+    </div>
+
         
 
     <div class="row mt-5 pt-3">
@@ -26,7 +33,7 @@
             <h3>Registrar Empleado</h3>
         </div>
         <div class="col-lg-12">
-            <form class="form-group" action="" method="POST">
+            <form class="form-group" action="" method="POST" id="formulario_registro_empleado">
                 {% csrf_token %}
                 
                 <hr>
@@ -101,7 +108,7 @@
                 <td>{{e.tipo_empleado_id_tipo_empleado}}</td>
                 <td>
                     <a href="{% url 'modificar_empleado' e.rut_empleado%}"><i class="fas fa-edit text-dark"></i></a>
-                    <span class="mx-3"><a href="#" onclick="confirmarEliminar({{e.rut_empleado}})"><i class="fas fa-trash-alt text-dark"></i></a></span>
+                    
                 </td>
             </tr>
         {%endfor%}
@@ -115,6 +122,15 @@
         float: right !important;
         margin-top: -20px;
         padding: 10px 0px;
+    }
+
+    #id_username-error, #id_first_name-error, #id_last_name-error, 
+    #id_email-error, #id_password1-error, #id_password2-error, #id_rut_empleado-error,
+    #id_nombres-error, #id_apaterno-error, #id_amaterno-error, #id_telefono-error, 
+    #id_correo-error, #id_tipo_empleado_id_tipo_empleado-error, #id_numero-error, 
+    #id_calle-error, #id_piso-error, #id_codigo_postal-error, #id_tipo_vivienda_id_tipo_vivienda-error,
+    #id_comuna_id_comuna-error, #id_estado_empleado_id_estado_emp-error{
+        color:red;
     }
 </style>
 {% endblock %}
@@ -139,8 +155,102 @@
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js"></script>
 
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
 <script>
 $(document).ready(function(){
+
+    //version traducida
+
+	jQuery.extend(jQuery.validator.messages, {
+  	required: "Este campo es obligatorio.",
+  	remote: "Por favor, rellena este campo.",
+  	email: "Por favor, escribe una dirección de correo válida",
+  	url: "Por favor, escribe una URL válida.",
+  	date: "Por favor, escribe una fecha válida.",
+  	dateISO: "Por favor, escribe una fecha (ISO) válida.",
+  	number: "Por favor, escribe un número entero válido.",
+  	digits: "Por favor, escribe sólo dígitos.",
+  	creditcard: "Por favor, escribe un número de tarjeta válido.",
+  	equalTo: "Por favor, escribe el mismo valor de nuevo.",
+  	accept: "Por favor, escribe un valor con una extensión aceptada.",
+  	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+  	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+  	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+  	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+  	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+  	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+	});
+
+    var validator = $('#formulario_registro_empleado').validate({
+        rules:{
+            username:{
+                required:true, 
+                minlength:4
+            }, 
+            first_name:{
+                required:true, 
+                minlength:4
+            }, 
+            last_name:{
+                required:true, 
+                minlength:10
+            }, 
+            email:{
+                required:true,
+                email:true
+            }, 
+            password1:{
+                required:true
+            },
+            password2:{
+                required:true
+            }, 
+            rut_empleado:{
+                required:true,
+                number:true, 
+                minlength:9
+            }, 
+            nombres:{
+                required:true
+            }, 
+            apaterno:{
+                required:true
+            }, 
+            amaterno:{
+                required:true
+            },
+            telefono:{
+                required:true,
+                minlength:9, 
+                number:true
+            }, 
+            correo:{
+                required:true,
+                email:true
+            }, 
+            tipo_empleado_id_tipo_empleado:{
+                required:true
+            }, 
+            numero:{
+                required:true, 
+                number:true, 
+                min:1
+            },
+            calle:{
+                required:true, 
+                minlength:3
+            }, 
+            piso:{
+                required:true, 
+                min:1
+            }, 
+            codigo_postal:{
+                required:true, 
+                min:10
+            }
+        }
+    })
 
     
 
@@ -149,6 +259,10 @@ $(document).ready(function(){
     $('#id_apaterno').attr('readonly', true);
     $('#id_amaterno').attr('readonly', true);
     $('#id_correo').attr('readonly', true);
+
+    $("#id_estado_empleado_id_estado_emp").attr('readonly', true)
+
+    $("#id_estado_empleado_id_estado_emp").prop("selectedIndex", 2);
 
     $("#id_first_name").keyup(function(){
         nombre = ($("#id_first_name").val())

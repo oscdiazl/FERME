@@ -13,88 +13,97 @@
 
 <div class="container">
 
-    <div class="py-5 my-5">
+    <div class="col-lg-12 mt-5 pt-5">
+        <div class="d-flex justify-content-end mt-5 pt-2">
+            <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_agregar_oc.pdf' %}">Manual Agregar Orden de compra</a>
+        </div>
+    </div>
+
+    <div class="">
         <h2 class="mt-5 pt-5">Agregar Una Orden De Compra</h2>
     </div>
 
         
 
     <div class="row mt-5 pt-5">
-
-        <div class="col-lg-5">
-            <form class="form-group" action="" method="POST">
-                {% csrf_token %}
-                    {{form | crispy}}
-        </div>
+        
+        
 
         <div class="col-lg-6">
 
-            <table id="listado_productos" class="table table-hover" style="width:100%">
-                <thead class="">
-                    <tr>
-                        <th>SKU</th>
-                        <th>Nombre</th>
-                        <th>Proveedor</th>
-                        <th>Valor Compra</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {%for p in productos%}
-                    <tr>
-                        <td><small>{{p.ID_PRODUCTO}}</small></td>
-                        <td><small>{{p.NOMBRE}}</small></td>
-                        <td><small>{{p.NOMBRE_PROVEEDOR}}</small></td>
-                        <td><small>{{p.VALOR_PRODUCTO_COMPRA}}</small></td>
-                        <td>
-                            <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.VALOR_PRODUCTO_COMPRA}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_producto" title="Producto: {{p.ID_PRODUCTO}}"></i></a>
-                            
-                        </td>
-                    </tr>
-                {%endfor%}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>SKU</th>
-                        <th>Nombre</th>
-                        <th>Proveedor</th>
-                        <th>Acciones</th>
-                    </tr>
-                </tfoot>
-            </table>
-            
-            <div class="form-group">
-                <label for="id_producto">SKU Producto</label>
-                <input required type="text" readonly class="form-control" name="id_producto" id="id_producto">
-            </div>
+            <form class="form-group" action="" method="POST" id="formulario_agregar_orden">
+                {% csrf_token %}
+                    {{form | crispy}}
 
-            <div class="form-group">
-                <label for="nombre_producto text-left">Nombre Producto</label>
-                <input required type="text" readonly class="form-control" name="nombre_producto" id="nombre_producto">                    
+            <div class="prod_listado">
+                <table id="listado_productos" class="table table-hover" style="width:100%">
+                    <thead class="">
+                        <tr>
+                            <th>SKU</th>
+                            <th>Nombre</th>
+                            <th>Proveedor</th>
+                            <th>Valor Compra</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for p in productos%}
+                        <tr>
+                            <td><small>{{p.ID_PRODUCTO}}</small></td>
+                            <td><small>{{p.NOMBRE}}</small></td>
+                            <td><small>{{p.NOMBRE_PROVEEDOR}}</small></td>
+                            <td><small>{{p.VALOR_PRODUCTO_COMPRA}}</small></td>
+                            <td>
+                                <a onclick="selectProducto('{{p.ID_PRODUCTO}}','{{p.NOMBRE}}', '{{p.VALOR_PRODUCTO_COMPRA}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_producto" title="Producto: {{p.ID_PRODUCTO}}"></i></a>
+                                
+                            </td>
+                        </tr>
+                    {%endfor%}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Nombre</th>
+                            <th>Proveedor</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <div class="form-group">
+                    <label for="id_producto">SKU Producto</label>
+                    <input required type="text" readonly class="form-control" name="id_producto" id="id_producto">
+                </div>
+    
+                <div class="form-group">
+                    <label for="nombre_producto text-left">Nombre Producto</label>
+                    <input required type="text" readonly class="form-control" name="nombre_producto" id="nombre_producto">                    
+                </div>
+    
+                <div class="form-group">
+                    <label for="id_cantidad text-left">Cantidad</label>
+                    <input required type="text" class="form-control" name="id_cantidad" id="id_cantidad">
+                </div>
+    
+                <div class="form-group">
+                    <label for="id_precio_detalle text-left">Precio</label>
+                    <input required type="text" class="form-control" name="id_precio_detalle" id="id_precio_detalle">
+                </div>
+    
+                <div class="form-group">
+                    <label for="id_precio text-left">Total</label>
+                    <input required type="text" class="form-control" name="id_precio" id="id_precio">
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="id_cantidad text-left">Cantidad</label>
-                <input required type="text" class="form-control" name="id_cantidad" id="id_cantidad">
-            </div>
-
-            <div class="form-group">
-                <label for="id_precio_detalle text-left">Precio</label>
-                <input required type="text" class="form-control" name="id_precio_detalle" id="id_precio_detalle">
-            </div>
-
-            <div class="form-group">
-                <label for="id_precio text-left">Total</label>
-                <input required type="text" class="form-control" name="id_precio" id="id_precio">
-            </div>
+           
 
 
             <input type="submit" class="btn btn-success" name="btnGuardar" value="Guardar Orden"/>
 
-
         </div>
 
             </form>
+        
 
             {% if mensaje %}
             
@@ -168,6 +177,19 @@
         margin-top: -20px;
         padding: 10px 0px;
     }
+
+    #id_proveedor_id_proveedor-error, #id_fecha_solicitud-error, 
+    #id_empleado_rut_empleado-error, #id_estado_orden_id_estado-error, 
+    #id_producto-error, #nombre_producto-error, #id_cantidad-error, 
+    #id_precio_detalle-error, #id_precio-error{
+        color: red;
+    }
+
+    .prod_listado{
+        margin-top: -37em;
+        margin-left: 35em;
+        width:100%;
+    }
 </style>
 
 {%endblock%}
@@ -193,6 +215,8 @@
 
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+
 
 
 
@@ -200,6 +224,66 @@
 
   // Call the dataTables jQuery plugin
   $(document).ready(function() {
+
+    //version traducida
+
+	jQuery.extend(jQuery.validator.messages, {
+  	required: "Este campo es obligatorio.",
+  	remote: "Por favor, rellena este campo.",
+  	email: "Por favor, escribe una dirección de correo válida",
+  	url: "Por favor, escribe una URL válida.",
+  	date: "Por favor, escribe una fecha válida.",
+  	dateISO: "Por favor, escribe una fecha (ISO) válida.",
+  	number: "Por favor, escribe un número entero válido.",
+  	digits: "Por favor, escribe sólo dígitos.",
+  	creditcard: "Por favor, escribe un número de tarjeta válido.",
+  	equalTo: "Por favor, escribe el mismo valor de nuevo.",
+  	accept: "Por favor, escribe un valor con una extensión aceptada.",
+  	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+  	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+  	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+  	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+  	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+  	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+	});
+
+    var validator = $('#formulario_agregar_orden').validate({
+        rules:{
+            proveedor_id_proveedor:{
+                required:true
+            }, 
+            fecha_solicitud:{
+                required:true, 
+                date:false
+            }, 
+            empleado_rut_empleado:{
+                required:true
+            }, 
+            estado_orden_id_estado:{
+                required:true
+            }, 
+            neto:{
+                required:true, 
+                number:true
+            }, 
+            iva:{
+                required:true,
+                number:true
+            }, 
+            total:{
+                required:true,
+                number:true
+            }, 
+            id_producto:{
+                required:true, 
+                minlength:10
+            }, 
+            id_cantidad:{
+                required:true
+            }
+        }
+    }); 
+
 
     $("#id_estado_orden_id_estado").prop("selectedIndex", 1);
 

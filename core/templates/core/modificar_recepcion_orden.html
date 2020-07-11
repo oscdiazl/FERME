@@ -8,15 +8,21 @@
 
 <div class="container mt-5 pt-5">
 
+  <div class="col-lg-12 my-5">
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-info"  target="_blank" href="{%  static 'core/manuales/manual_detalle_recepcion.pdf' %}">Manual Detalle Recepcion Orden</a>
+    </div>
+  </div>
+
     <div class="my-5 py-5">
         <h3>Detalle de Orden a Recepcionar</h3>
     </div>
 
-    <form action="" method="POST">
+    <form action="" method="POST" id="formulario_modificar_recepcion_orden">
         {% csrf_token %}
 
         <label for="cboProveedor">Proveedor</label>
-        <select class="form-control" name="cboProveedor" id="cboProveedor">
+        <select class="form-control" name="cboProveedor" id="cboProveedor" readonly>
             {% for p in proveedores%}
             <option 
             {% if p.id_proveedor == orden.PROVEEDOR_ID_PROVEEDOR%}
@@ -38,7 +44,7 @@
         </div>
 
         <label for="cboEmpleado">Responsable</label>
-        <select class="form-control" name="cboEmpleado" id="cboEmpleado">
+        <select class="form-control" name="cboEmpleado" id="cboEmpleado" readonly>
           {% for e in empleados%}
           <option 
           {% if e.rut_empleado == orden.EMPLEADO_RUT_EMPLEADO%}
@@ -49,7 +55,7 @@
         </select>
 
         <label for="cboEstado">Estado Orden</label>
-        <select required class="form-control" name="cboEstado" id="cboEstado">
+        <select required class="form-control" name="cboEstado" id="cboEstado" readonly>
             {% for eo in estadosOrden%}
             <option 
             {% if eo.id_estado == orden.ESTADO_ORDEN_ID_ESTADO%}
@@ -124,11 +130,11 @@
                   <div class="col-lg-6">
                     <div class="row">
                         <div class="col-lg-6">
-                            <a href="{% url 'aprobar_orden_recepcionada' orden.ID_ORDEN_COMPRA %}" class="btn btn-success btn-block"> Aprobar Orden </a>
+                            <a  href="#" onclick="confirmarAprobarOrden({{orden.ID_ORDEN_COMPRA}})" class="btn btn-success btn-block"> Aprobar Orden </a>
                         </div>
 
                         <div class="col-lg-6">
-                            <a href="{% url 'rechazar_orden_recepcionada' orden.ID_ORDEN_COMPRA %}" class="btn btn-danger btn-block"> Rechazar Orden </a>
+                            <a href="#" onclick="confirmarRechazarOrden({{orden.ID_ORDEN_COMPRA}})" class="btn btn-danger btn-block"> Rechazar Orden </a>
                         </div>
                     </div>
                   </div>
@@ -155,6 +161,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <script src="{% static 'core/js/confirmacion.js' %}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
 
 
 <script>
@@ -196,7 +204,35 @@
 
     $(document).ready(function(){
 
-        console.log($("#cboEstado").val())
+    jQuery.extend(jQuery.validator.messages, {
+  	required: "Este campo es obligatorio.",
+  	remote: "Por favor, rellena este campo.",
+  	email: "Por favor, escribe una dirección de correo válida",
+  	url: "Por favor, escribe una URL válida.",
+  	date: "Por favor, escribe una fecha válida.",
+  	dateISO: "Por favor, escribe una fecha (ISO) válida.",
+  	number: "Por favor, escribe un número entero válido.",
+  	digits: "Por favor, escribe sólo dígitos.",
+  	creditcard: "Por favor, escribe un número de tarjeta válido.",
+  	equalTo: "Por favor, escribe el mismo valor de nuevo.",
+  	accept: "Por favor, escribe un valor con una extensión aceptada.",
+  	maxlength: jQuery.validator.format("Por favor, no escribas más de {0} caracteres."),
+  	minlength: jQuery.validator.format("Por favor, no escribas menos de {0} caracteres."),
+  	rangelength: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1} caracteres."),
+  	range: jQuery.validator.format("Por favor, escribe un valor entre {0} y {1}."),
+  	max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
+  	min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
+	  });
+
+
+    var validator = $('#formulario_modificar_recepcion_orden').validate({
+      rules:{
+        cboProveedor:{
+          required:true
+        }
+      }
+    }); 
+
     $('#tabla_productos_orden').DataTable({
     "pageLength": 5,
     "language": {
@@ -225,6 +261,97 @@
     }
   });
 });
+
+
+
+function confirmarAprobarOrden(id){
+    const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'btn btn-success',
+      cancelButton: 'btn btn-danger'
+    },
+    buttonsStyling: false
+  })
+
+  swalWithBootstrapButtons.fire({
+    title: 'Estas Seguro de aprobar la orden?',
+    text: "Asegurate de agregar al stock los productos antes de aprobar",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Aprobar!',
+    cancelButtonText: 'Cancelar!',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.value) {
+
+      swalWithBootstrapButtons.fire(
+        'Aprobada!',
+        'La orden ha sido aprobada.',
+        'success'
+      )
+
+      setTimeout(() => {
+        window.location.href = "/aprobar_orden_recepcionada/"+id+"/";
+      }, 1000);
+
+      
+    } else if (
+      /* Read more about handling dismissals below */
+      result.dismiss === Swal.DismissReason.cancel
+    ) {
+      swalWithBootstrapButtons.fire(
+        'Cancelado',
+        'La orden no fue cancelada :)',
+        'error'
+      )
+    }
+  })
+  }
+
+
+  function confirmarRechazarOrden(id){
+    const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'btn btn-success',
+      cancelButton: 'btn btn-danger'
+    },
+    buttonsStyling: false
+  })
+
+  swalWithBootstrapButtons.fire({
+    title: 'Estas Seguro de rechazar la orden?',
+    text: "",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Rechazar!',
+    cancelButtonText: 'Cancelar!',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.value) {
+
+      swalWithBootstrapButtons.fire(
+        'Rechazada!',
+        'La orden ha sido rechazada.',
+        'success'
+      )
+
+      setTimeout(() => {
+        window.location.href = "/rechazar_orden_recepcionada/"+id+"/";
+      }, 1000);
+
+      
+    } else if (
+      /* Read more about handling dismissals below */
+      result.dismiss === Swal.DismissReason.cancel
+    ) {
+      swalWithBootstrapButtons.fire(
+        'Cancelado',
+        'La orden no fue cancelada :)',
+        'error'
+      )
+    }
+  })
+  }
 
 </script>
 {%endblock%}

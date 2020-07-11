@@ -11,6 +11,13 @@
 
     <div class="container">
         <div class="row mt-5 pt-5">
+          <div class="col-lg-12 mt-5">
+            <div class="d-flex justify-content-end">
+              <a class="btn btn-primary mx-2"  target="_factura" href="{% url 'imprimir_detalle_boleta' boleta.id_boleta%}">Imprimir Boleta</a>
+              <a class="btn btn-info mx-2"  target="_blank" href="{%  static 'core/manuales/manual_modificar_boleta.pdf' %}">Manual Modificar Boleta</a>
+            </div>
+          </div>
+
             <div class="col-lg-6 my-5">
                 <h2 class="my-5">Detalle Boleta</h2>
                 <form method="POST">
@@ -26,7 +33,50 @@
                   value="{{e.rut_empleado}}"  id="cboEmpleado">{{e.nombres}}</option>
                   {%endfor%}
                 </select>
+
+                <div class="form-group">
+                  <label for="id_rut_cliente text-left" class="my-3">Rut Cliente</label>
+
+                  {% if cliente_actual.RUT_CLIENTE%}
+                  <input required readonly type="text" class="form-control" name="id_rut_cliente" id="id_rut_cliente" value="{{cliente_actual.RUT_CLIENTE}}">
+                  {%else%}
+                  <input required readonly type="text" class="form-control" name="id_rut_cliente" id="id_rut_cliente" value="-- ">
+                  {%endif%}
+                  
+              </div>
+
+              <table id="listado_clientes" class="table table-hover" style="width:100%">
+
+                <thead>
+                    <tr>
+                        <th>Rut Cliente</th>
+                        <th>Nombre</th>
+                        <th>Rut Empresa</th>
+                        <th>Giro</th>
+                        <th class="borrame">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for c in clientes%}
+
+                    <tr>
+                        <td><small>{{c.rut_cliente}}</small></td>
+                        <td><small>{{c.nombres}}</small></td>
+                        <td><small>{{c.rut_empresa}}</small></td>
+                        <td><small>{{c.giro}}</small></td>
+                        <td class="borrame">
+                            <a onclick="selectCliente({{c.rut_cliente}},'{{c.giro}}')"><i class="fas fa-plus-circle" data-toggle="tooltip_seleccionar_cliente" title="Cliente: {{c.nombres}}"></i></a>
+                        </td>
+                    </tr>
+
+                    {%endfor%}
+                </tbody>
+
+            </table>
                 {{form | crispy}}
+
+                
             </div>
 
             <div class="col-lg-6 mt-5 pt-5">
@@ -159,6 +209,11 @@
                     </tr>
                 </tfoot>
             </table>
+
+            <div class="d-flex align-items-end flex-column" style="height: 200px;">
+              <div class="p-2 display-5"><h1>Total Boleta:</h1></div>
+              <div class="p-2"><h3 id="precio_total_boleta"></h3></div>
+            </div>
         </div>
     </div>
 
@@ -178,6 +233,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <script src="{% static 'core/js/confirmacion.js'%}"></script>
+
+
+<script type="text/javascript" src="jquery/jquery.number.min.js"></script>
 <script>
 
     function confirmarAnularStockBoleta(id_boleta, id_producto, cantidad){
@@ -286,6 +344,16 @@
       })
     }
 
+    function formatNumber(n) {
+      n = n.toString()
+      while (true) {
+        var n2 = n.replace(/(\d)(\d{3})($|,|\.)/g, '$1,$2$3')
+        if (n == n2) break
+        n = n2
+      }
+      return n
+    }
+
 
     $(document).ready(function(){
     $("#id_precio").val(0);
@@ -300,7 +368,16 @@
 
     $('[data-toggle="tooltip_eliminar_producto"]').tooltip();    
 
-    $('[data-toggle="tooltip_seleccionar_producto"]').tooltip();      
+    $('[data-toggle="tooltip_seleccionar_producto"]').tooltip();  
+
+    console.log($("#id_total").val()); 
+
+    let total; 
+    total = formatNumber($("#id_total").val());  
+
+    $("#precio_total_boleta").text(`$ ${total}`);
+
+    console.log($("#precio_total_boleta").val())
 
 
     
@@ -427,8 +504,50 @@
 
            $("#id_precio").val(total);
            $("#id_total").val(totalActual);
+
+           total_detalle = formatNumber(totalActual)
+
+          
+
+           $("#precio_total_boleta").text(`$ ${total_detalle}`);
         }
 
     })
+
+
+    function selectCliente(rut_cliente){
+        $('#id_rut_cliente').val(rut_cliente);
+    }
+
+
+    $('#listado_clientes').DataTable({
+    "pageLength": 2,
+    "language": {
+      "sProcessing": "Procesando...",
+      "sLengthMenu": "Mostrar _MENU_ registros",
+      "sZeroRecords": "No se encontraron resultados",
+      "sEmptyTable": "Ningún dato disponible en esta tabla",
+      "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+      "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+      "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+      "sInfoPostFix": "",
+      "sSearch": "Buscar:",
+      "sUrl": "",
+      "sInfoThousands": ",",
+      "sLoadingRecords": "Cargando...",
+      "oPaginate": {
+          "sFirst": "<span class='fa fa-angle-double-left mx-3'></span>",
+          "sLast": "<span class='fa fa-angle-double-right mx-3'></span>",
+          "sNext": "<span class='fa fa-angle-right'></span>",
+          "sPrevious": "<span class='fa fa-angle-left'></span>"
+      },
+      "oAria": {
+          "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+          "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+      }
+    }
+  });
+
+
 </script>
 {%endblock%}

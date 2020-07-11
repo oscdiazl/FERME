@@ -13,6 +13,13 @@ class EmpleadoForm(ModelForm):
     class Meta: 
         model = Empleado
         fields =['rut_empleado', 'nombres','apaterno','amaterno', 'telefono','telefono_2', 'correo', 'tipo_empleado_id_tipo_empleado','estado_empleado_id_estado_emp' ]
+        labels={
+            'tipo_empleado_id_tipo_empleado': 'Tipo Empleado',
+            'estado_empleado_id_estado_emp': 'Estado Empleado', 
+            'apaterno': 'Apellido Paterno', 
+            'amaterno': 'Apellido Materno' 
+
+        }
 
 class OrdenDeCompraForm(ModelForm): 
     class Meta: 
@@ -23,16 +30,33 @@ class ProductoForm(ModelForm):
     class Meta: 
         model = Producto
         fields = ['tipo_producto_id_tipo_producto', 'id_producto', 'fecha_vencimiento', 'familia_producto_id_fam_prod', 'nombre', 'stock', 'stock_critico', 'precio', 'marca', 'valor_producto_compra', 'imagen']
+        labels = {
+            'tipo_producto_id_tipo_producto': 'Tipo Producto',
+            'id_producto': 'SKU Producto',
+            'familia_producto_id_fam_prod': 'Familia Producto', 
+            'valor_producto_compra':'Valor de compra',
+            'precio':'Precio Venta'
+        }
 
 class ClienteForm(ModelForm):
     class Meta:
         model = Cliente
         fields = ['rut_cliente', 'nombres', 'apaterno', 'amaterno', 'telefono', 'telefono_2', 'correo', 'rut_empresa', 'razon_social', 'giro', 'estado_cli_id_estado_cli']
+        labels = {
+            'apaterno': 'Apellido Paterno', 
+            'amaterno': 'Apellido Materno', 
+            'estado_cli_id_estado_cli': 'Estado Cliente'
+        }
 
 class DireccionForm(ModelForm):
     class Meta:
         model = Direccion
         fields = ['numero', 'calle', 'piso', 'codigo_postal', 'tipo_vivienda_id_tipo_vivienda', 'comuna_id_comuna']
+        labels ={
+            'tipo_vivienda_id_tipo_vivienda': 'Tipo Vivienda', 
+            'comuna_id_comuna': 'Comuna', 
+            'numero': 'Numero Direccion'
+        }
 
 class CustomUserForm(UserCreationForm):
     class Meta:
