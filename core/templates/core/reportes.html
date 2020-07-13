@@ -3,8 +3,20 @@
 {% load static%}
 
 {% block contenido%}
-    <div class="container mt-5 py-5">
+
+<style>
+    #report_page{
+        background-color: white !important;
+    }
+
+    span > .fa-file-pdf{
+        font-size: 15px;
+    }
+</style>
+<body>
+    <div class="container mt-5 py-5" id="report_page">
         <h2 class="my-5 py-5">Reportes Ferreteria Ferme</h2>
+        <div class="col-lg-1"><button class="btn btn-success" id="descargar-pdf">Exportar a PDF <span><i class="fas fa-file-pdf"></i></span></button></div>
         <hr>
 
         <div class="row">
@@ -75,8 +87,31 @@
             </div>
             <div class="col-lg-1"></div>
 
-            <div class="col-lg-1"></div>
-            <div class="col-lg-10 my-5 py-3">
+            <div class="col-lg-6 my-5 py-5">
+               
+                    <div style="display: none;">
+                        <div id="oc_meses">
+                        {% for oc in oc_anuales%}
+                            <span id="{{oc.MES}}">{{oc.MES}}</span>
+                        {%endfor%}
+                        </div>
+                    </div>
+            
+                    <div style="display: none;">
+                        <div id="oc_cantidad">
+                        {% for oc in oc_anuales%}
+                            <span id="{{oc.MES}}">{{oc.CANTIDAD}}</span>
+                        {%endfor%}
+                        </div>
+                    </div>
+            
+                    <h3 class="my-3">Cantidad Ordenes Mensuales </h3>
+                    <canvas id="line-chart" width="800" height="550"></canvas>
+               
+            </div>
+
+            
+            <div class="col-lg-6 my-5 py-5">
 
                     <div style="display: none;">
                         <div id="mes_venta_online">
@@ -103,43 +138,26 @@
                     </div>
             
                     <!-- <canvas id="bar-chart-horizontal" width="800" height="450"></canvas> -->
+                    <div class="d-flex justify-content-end flex-column">
+                        <h3 class="my-3">Comparacion ventas locales / online </h3>
+                        <canvas id="bar-chart-grouped" width="500" height="350"></canvas>
+                    </div>
 
-                    <h3 class="my-3">Comparacion ventas locales / online </h3>
-                    <canvas id="bar-chart-grouped" width="800" height="450"></canvas>
                 
             </div>
         </div>
-        <div class="col-lg-1"></div>
 
-        <div class="col-lg-1"></div>
-        <div class="col-lg-10 my-5">
-            <div style="display: none;">
-                <div id="oc_meses">
-                {% for oc in oc_anuales%}
-                    <span id="{{oc.MES}}">{{oc.MES}}</span>
-                {%endfor%}
-                </div>
-            </div>
     
-            <div style="display: none;">
-                <div id="oc_cantidad">
-                {% for oc in oc_anuales%}
-                    <span id="{{oc.MES}}">{{oc.CANTIDAD}}</span>
-                {%endfor%}
-                </div>
-            </div>
-    
-            <h3 class="my-3">Cantidad Ordenes Mensuales </h3>
-            <canvas id="line-chart" width="800" height="450"></canvas>
-        </div>
-    
-        <div class="col-lg-1"></div>
+        
     </div>
+    
 
 {%endblock%}
 
 {%block js%}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script>
 
     <script>
 
@@ -462,6 +480,56 @@ new Chart(document.getElementById("line-chart"), {
             }]
         }
   }
+});
+
+
+
+$('#descargar-pdf').click(function(event) {
+  // get size of report page
+  var reportPageHeight = $('#report_page').innerHeight();
+  var reportPageWidth = $('#report_page').innerWidth();
+  
+  // create a new canvas object that we will populate with all other canvas objects
+  var pdfCanvas = $('<canvas />').attr({
+    id: "canvaspdf",
+    width: 3000,
+    height: 2000, 
+    backgroundColor: "#FFFF"
+  });
+  
+  // keep track canvas position
+  let pdfctx = $(pdfCanvas)[0].getContext('2d');
+  pdfctx.clearRect( 0 , 0 , $(pdfCanvas)[0].width, $(pdfCanvas)[0].height );
+  pdfctx.fillStyle="#FFFFFF";
+  pdfctx.fillRect(0 , 0 , $(pdfCanvas)[0].width, $(pdfCanvas)[0].height);
+  var pdfctxX = 0;
+  var pdfctxY = 0;
+  var buffer = 100;
+
+  
+  // for each chart.js chart
+  $("canvas").each(function(index) {
+    // get the chart height/width
+    var canvasHeight = $(this).innerHeight();
+    var canvasWidth = $(this).innerWidth();
+    
+    // draw the chart into the new canvas
+    pdfctx.drawImage($(this)[0], pdfctxX, pdfctxY, canvasWidth, canvasHeight);
+    pdfctxX += canvasWidth + buffer;
+    
+    // our report page is in a grid pattern so replicate that in the new canvas
+    if (index % 2 === 1) {
+      pdfctxX = 0;
+      pdfctxY += canvasHeight + buffer;
+    }
+  });
+  
+  // create new pdf and add our new canvas as an image
+  var pdf = new jsPDF('p', 'pt', [1200, 1200]);
+  pdf.addImage($(pdfCanvas)[0], 'JPEG',2,2);
+  
+  // download the pdf
+  pdf.save('reportes.pdf');
 });
 
 

@@ -36,6 +36,7 @@ def productos(request):
     return render(request, 'core/productos.html', data)
 
 @login_required
+@permission_required('core.add_proveedor')
 def listado_proveedor(request):
     proveedores = Proveedor.objects.all()
     data = {
@@ -51,6 +52,7 @@ def listado_proveedor(request):
     return render(request, 'core/listado_proveedor.html', data)
 
 @login_required
+@permission_required('core.add_empleado')
 def listado_empleados(request): 
     empleados = Empleado.objects.all()
 
@@ -117,6 +119,7 @@ def listado_empleados(request):
 
 
 @login_required
+@permission_required('core.change_ordencompra')
 def listado_orden_compra(request): 
 
     user = request.user
@@ -178,6 +181,7 @@ def listado_orden_compra(request):
     return render(request, 'core/listado_orden_compra.html', data)
 
 @login_required
+@permission_required('core.change_ordencompra')
 def modificar_orden(request, id):
     orden = OrdenCompra.traerOrden(id)
     productos = Producto.objects.all()
@@ -237,6 +241,7 @@ def anular_orden(request, id):
     return redirect('modificar_orden', id=id)
 
 @login_required
+@permission_required('core.change_empleado')
 def modificar_empleado(request, id):
     empleado = Empleado.objects.get(rut_empleado=id)
 
@@ -284,6 +289,7 @@ def modificar_empleado(request, id):
     return render(request,  'core/modificar_empleado.html', data)
 
 @login_required
+@permission_required('core.change_proveedor')
 def modificar_proveedor(request, id):
     proveedor = Proveedor.objects.get(id_proveedor=id)
     data = {
@@ -318,6 +324,7 @@ def sobre_nosotros(request):
 
 
 @login_required
+@permission_required('core.add_producto')
 def listado_producto(request): 
     productos = Producto.objects.all()
     proveedores = Proveedor.objects.all()
@@ -348,6 +355,7 @@ def listado_producto(request):
     return render(request, 'core/listado_productos.html', data)
 
 @login_required
+@permission_required('core.change_producto')
 def modificar_producto(request, id): 
     producto = Producto.objects.get(id_producto=id)
     proveedores = Proveedor.objects.all()
@@ -563,6 +571,7 @@ def edit_profile(request):
     return render(request, 'registration/edit_profile.html', data)
 
 @login_required
+@permission_required('core.add_factura')
 def listado_factura(request):
 
     user = request.user
@@ -638,6 +647,7 @@ def imprimir_detalle_factura(request, id):
 
 
 @login_required
+@permission_required('core.change_factura')
 def modificar_factura(request, id): 
     factura = Factura.objects.get(id_factura=id)
     clientes = Cliente.objects.all()
@@ -724,6 +734,7 @@ def eliminar_producto_oc(request, id, sku, cantidad, total):
     return redirect('modificar_orden', id)
 
 @login_required
+@permission_required('core.add_boleta')
 def listado_boleta(request):
 
     user = request.user
@@ -784,6 +795,7 @@ def listado_boleta(request):
 
 
 @login_required
+@permission_required('core.change_boleta')
 def modificar_boleta(request, id):
 
     boleta = Boleta.objects.get(id_boleta=id)
@@ -875,6 +887,7 @@ def eliminar_producto_boleta(request, id, sku, cantidad, total):
     return redirect('modificar_boleta', id)
 
 @login_required
+@permission_required('core.change_ordencompra')
 def recepcion_orden_compra(request): 
 
     ordenesDeCompra = OrdenCompra.traerOrdenes()
@@ -887,6 +900,7 @@ def recepcion_orden_compra(request):
     return render(request, 'core/recepcion_orden.html', data)
 
 @login_required
+@permission_required('core.change_ordencompra')
 def modificar_recepcion_orden(request, id): 
 
     orden = OrdenCompra.traerOrden(id)
@@ -1038,6 +1052,7 @@ def anular_boleta(request, id):
     return redirect('modificar_boleta', id)
 
 @login_required
+@permission_required('core.add_cliente')
 def listado_clientes(request): 
 
     clientes = Cliente.objects.all()
@@ -1049,6 +1064,7 @@ def listado_clientes(request):
     return render(request, 'core/listado_clientes.html', data)
 
 @login_required
+@permission_required('core.change_cliente')
 def modificar_cliente(request, id):
 
     cliente = Cliente.objects.get(rut_cliente=id)
@@ -1178,6 +1194,7 @@ def confirmar_pedido(request, id_pedido, total):
 
 
 @login_required
+@permission_required('core.add_pedido')
 def listado_pedidos(request):
     pedidos = Pedido.objects.all()
 
@@ -1260,6 +1277,7 @@ def insertar_venta_pedido_factura(request, id_pedido, fecha_venta, rut_cliente):
     
 
 @login_required
+@permission_required('core.change_pedido')
 def detalle_pedido(request, id_pedido):
     pedido = Pedido.traerPedido(id_pedido)
     estados_pedido = EstadoPedido.objects.all()
@@ -1334,6 +1352,7 @@ def detalle_filtro_producto(request, tipo):
     return render(request, 'core/detalle_filtro_producto.html', data)
 
 @login_required
+@permission_required('is_superuser')
 def reportes(request):
 
     detalle_ventas_anual = Venta.reporte_venta_anual()

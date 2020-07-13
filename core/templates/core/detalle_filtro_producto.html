@@ -4,6 +4,82 @@
 
 {% block contenido%}
 
+<style>
+    
+    .modal-bg{
+        position:fixed; 
+        width: 100%;
+        height: 100vh;
+        top:0px; 
+        left:0px;
+        background-color: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: start;
+        align-items: flex-start;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s, opacity 0.5s;
+      }
+
+      .bg-active{
+        visibility: visible; 
+        opacity: 1;
+      }
+
+      .modal-d{
+        position: relative;
+        width: 20%;
+        opacity: 0;
+        height: 100vh;
+        background-color: white;
+        transition: width 0.5s;
+      }
+      
+      .modal-active{
+        width: 27%;
+        opacity: 1;
+        background: white;
+      }
+
+      .modal-close{
+        position: absolute;
+        top:10px; 
+        right: 10px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .modal-d > ul{
+        font-size: 15px;
+        list-style-type: square;
+        cursor: pointer;      
+      }
+
+    .btn-mod{
+      position: absolute;
+      font-size: 1.2em;
+      margin-top: 7.4em;
+      z-index: 1;
+      font-weight:bold;
+    }
+
+    .btn-mod i {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+  </style>
+
+<div class="container">
+    <div class="row">
+      <div class="col-lg-3"></div>
+      <div class="col-lg-6 d-flex justify-content-center">
+        <button class="modal-link  btn-mod btn btn-success">Filtros <span><span><i class="fas fa-filter"></i></span></span></button>
+      </div>
+      <div class="col-lg-3"></div>
+    </div>
+  </div>
+
 <div class="container my-5 py-5" id="lista-productos">
 
     <div class="row">

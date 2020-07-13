@@ -80,7 +80,7 @@
       }
       
       .modal-active{
-        width: 30%;
+        width: 27%;
         opacity: 1;
         background: white;
       }
@@ -212,9 +212,11 @@
               {% endif %}
 
               {% if user.is_authenticated %}
+                {% if perms.core.add_pedido %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'listado_pedidos' %}"> Pedidos </a>
               </li>
+                {%endif%}
               {% endif %}
 
               {% if not user.is_superuser %}
@@ -247,15 +249,7 @@
         </div>
       </nav>
 
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3"></div>
-          <div class="col-lg-6 d-flex justify-content-center">
-            <button class="modal-link  btn-mod btn btn-success">Filtros <span><span><i class="fas fa-filter"></i></span></span></button>
-          </div>
-          <div class="col-lg-3"></div>
-        </div>
-      </div>
+
 
 
 
@@ -277,9 +271,12 @@
                   <a class="nav-link text-dark" href="{% url 'consultar_proveedor' %}"> Consultar Proveedor </a>
                 </li>
 
+                {% if user.is_superuser %}
+
                 <li class="nav-item">
                   <a class="nav-link text-dark" href="{% url 'reportes' %}"> Reportes </a>
                 </li>
+                {%endif%}
               </ul>
             </div>
 
